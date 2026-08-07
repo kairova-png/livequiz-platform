@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="lq.css">
+<style>
+[data-notes="false"] .pv-note { display: none; }
+.hl-nav { display:flex; align-items:center; gap:var(--lq-space-3); padding:var(--lq-space-3) var(--lq-space-5); background:var(--lq-surface); border-bottom:1px solid var(--lq-border); }
+.hl-col { padding:var(--lq-space-5); overflow:hidden; }
+.hl-right { background:var(--lq-surface); border-left:1px solid var(--lq-border); }
+.hl-h { font-size:var(--lq-text-xs); font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--lq-ink-3); margin:0 0 var(--lq-space-3); }
+.hl-mirror { background:var(--lq-stage-bg); color:var(--lq-stage-ink); border-radius:var(--lq-radius-lg); padding:var(--lq-space-6); display:flex; flex-direction:column; gap:var(--lq-space-4); }
+.hl-step { display:grid; grid-template-columns:28px 1fr auto; align-items:center; gap:var(--lq-space-3); padding:var(--lq-space-3) var(--lq-space-4); border-radius:var(--lq-radius-md); background:var(--lq-surface); border:1px solid var(--lq-border); font-size:var(--lq-text-sm); }
+.hl-step[data-now="true"] { border-color:var(--lq-primary); box-shadow:0 0 0 3px var(--lq-indigo-100); }
+.hl-step[data-done="true"] { opacity:.55; }
+.hl-mirror .lq-board__row { background:var(--lq-stage-bg-2); border-color:transparent; color:var(--lq-stage-ink); }
+.hl-mirror .lq-board__rank { color:var(--lq-stage-ink-2); }
+.hl-mirror .lq-board__delta { color:#4ADE80; }
+.hl-mirror .lq-board__row[data-place="1"] { background:var(--lq-accent-soft); color:var(--lq-ink); }
+.hl-mirror .lq-board__row[data-place="1"] .lq-board__rank { color:var(--lq-accent-deep); }
+.hl-mirror .lq-board__row[data-place="1"] .lq-board__delta { color:var(--lq-success); }
+.hl-mirror .lq-card { background:var(--lq-stage-bg-2); border-color:transparent; color:var(--lq-stage-ink); }
+.hl-main { display:flex; align-items:center; gap:var(--lq-space-3); padding-left:var(--lq-space-4); }
+a { color: var(--lq-primary); }
+a:hover { color: var(--lq-primary-hover); }
+</style>
+</helmet>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+<symbol id="sh-triangle" viewBox="0 0 24 24"><path d="M12 3 22 21H2z"></path></symbol>
+<symbol id="sh-diamond" viewBox="0 0 24 24"><path d="M12 2 22 12 12 22 2 12z"></path></symbol>
+<symbol id="sh-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"></circle></symbol>
+<symbol id="sh-square" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2.5"></rect></symbol>
+</svg>
+
+<div class="pv-head">
+<h1>Ведущий · переходы вечера</h1>
+<p>Четырнадцать экранов, которых не хватало между вопросами. В собранных ранее файлах пульт управлял вопросом — открыть, закрыть, вскрыть, — а всё остальное происходило как бы само: заставка раунда, таблица, отрывок трека, раскрытие картинки, ставки, финал. Здесь каждый такой переход становится действием ведущего, в том же месте нижней панели и с той же логикой отмены вместо подтверждения.</p>
+</div>
+
+<div class="pv-wrap" style="max-width:none" data-notes="{{ showNotes }}">
+<div style="display:grid;gap:var(--lq-space-12);justify-items:start">
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-live"><span class="lq-live__dot"></span>в эфире · 1:04</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Карта вечера</b><span style="flex:1"></span><span class="lq-badge lq-badge--neutral">шаг 14 из 41</span><button class="lq-btn lq-btn--ghost">Пауза</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 420px;min-height:0">
+<div class="hl-col" style="overflow:auto">
+<p class="hl-h">Каждая строка — переход, который делаете вы</p>
+<div style="display:grid;gap:var(--lq-space-2);max-width:820px">
+<div class="hl-step" data-done="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--lq-success)" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"></path></svg><span><b>Раунд 2 · заставка</b> — правила показаны 40 с</span><span class="pv-mono">20:51</span></div>
+<div class="hl-step" data-done="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--lq-success)" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"></path></svg><span><b>Вопросы 1–3</b> — открыт, закрыт, вскрыт ×3</span><span class="pv-mono">20:52</span></div>
+<div class="hl-step" data-now="true"><span style="width:10px;height:10px;border-radius:50%;background:var(--lq-primary);justify-self:center"></span><span><b>Вопрос 4 · Алматы</b> — последний в раунде 2</span><span class="lq-badge">сейчас</span></div>
+<div class="hl-step"><span style="color:var(--lq-ink-3);justify-self:center">5</span><span><b>Таблица после раунда 2</b> — вы решаете, показывать ли</span><span style="color:var(--lq-ink-3)">≈ 40 с</span></div>
+<div class="hl-step"><span style="color:var(--lq-ink-3);justify-self:center">6</span><span><b>Рывок</b> — предложится, если кто-то поднимется больше чем на 3 места</span><span class="lq-badge lq-badge--neutral">по ситуации</span></div>
+<div class="hl-step"><span style="color:var(--lq-ink-3);justify-self:center">7</span><span><b>Раунд 3 · Музыка</b> — заставка с правилами</span><span style="color:var(--lq-ink-3)">≈ 6:30</span></div>
+<div class="hl-step"><span style="color:var(--lq-ink-3);justify-self:center">8</span><span><b>Раунды 4–6</b></span><span style="color:var(--lq-ink-3)">≈ 42:00</span></div>
+<div class="hl-step"><span style="color:var(--lq-ink-3);justify-self:center">9</span><span><b>Финал</b> — открыть ставки, закрыть, показать</span><span style="color:var(--lq-ink-3)">≈ 4:00</span></div>
+<div class="hl-step"><span style="color:var(--lq-ink-3);justify-self:center">10</span><span><b>Итоги и прощание</b></span><span style="color:var(--lq-ink-3)">≈ 3:00</span></div>
+</div>
+</div>
+<div class="hl-col hl-right">
+<p class="hl-h">Что на проекторе сейчас</p>
+<div class="hl-mirror" style="height:190px;align-items:center;justify-content:center;margin-bottom:var(--lq-space-4)"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">Вопрос 4 открыт</div><div style="color:var(--lq-stage-ink-2)">осталось 11 с</div></div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2);margin-bottom:var(--lq-space-4)"><div style="display:flex;justify-content:space-between"><span style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Идём с опережением</span><b style="color:var(--lq-success)">на 6 минут</b></div><div style="display:flex;justify-content:space-between"><span style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Осталось вопросов</span><b>21</b></div><div style="display:flex;justify-content:space-between"><span style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Ожидаемый конец</span><b>22:04</b></div></div>
+<div class="lq-card" style="background:var(--lq-surface-2);border-color:transparent"><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Карта не двигает игру сама. Ни один шаг не наступит, пока вы не нажмёте главную кнопку.</p></div>
+</div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--neutral">раунд 2 · вопрос 4</span><span class="lq-hostbar__spacer"></span><div class="lq-hostbar__stat"><b>11 с</b><span>до конца приёма</span></div><div class="hl-main"><button class="lq-btn lq-btn--lg" style="min-width:300px">Закрыть приём</button></div></div>
+</div></div>
+<div class="pv-caption">1 · Карта вечера</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-badge lq-badge--neutral">переход</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Раунд 3 · Музыка</b><span style="flex:1"></span><button class="lq-btn lq-btn--ghost">Пропустить заставку</button><button class="lq-btn lq-btn--ghost">Пауза</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 400px;min-height:0">
+<div class="hl-col">
+<p class="hl-h">Заставка на проекторе · показана 12 с</p>
+<div class="hl-mirror" style="height:calc(100% - 34px);justify-content:center;align-items:center;text-align:center;gap:var(--lq-space-6)">
+<div style="font-size:var(--lq-text-lg);letter-spacing:.14em;text-transform:uppercase;color:var(--lq-stage-ink-2)">раунд 3 из 6</div>
+<div style="font-family:var(--lq-font-display);font-weight:900;font-size:4rem;line-height:1">Музыка</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--lq-space-4);width:100%">
+<div style="background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-4)"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-3xl)">25 сек</div><div style="color:var(--lq-stage-ink-2);font-size:var(--lq-text-sm)">на ответ</div></div>
+<div style="background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-4)"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-3xl);color:var(--lq-accent)">×2</div><div style="color:var(--lq-stage-ink-2);font-size:var(--lq-text-sm)">множитель</div></div>
+<div style="background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-4)"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-3xl)">нельзя</div><div style="color:var(--lq-stage-ink-2);font-size:var(--lq-text-sm)">менять ответ</div></div>
+</div>
+</div>
+</div>
+<div class="hl-col hl-right">
+<p class="hl-h">Ваш текст к заставке</p>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2);margin-bottom:var(--lq-space-4)"><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">«Третий раунд — музыкальный. Отрывки идут из зала, на телефон звук не приходит. Ответ поменять нельзя, поэтому не спешите жать.»</p><span class="lq-badge lq-badge--neutral">ваша заметка к раунду</span></div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3);margin-bottom:var(--lq-space-4)"><b style="font-family:var(--lq-font-display)">Что изменится в раунде</b><div style="display:flex;justify-content:space-between;font-size:var(--lq-text-sm)"><span style="color:var(--lq-ink-2)">Окно ответа</span><b>20 → 25 с</b></div><div style="display:flex;justify-content:space-between;font-size:var(--lq-text-sm)"><span style="color:var(--lq-ink-2)">Множитель</span><b>×1 → ×2</b></div><div style="display:flex;justify-content:space-between;font-size:var(--lq-text-sm)"><span style="color:var(--lq-ink-2)">Менять ответ</span><b>можно → нельзя</b></div></div>
+<div class="lq-card" style="background:var(--lq-surface-2);border-color:transparent"><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Заставка висит, пока вы не откроете первый вопрос. Таймера у неё нет — вам может понадобиться минута на объявление.</p></div>
+</div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--neutral">заставка на экране 12 с</span><span class="lq-hostbar__spacer"></span><div class="lq-hostbar__stat"><b>6</b><span>вопросов в раунде</span></div><div class="hl-main"><button class="lq-btn lq-btn--lg" style="min-width:300px">Открыть первый вопрос</button></div></div>
+</div></div>
+<div class="pv-caption">2 · Заставка раунда</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-badge lq-badge--neutral">переход</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Итоги раунда 2</b><span style="flex:1"></span><button class="lq-btn lq-btn--ghost">Не показывать таблицу</button><button class="lq-btn lq-btn--ghost">Пауза</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 400px;min-height:0">
+<div class="hl-col">
+<p class="hl-h">Так это увидит зал · 5 строк из 12</p>
+<div class="hl-mirror" style="height:calc(100% - 34px);gap:var(--lq-space-3)">
+<div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">После раунда 2</div>
+<div class="lq-board" style="gap:var(--lq-space-2)">
+<div class="lq-board__row" data-place="1"><span class="lq-board__rank">1</span><span class="lq-avatar" style="background:var(--lq-ans-b)">ЖБ</span><span class="lq-board__name">Жеті батыр</span><span style="display:grid;justify-items:end"><span class="lq-board__score">9 480</span><span class="lq-board__delta">+2 480</span></span></div>
+<div class="lq-board__row"><span class="lq-board__rank">2</span><span class="lq-avatar" style="background:var(--lq-ans-d)">ТБ</span><span class="lq-board__name">Тобылғы</span><span style="display:grid;justify-items:end"><span class="lq-board__score">8 640</span><span class="lq-board__delta">+2 240 · ▲ 3</span></span></div>
+<div class="lq-board__row"><span class="lq-board__rank">3</span><span class="lq-avatar" style="background:var(--lq-ans-e)">СБ</span><span class="lq-board__name">Сарыарқа</span><span style="display:grid;justify-items:end"><span class="lq-board__score">8 100</span><span class="lq-board__delta">+1 050</span></span></div>
+<div class="lq-board__row"><span class="lq-board__rank">4</span><span class="lq-avatar" style="background:var(--lq-ans-c)">КС</span><span class="lq-board__name">Көк сұңқар</span><span class="lq-board__score">7 900</span></div>
+<div class="lq-board__row"><span class="lq-board__rank">5</span><span class="lq-avatar" style="background:var(--lq-ans-a)">АТ</span><span class="lq-board__name">Алтын тобы</span><span class="lq-board__score">7 400</span></div>
+</div>
+</div>
+</div>
+<div class="hl-col hl-right">
+<p class="hl-h">Настройка показа</p>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3);margin-bottom:var(--lq-space-4)">
+<div><span class="lq-field__label">Сколько строк</span><div class="lq-seg" style="width:100%"><button class="lq-seg__item" style="flex:1">3</button><button class="lq-seg__item" style="flex:1" aria-pressed="true">5</button><button class="lq-seg__item" style="flex:1">10</button></div></div>
+<label class="lq-switch" aria-checked="true"><span class="lq-switch__track"><span class="lq-switch__thumb"></span></span><span class="lq-switch__label">Показывать дельты за раунд</span></label>
+<label class="lq-switch" aria-checked="false"><span class="lq-switch__track"><span class="lq-switch__thumb"></span></span><span class="lq-switch__label">Анимировать перестановку мест</span></label>
+</div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2);margin-bottom:var(--lq-space-4);border-color:var(--lq-accent)"><div style="display:flex;align-items:center;gap:var(--lq-space-2)"><span class="lq-badge lq-badge--warning">есть рывок</span></div><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Тобылғы поднялись с 7 на 2 место. После таблицы можно показать отдельный экран — или пропустить.</p></div>
+<div class="lq-card" style="background:var(--lq-surface-2);border-color:transparent"><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Таблица останется на экране, пока вы не перейдёте дальше. Убрать её отдельной кнопкой не нужно — следующий шаг её заменит.</p></div>
+</div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--neutral">таблица на экране</span><span class="lq-hostbar__spacer"></span><div class="lq-hostbar__stat"><b>12</b><span>команд всего</span></div><button class="lq-btn lq-btn--ghost">Показать рывок</button><div class="hl-main"><button class="lq-btn lq-btn--lg" style="min-width:300px">К раунду 3</button></div></div>
+</div></div>
+<div class="pv-caption">3 · Таблица после раунда</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-badge lq-badge--warning">предложение</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Показать рывок?</b><span style="flex:1"></span><button class="lq-btn lq-btn--ghost">Пропустить</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 400px;min-height:0">
+<div class="hl-col">
+<p class="hl-h">Так это увидит зал</p>
+<div class="hl-mirror" style="height:calc(100% - 34px);justify-content:center;align-items:center;text-align:center;gap:var(--lq-space-5)">
+<div style="font-size:var(--lq-text-base);letter-spacing:.14em;text-transform:uppercase;color:var(--lq-accent)">рывок вечера</div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-5)"><span class="lq-avatar" style="width:88px;height:88px;border-radius:var(--lq-radius-xl);background:var(--lq-ans-d)"><svg width="42" height="42" fill="#fff" aria-hidden="true"><use href="#sh-square"></use></svg></span><div style="text-align:left"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:3.4rem;line-height:1">Тобылғы</div><div style="font-size:var(--lq-text-xl);color:var(--lq-stage-ink-2)">+2 240 за раунд</div></div></div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-5);font-family:var(--lq-font-display);font-weight:900;font-size:2.4rem"><span style="color:var(--lq-stage-ink-2)">7 место</span><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--lq-accent)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg><span style="color:var(--lq-accent)">2 место</span></div>
+</div>
+</div>
+<div class="hl-col hl-right">
+<p class="hl-h">Почему предложено</p>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2);margin-bottom:var(--lq-space-4)"><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Порог — больше трёх мест за раунд. Тобылғы прошли пять. За вечер такой экран показывался 0 раз.</p></div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3);margin-bottom:var(--lq-space-4)"><b style="font-family:var(--lq-font-display)">Когда лучше пропустить</b><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Если вы уже назвали эту команду вслух, экран повторит то же самое и съест паузу. Если вечер идёт с отставанием — тоже.</p></div>
+<div class="lq-card" style="background:var(--lq-surface-2);border-color:transparent"><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Пропуск ничего не ломает: рывок остаётся в разборе игры после вечера.</p></div>
+</div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--warning">Тобылғы · ▲ 5 мест</span><span class="lq-hostbar__spacer"></span><button class="lq-btn lq-btn--ghost">Пропустить</button><div class="hl-main"><button class="lq-btn lq-btn--lg lq-btn--accent" style="min-width:300px">Показать рывок</button></div></div>
+</div></div>
+<div class="pv-caption">4 · Рывок · показать или пропустить</div>
+</div>
+
+<p class="pv-note">Все четыре перехода раньше были неявными: заставка раунда возникала сама, таблица показывалась автоматически после последнего вопроса. В зале это работает против ведущего — он говорит «а сейчас посмотрим на таблицу», а она уже минуту как висит, или наоборот объявляет раунд, пока экран ещё показывает прошлые очки. Поэтому каждый шаг ждёт нажатия и ничего не делает по таймеру.</p>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-live"><span class="lq-live__dot"></span>раунд 3 · вопрос 2 · audio</span><span style="flex:1"></span><span class="lq-badge lq-badge--neutral">вопрос ещё не открыт</span><button class="lq-btn lq-btn--ghost">Пауза</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 400px;min-height:0">
+<div class="hl-col" style="display:grid;grid-template-rows:auto auto 1fr;gap:var(--lq-space-4)">
+<div><p class="hl-h">Зал видит это</p><div class="hl-mirror" style="height:190px;align-items:center;justify-content:center"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-3xl)">Чей это голос?</div><div style="color:var(--lq-stage-ink-2)">варианты появятся после отрывка</div></div></div>
+<div>
+<p class="hl-h">Отрывок · dimash-daididau.mp3</p>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-4)">
+<div style="display:flex;align-items:flex-end;gap:3px;height:80px">
+<span style="flex:1;height:24%;background:var(--lq-indigo-300);border-radius:3px"></span><span style="flex:1;height:52%;background:var(--lq-indigo-300);border-radius:3px"></span><span style="flex:1;height:36%;background:var(--lq-primary);border-radius:3px"></span><span style="flex:1;height:70%;background:var(--lq-primary);border-radius:3px"></span><span style="flex:1;height:44%;background:var(--lq-primary);border-radius:3px"></span><span style="flex:1;height:88%;background:var(--lq-primary);border-radius:3px"></span><span style="flex:1;height:62%;background:var(--lq-indigo-300);border-radius:3px"></span><span style="flex:1;height:96%;background:var(--lq-indigo-300);border-radius:3px"></span><span style="flex:1;height:74%;background:var(--lq-indigo-300);border-radius:3px"></span><span style="flex:1;height:56%;background:var(--lq-indigo-300);border-radius:3px"></span><span style="flex:1;height:82%;background:var(--lq-indigo-300);border-radius:3px"></span><span style="flex:1;height:40%;background:var(--lq-indigo-300);border-radius:3px"></span><span style="flex:1;height:66%;background:var(--lq-indigo-300);border-radius:3px"></span><span style="flex:1;height:30%;background:var(--lq-indigo-300);border-radius:3px"></span>
+</div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-4)"><span style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl);font-variant-numeric:tabular-nums">0:21 / 0:55</span><span style="flex:1"></span><button class="lq-btn lq-btn--ghost">Стоп</button><button class="lq-btn lq-btn--ghost">Повторить с начала</button><span class="lq-badge lq-badge--neutral">повтор 1 из 1</span></div>
+</div>
+</div>
+<div class="lq-card" style="align-self:start;display:flex;align-items:center;gap:var(--lq-space-4);background:var(--lq-warning-soft);border-color:transparent"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--lq-warning)" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 3 22 20H2z"></path><path d="M12 10v4M12 17h.01"></path></svg><p style="margin:0;flex:1;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Пока отрывок играет, варианты залу не показаны и таймер не идёт. Открывать вопрос лучше на последних секундах звучания — зал уже узнал мелодию и готов жать.</p></div>
+</div>
+<div class="hl-col hl-right">
+<p class="hl-h">Правильный ответ</p>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3);margin-bottom:var(--lq-space-4)"><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Димаш</b><div style="display:flex;gap:6px;flex-wrap:wrap"><span class="lq-badge lq-badge--neutral">Батырхан</span><span class="lq-badge lq-badge--success">Димаш</span><span class="lq-badge lq-badge--neutral">Роза</span><span class="lq-badge lq-badge--neutral">Кайрат</span></div></div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2)"><b style="font-family:var(--lq-font-display)">Громкость зала</b><div class="lq-timer-bar"><div class="lq-timer-bar__fill" style="width:80%;background:var(--lq-primary)"></div></div><div style="display:flex;justify-content:space-between;font-size:var(--lq-text-sm);color:var(--lq-ink-2)"><span>80%</span><span>выход на пульт бара</span></div></div>
+</div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--neutral">отрывок играет · 0:21</span><span class="lq-hostbar__spacer"></span><button class="lq-btn lq-btn--ghost">Стоп</button><button class="lq-btn lq-btn--ghost">Повторить</button><div class="hl-main"><button class="lq-btn lq-btn--lg" style="min-width:300px">Показать варианты и открыть</button></div></div>
+</div></div>
+<div class="pv-caption">5 · Управление отрывком (audio)</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-live"><span class="lq-live__dot"></span>раунд 5 · вопрос 2 · image</span><span style="flex:1"></span><span class="lq-timer"><span class="lq-timer__num">18</span></span><button class="lq-btn lq-btn--ghost">Пауза</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 400px;min-height:0">
+<div class="hl-col" style="display:grid;grid-template-rows:auto 1fr;gap:var(--lq-space-4)">
+<div><p class="hl-h">Зал видит это · открыта половина кадра</p>
+<div class="hl-mirror" style="height:340px;padding:var(--lq-space-4)">
+<div style="flex:1;position:relative;border-radius:var(--lq-radius-md);overflow:hidden;background:linear-gradient(150deg,var(--lq-stage-bg-2),#2E2770)">
+<div style="position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr">
+<div style="display:grid;place-items:center;color:var(--lq-stage-ink-2);border-right:2px solid var(--lq-stage-bg);border-bottom:2px solid var(--lq-stage-bg)">открыто</div>
+<div style="background:var(--lq-stage-bg);border-bottom:2px solid var(--lq-stage-bg)"></div>
+<div style="display:grid;place-items:center;color:var(--lq-stage-ink-2);border-right:2px solid var(--lq-stage-bg)">открыто</div>
+<div style="background:var(--lq-stage-bg)"></div>
+</div>
+</div>
+</div>
+</div>
+<div>
+<p class="hl-h">Шаги раскрытия</p>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--lq-space-3)">
+<div class="lq-card" style="opacity:.55;display:grid;gap:4px"><b>1 · четверть</b><span style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">открыт в 0 с · 1 000 очков</span></div>
+<div class="lq-card" style="border-color:var(--lq-primary);box-shadow:0 0 0 3px var(--lq-indigo-100);display:grid;gap:4px"><b>2 · половина</b><span style="font-size:var(--lq-text-sm);color:var(--lq-primary-hover)">сейчас · 700 очков</span></div>
+<div class="lq-card" style="display:grid;gap:4px"><b>3 · весь кадр</b><span style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">сам через 7 с · 400 очков</span></div>
+</div>
+<div class="lq-card" style="margin-top:var(--lq-space-4);display:flex;align-items:center;gap:var(--lq-space-4)"><p style="margin:0;flex:1;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Шаги идут по таймеру. Если зал молчит и вы видите, что вопрос не берут, откройте следующий раньше — очки уменьшатся, но вопрос состоится.</p><button class="lq-btn lq-btn--ghost">Открыть всё сразу</button></div>
+</div>
+</div>
+<div class="hl-col hl-right"><p class="hl-h">Ответили</p><div class="lq-card" style="display:grid;gap:var(--lq-space-2);margin-bottom:var(--lq-space-4)"><div style="display:flex;justify-content:space-between"><span style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">На шаге 1</span><b>2 команды · 1 000</b></div><div style="display:flex;justify-content:space-between"><span style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">На шаге 2</span><b>5 команд · 700</b></div><div style="display:flex;justify-content:space-between"><span style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Ещё думают</span><b>5 команд</b></div></div><div class="lq-card" style="background:var(--lq-surface-2);border-color:transparent"><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Команда, ответившая на первом шаге, уже зафиксировала 1 000 — открытие следующего шага её очков не снижает.</p></div></div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--neutral">шаг 2 из 3</span><span class="lq-hostbar__spacer"></span><div class="lq-hostbar__stat"><b>7 / 12</b><span>ответили</span></div><button class="lq-btn lq-btn--ghost">Открыть всё сразу</button><div class="hl-main"><button class="lq-btn lq-btn--lg" style="min-width:300px">Открыть шаг 3</button></div></div>
+</div></div>
+<div class="pv-caption">6 · Пошаговое раскрытие (image)</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-badge lq-badge--warning">приём закрыт · ответ не вскрыт</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">text · Самое большое озеро</b><span style="flex:1"></span><button class="lq-btn lq-btn--ghost">Открыть снова</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 460px;min-height:0">
+<div class="hl-col" style="overflow:auto">
+<p class="hl-h">Сначала решите спорные · 3</p>
+<div style="display:grid;gap:var(--lq-space-2);margin-bottom:var(--lq-space-5)">
+<div class="lq-card" style="display:grid;grid-template-columns:1fr auto;gap:var(--lq-space-4);align-items:center;padding:var(--lq-space-4)"><div><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Балқаш</b> <span style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">· Тобылғы · другая раскладка</span></div><div style="display:flex;gap:var(--lq-space-2)"><button class="lq-btn lq-btn--ghost" style="min-height:38px">Отклонить</button><button class="lq-btn lq-btn--success" style="min-height:38px">Засчитать</button></div></div>
+<div class="lq-card" style="display:grid;grid-template-columns:1fr auto;gap:var(--lq-space-4);align-items:center;padding:var(--lq-space-4)"><div><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Балахш</b> <span style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">· Алтын тобы · опечатка</span></div><div style="display:flex;gap:var(--lq-space-2)"><button class="lq-btn lq-btn--ghost" style="min-height:38px">Отклонить</button><button class="lq-btn lq-btn--success" style="min-height:38px">Засчитать</button></div></div>
+<div class="lq-card" style="display:grid;grid-template-columns:1fr auto;gap:var(--lq-space-4);align-items:center;padding:var(--lq-space-4)"><div><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">оз. Балхаш</b> <span style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">· Көк сұңқар · сокращение</span></div><div style="display:flex;gap:var(--lq-space-2)"><button class="lq-btn lq-btn--ghost" style="min-height:38px">Отклонить</button><button class="lq-btn lq-btn--success" style="min-height:38px">Засчитать</button></div></div>
+</div>
+<p class="hl-h">Что вынести на экран · выбрано 4 из 7</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--lq-space-3)">
+<label class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-3);cursor:pointer"><span style="width:22px;height:22px;border-radius:6px;background:var(--lq-primary);display:grid;place-items:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"></path></svg></span><b style="flex:1">Балатон</b><span style="color:var(--lq-ink-3);font-size:var(--lq-text-sm)">Алтын тобы</span></label>
+<label class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-3);cursor:pointer"><span style="width:22px;height:22px;border-radius:6px;background:var(--lq-primary);display:grid;place-items:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"></path></svg></span><b style="flex:1">Каспий, он же море</b><span style="color:var(--lq-ink-3);font-size:var(--lq-text-sm)">Арқа</span></label>
+<label class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-3);cursor:pointer"><span style="width:22px;height:22px;border-radius:6px;background:var(--lq-primary);display:grid;place-items:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"></path></svg></span><b style="flex:1">то, что высыхает</b><span style="color:var(--lq-ink-3);font-size:var(--lq-text-sm)">Дала сазы</span></label>
+<label class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-3);cursor:pointer"><span style="width:22px;height:22px;border-radius:6px;background:var(--lq-primary);display:grid;place-items:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"></path></svg></span><b style="flex:1">Иссык-Куль (не наш)</b><span style="color:var(--lq-ink-3);font-size:var(--lq-text-sm)">Жас ұрпақ</span></label>
+<label class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-3);cursor:pointer;opacity:.6"><span style="width:22px;height:22px;border-radius:6px;border:2px solid var(--lq-border-control)"></span><b style="flex:1">Балхаш?</b><span style="color:var(--lq-ink-3);font-size:var(--lq-text-sm)">Сарыарқа</span></label>
+<label class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-3);cursor:pointer;opacity:.6"><span style="width:22px;height:22px;border-radius:6px;border:2px solid var(--lq-border-control)"></span><b style="flex:1">не знаем</b><span style="color:var(--lq-ink-3);font-size:var(--lq-text-sm)">Арқа</span></label>
+</div>
+</div>
+<div class="hl-col hl-right">
+<p class="hl-h">Так это увидит зал</p>
+<div class="hl-mirror" style="gap:var(--lq-space-3)">
+<div style="background:var(--lq-success);border-radius:var(--lq-radius-md);padding:var(--lq-space-4);font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl);color:#fff">Балхаш</div>
+<div style="font-size:var(--lq-text-sm);letter-spacing:.1em;text-transform:uppercase;color:var(--lq-stage-ink-2)">а ещё команды писали</div>
+<div style="display:grid;gap:var(--lq-space-2)">
+<div style="background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-md);padding:var(--lq-space-3);font-weight:700">Балатон</div>
+<div style="background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-md);padding:var(--lq-space-3);font-weight:700">Каспий, он же море</div>
+<div style="background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-md);padding:var(--lq-space-3);font-weight:700">то, что высыхает</div>
+<div style="background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-md);padding:var(--lq-space-3);font-weight:700">Иссык-Куль (не наш)</div>
+</div>
+</div>
+<p style="color:var(--lq-ink-3);font-size:var(--lq-text-sm);margin-top:var(--lq-space-4)">Названия команд на экране показываются. Снять галочку — ответ уйдёт без автора.</p>
+</div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--warning">3 спорных не решено</span><span class="lq-hostbar__spacer"></span><div class="lq-hostbar__stat"><b>4</b><span>ответа на экран</span></div><div class="hl-main"><button class="lq-btn lq-btn--lg" style="min-width:300px">Вскрыть ответ</button></div></div>
+</div></div>
+<div class="pv-caption">7 · Разбор text перед вскрытием</div>
+</div>
+
+<p class="pv-note">Отрывок, шаги раскрытия и подборка смешных ответов раньше были свойствами вопроса, а не действиями. В зале это три разных момента импровизации: трек иногда надо повторить, картинку открыть раньше, когда зал завис, а чужие версии — прочитать вслух и только потом вывести на экран. Каждый из них теперь ждёт нажатия, и во всех трёх случаях главная кнопка означает «переходим дальше», а не «сделай что-то другое».</p>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-badge lq-badge--neutral">навигация</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Порядок вопросов на ходу</b><span style="flex:1"></span><button class="lq-btn lq-btn--ghost">Вернуться к игре</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 400px;min-height:0">
+<div class="hl-col" style="overflow:auto">
+<div style="display:grid;gap:var(--lq-space-2);max-width:800px">
+<div class="hl-step" data-done="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--lq-success)" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"></path></svg><span><b>1 · Байтерек</b> · верно 9 из 12</span><button class="lq-btn lq-btn--ghost" style="min-height:34px;font-size:var(--lq-text-xs)">Вернуться</button></div>
+<div class="hl-step" data-done="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--lq-success)" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"></path></svg><span><b>2 · Каспий</b> · верно 7 из 12</span><button class="lq-btn lq-btn--ghost" style="min-height:34px;font-size:var(--lq-text-xs)">Вернуться</button></div>
+<div class="hl-step" data-now="true"><span style="width:10px;height:10px;border-radius:50%;background:var(--lq-primary);justify-self:center"></span><span><b>3 · Столица</b> · открыт сейчас</span><span class="lq-badge">идёт</span></div>
+<div class="hl-step"><svg width="18" height="18" viewBox="0 0 24 24" stroke="var(--lq-ink-3)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 8h.01M8 12h.01M8 16h.01M16 8h.01M16 12h.01M16 16h.01"></path></svg><span><b>4 · Алматы</b> · choice</span><div style="display:flex;gap:var(--lq-space-2)"><button class="lq-btn lq-btn--ghost" style="min-height:34px;font-size:var(--lq-text-xs)">Пропустить</button><button class="lq-btn lq-btn--quiet" style="min-height:34px;font-size:var(--lq-text-xs)">Следующим</button></div></div>
+<div class="hl-step" style="background:var(--lq-warning-soft)"><svg width="18" height="18" viewBox="0 0 24 24" stroke="var(--lq-warning)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 8h.01M8 12h.01M8 16h.01M16 8h.01M16 12h.01M16 16h.01"></path></svg><span><b>5 · Озеро</b> · text <span class="lq-badge lq-badge--warning">повтор для «Жеті батыр»</span></span><div style="display:flex;gap:var(--lq-space-2)"><button class="lq-btn lq-btn--ghost" style="min-height:34px;font-size:var(--lq-text-xs)">Пропустить</button><button class="lq-btn lq-btn--quiet" style="min-height:34px;font-size:var(--lq-text-xs)">Следующим</button></div></div>
+<div class="hl-step"><svg width="18" height="18" viewBox="0 0 24 24" stroke="var(--lq-ink-3)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 8h.01M8 12h.01M8 16h.01M16 8h.01M16 12h.01M16 16h.01"></path></svg><span><b>6 · Река</b> · choice</span><div style="display:flex;gap:var(--lq-space-2)"><button class="lq-btn lq-btn--ghost" style="min-height:34px;font-size:var(--lq-text-xs)">Пропустить</button><button class="lq-btn lq-btn--quiet" style="min-height:34px;font-size:var(--lq-text-xs)">Следующим</button></div></div>
+<div class="hl-step" style="opacity:.5"><span style="justify-self:center;color:var(--lq-ink-3)">7</span><span><b>7 · Флаг</b> · пропущен вами в 20:44</span><button class="lq-btn lq-btn--ghost" style="min-height:34px;font-size:var(--lq-text-xs)">Вернуть</button></div>
+</div>
+</div>
+<div class="hl-col hl-right">
+<p class="hl-h">Что будет с пропущенным</p>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2);margin-bottom:var(--lq-space-4)"><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Вопрос не задаётся, очки за него никому не начисляются, максимум раунда уменьшается. Зал ничего не замечает — на экране просто идёт следующий.</p></div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2);margin-bottom:var(--lq-space-4);border-color:var(--lq-warning)"><b style="font-family:var(--lq-font-display)">Возврат к заданному</b><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Вопрос откроется заново для всех, старые ответы сохранятся отдельной попыткой. Так исправляют случай «вскрыл ответ раньше, чем зал успел ответить».</p></div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2)"><div style="display:flex;justify-content:space-between"><span style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Осталось в раунде</span><b>3 вопроса</b></div><div style="display:flex;justify-content:space-between"><span style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Идём с опережением</span><b style="color:var(--lq-success)">6 минут</b></div></div>
+</div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--neutral">1 вопрос пропущен</span><span class="lq-hostbar__spacer"></span><div class="lq-hostbar__stat"><b>3 / 8</b><span>сейчас</span></div><div class="hl-main"><button class="lq-btn lq-btn--lg" style="min-width:300px">Вернуться к игре</button></div></div>
+</div></div>
+<div class="pv-caption">8 · Пропуск и возврат вопроса</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-badge lq-badge--neutral">экран зала</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Что показывать на проекторе</b><span style="flex:1"></span><span class="lq-badge lq-badge--warning">игра на паузе не стоит</span></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 400px;min-height:0">
+<div class="hl-col">
+<p class="hl-h">Выберите поверхность · игра продолжается в фоне</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--lq-space-4)">
+<div class="lq-card" style="padding:var(--lq-space-3);border-color:var(--lq-primary);box-shadow:0 0 0 3px var(--lq-indigo-100)"><div class="hl-mirror" style="height:150px;align-items:center;justify-content:center;padding:var(--lq-space-4)"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-xl)">Вопрос 4</div></div><div style="display:flex;align-items:center;gap:var(--lq-space-2);margin-top:var(--lq-space-3)"><b style="flex:1">Ход игры</b><span class="lq-badge">сейчас</span></div></div>
+<div class="lq-card" style="padding:var(--lq-space-3)"><div class="hl-mirror" style="height:150px;align-items:center;justify-content:center;padding:var(--lq-space-4)"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-xl)">Квиз в Доме 36</div><div style="color:var(--lq-stage-ink-2);font-size:var(--lq-text-sm)">код 481203</div></div><div style="margin-top:var(--lq-space-3)"><b>Заставка вечера</b><div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">когда говорите вы</div></div></div>
+<div class="lq-card" style="padding:var(--lq-space-3)"><div class="hl-mirror" style="height:150px;align-items:center;justify-content:center;padding:var(--lq-space-4)"><div class="lq-board" style="width:100%;gap:4px"><div class="lq-board__row" data-place="1" style="padding:4px 8px;font-size:11px"><span class="lq-board__rank" style="font-size:12px">1</span><span></span><span class="lq-board__name">Жеті батыр</span><span class="lq-board__score" style="font-size:12px">9 480</span></div><div class="lq-board__row" style="padding:4px 8px;font-size:11px"><span class="lq-board__rank" style="font-size:12px">2</span><span></span><span class="lq-board__name">Тобылғы</span><span class="lq-board__score" style="font-size:12px">8 640</span></div></div></div><div style="margin-top:var(--lq-space-3)"><b>Текущая таблица</b><div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">пока выносят еду</div></div></div>
+<div class="lq-card" style="padding:var(--lq-space-3)"><div class="hl-mirror" style="height:150px;align-items:center;justify-content:center;padding:var(--lq-space-4);background:#000"><span style="color:#333;font-size:var(--lq-text-sm)">чёрный экран</span></div><div style="margin-top:var(--lq-space-3)"><b>Чёрный экран</b><div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">тост, выступление, награждение</div></div></div>
+</div>
+<div class="lq-card" style="margin-top:var(--lq-space-5);display:flex;align-items:center;gap:var(--lq-space-4);background:var(--lq-surface-2);border-color:transparent"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--lq-ink-2)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8h.01M11 12h1v4h1"></path></svg><p style="margin:0;flex:1;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Это не пауза. Таймер вопроса продолжает идти, телефоны участников работают как обычно — меняется только то, что видно на большом экране. Чтобы остановить игру, нужна кнопка «Пауза» в шапке.</p></div>
+</div>
+<div class="hl-col hl-right"><p class="hl-h">Телефоны участников</p><div class="lq-card" style="display:grid;gap:var(--lq-space-2);margin-bottom:var(--lq-space-4)"><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Не меняются. Вопрос 4 открыт, отвечать можно, осталось 11 секунд.</p></div><div class="lq-card" style="display:grid;gap:var(--lq-space-2)"><b style="font-family:var(--lq-font-display)">Возврат</b><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Проектор вернётся к ходу игры сам, как только вы откроете следующий вопрос — или сразу по кнопке.</p></div></div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--neutral">на проекторе: ход игры</span><span class="lq-hostbar__spacer"></span><div class="lq-hostbar__stat"><b>11 с</b><span>таймер идёт</span></div><div class="hl-main"><button class="lq-btn lq-btn--lg" style="min-width:300px">Вернуть ход игры</button></div></div>
+</div></div>
+<div class="pv-caption">9 · Переключатель экрана зала</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-live"><span class="lq-live__dot"></span>финал · ставки</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Приём ставок</b><span style="flex:1"></span><span class="lq-timer"><span class="lq-timer__num">17</span></span><button class="lq-btn lq-btn--ghost">+15 секунд</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 420px;min-height:0">
+<div class="hl-col" style="display:grid;grid-template-rows:auto 1fr;gap:var(--lq-space-4)">
+<div><p class="hl-h">Зал видит это</p><div class="hl-mirror" style="height:180px;align-items:center;justify-content:center"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-3xl)">Делайте ставки</div><div style="color:var(--lq-stage-ink-2);font-size:var(--lq-text-xl)">тема финала: кино</div></div></div>
+<div>
+<p class="hl-h">Кто уже поставил · 9 из 12</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--lq-space-2)">
+<div class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-3)"><span class="lq-avatar" style="width:28px;height:28px;font-size:11px;background:var(--lq-ans-b)">ЖБ</span><b style="flex:1">Жеті батыр</b><b style="font-variant-numeric:tabular-nums">500</b></div>
+<div class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-3);background:var(--lq-accent-soft);border-color:transparent"><span class="lq-avatar" style="width:28px;height:28px;font-size:11px;background:var(--lq-ans-d)">ТБ</span><b style="flex:1">Тобылғы</b><b style="color:var(--lq-accent-deep)">ва-банк</b></div>
+<div class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-3)"><span class="lq-avatar" style="width:28px;height:28px;font-size:11px;background:var(--lq-ans-c)">КС</span><b style="flex:1">Көк сұңқар</b><b style="font-variant-numeric:tabular-nums">3 000</b></div>
+<div class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-3)"><span class="lq-avatar" style="width:28px;height:28px;font-size:11px;background:var(--lq-ans-e)">СБ</span><b style="flex:1">Сарыарқа</b><b style="font-variant-numeric:tabular-nums">1 000</b></div>
+<div class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-3);opacity:.6"><span class="lq-avatar" style="width:28px;height:28px;font-size:11px;background:var(--lq-ans-a)">АТ</span><b style="flex:1">Алтын тобы</b><span style="color:var(--lq-ink-3);font-size:var(--lq-text-sm)">думают</span></div>
+<div class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-3);opacity:.6"><span class="lq-avatar" style="width:28px;height:28px;font-size:11px;background:var(--lq-ans-f)">ДС</span><b style="flex:1">Дала сазы</b><span style="color:var(--lq-ink-3);font-size:var(--lq-text-sm)">думают</span></div>
+</div>
+</div>
+</div>
+<div class="hl-col hl-right">
+<p class="hl-h">Порядок финала</p>
+<div style="display:grid;gap:var(--lq-space-2);margin-bottom:var(--lq-space-4)">
+<div class="hl-step" data-done="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--lq-success)" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"></path></svg><span>Объявлена тема</span><span class="pv-mono">21:40</span></div>
+<div class="hl-step" data-now="true"><span style="width:10px;height:10px;border-radius:50%;background:var(--lq-primary);justify-self:center"></span><span>Приём ставок</span><span class="lq-badge">сейчас</span></div>
+<div class="hl-step"><span style="color:var(--lq-ink-3);justify-self:center">3</span><span>Показать ставки залу</span><span></span></div>
+<div class="hl-step"><span style="color:var(--lq-ink-3);justify-self:center">4</span><span>Открыть вопрос</span><span></span></div>
+<div class="hl-step"><span style="color:var(--lq-ink-3);justify-self:center">5</span><span>Вскрыть и начислить</span><span></span></div>
+</div>
+<div class="lq-card" style="background:var(--lq-surface-2);border-color:transparent"><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Ставки показываются залу отдельным шагом — до вопроса, после закрытия приёма. Это единственный момент вечера, когда зал видит чужие решения раньше ответа.</p></div>
+</div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--neutral">поставили 9 из 12</span><span class="lq-hostbar__spacer"></span><div class="lq-hostbar__stat"><b>17 с</b><span>до конца приёма</span></div><button class="lq-btn lq-btn--ghost">+15 секунд</button><div class="hl-main"><button class="lq-btn lq-btn--lg" style="min-width:300px">Закрыть приём ставок</button></div></div>
+</div></div>
+<div class="pv-caption">10 · Финал · приём ставок</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-badge lq-badge--success">игра сыграна</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Завершение вечера</b><span style="flex:1"></span><button class="lq-btn lq-btn--ghost">Отменить последний шаг</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 420px;min-height:0">
+<div class="hl-col" style="display:grid;grid-template-rows:auto 1fr;gap:var(--lq-space-4)">
+<div><p class="hl-h">Сейчас на проекторе · финал</p><div class="hl-mirror" style="height:250px;align-items:center;justify-content:center;text-align:center"><div style="font-size:var(--lq-text-sm);letter-spacing:.14em;text-transform:uppercase;color:var(--lq-accent)">победитель вечера</div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:3.6rem;line-height:1">Тобылғы</div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-3xl);color:var(--lq-accent)">31 800</div></div></div>
+<div>
+<p class="hl-h">Дальше</p>
+<div style="display:grid;gap:var(--lq-space-2)">
+<div class="hl-step" data-now="true"><span style="width:10px;height:10px;border-radius:50%;background:var(--lq-primary);justify-self:center"></span><span><b>Финал</b> — победитель, второе и третье место</span><span class="lq-badge">на экране</span></div>
+<div class="hl-step"><span style="color:var(--lq-ink-3);justify-self:center">2</span><span><b>Прощание</b> — дата следующей игры и QR площадки</span><span style="color:var(--lq-ink-3)">следующий шаг</span></div>
+<div class="hl-step"><span style="color:var(--lq-ink-3);justify-self:center">3</span><span><b>Закрыть игру</b> — телефоны покажут итоговое место, разбор уйдёт в кабинет</span><span style="color:var(--lq-ink-3)">необратимо</span></div>
+</div>
+<div class="lq-card" style="margin-top:var(--lq-space-4);display:grid;gap:var(--lq-space-3)"><b style="font-family:var(--lq-font-display)">Прощание · что уйдёт на экран</b><div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--lq-space-3)"><label class="lq-field"><span class="lq-field__label">Следующая игра</span><input class="lq-input" value="26 апреля, 20:00 · музыкальный" style="min-height:44px"></label><label class="lq-field"><span class="lq-field__label">QR ведёт на</span><input class="lq-input" value="бронь стола в «Доме 36»" style="min-height:44px"></label></div></div>
+</div>
+</div>
+<div class="hl-col hl-right">
+<p class="hl-h">Пока не закрыли игру</p>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2);margin-bottom:var(--lq-space-4)"><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Судейство и ручные корректировки ещё доступны — если команда подойдёт со спором, счёт можно поправить, и таблица на экране обновится.</p><div style="display:flex;gap:var(--lq-space-2)"><button class="lq-btn lq-btn--quiet">Судейство</button><button class="lq-btn lq-btn--quiet">Журнал</button></div></div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2);border-color:var(--lq-warning)"><b style="font-family:var(--lq-font-display)">После закрытия</b><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Счёт замораживается, участники теряют доступ к ответам, вечер уходит в разборы. Отменить нельзя.</p></div>
+</div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--neutral">12 команд · 34 вопроса · 2:04</span><span class="lq-hostbar__spacer"></span><button class="lq-btn lq-btn--ghost">Отменить последний шаг</button><div class="hl-main"><button class="lq-btn lq-btn--lg" style="min-width:300px">Показать прощание</button></div></div>
+</div></div>
+<div class="pv-caption">11 · Завершение вечера</div>
+</div>
+
+<p class="pv-note">Финал и завершение разбиты на отдельные шаги, потому что между ними ведущий говорит: объявляет тему, читает ставки вслух, зовёт победителей к сцене, благодарит площадку. Один экран «игра окончена» на всё это не годится — он либо выскакивает посреди речи, либо висит, когда речь уже кончилась.</p>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-badge lq-badge--danger">проектор не отвечает</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Раунд 3 · вопрос 2</b><span style="flex:1"></span><span class="lq-timer"><span class="lq-timer__num">9</span></span><button class="lq-btn lq-btn--ghost">Пауза</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 420px;min-height:0">
+<div class="hl-col">
+<div class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-4);border-color:var(--lq-danger);margin-bottom:var(--lq-space-4)">
+<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--lq-danger)" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2"></rect><path d="M8 21h8M12 17v4M3 3l18 18"></path></svg>
+<div style="flex:1"><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Экран зала отключился 14 секунд назад</b><div style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Последнее, что видел зал: вопрос 2 с вариантами. Телефоны участников работают, ответы принимаются.</div></div>
+<button class="lq-btn lq-btn--ghost">Показать QR для переподключения</button>
+</div>
+<p class="hl-h">Что делать</p>
+<div style="display:grid;gap:var(--lq-space-3);max-width:760px">
+<div class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-4)"><span class="lq-badge">1</span><p style="margin:0;flex:1;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Игру можно вести дальше без проектора: варианты есть на телефонах, вопрос читаете вы вслух. Ниже — текст вопроса крупно.</p></div>
+<div class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-4)"><span class="lq-badge">2</span><p style="margin:0;flex:1;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Открыть livequiz.kz/screen на любом ноутбуке и ввести код <b>481203</b> — экран подхватит текущее состояние.</p></div>
+<div class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-4)"><span class="lq-badge">3</span><p style="margin:0;flex:1;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Если восстановление затянется — пауза, зал подождёт минуту без потери очков.</p></div>
+</div>
+<div class="lq-card" style="margin-top:var(--lq-space-5);padding:var(--lq-space-6)"><div style="font-size:var(--lq-text-sm);color:var(--lq-ink-3);margin-bottom:var(--lq-space-2)">читайте вслух</div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-3xl);line-height:var(--lq-leading-snug)">Чей это голос?</div><div style="display:flex;gap:var(--lq-space-4);margin-top:var(--lq-space-3);flex-wrap:wrap"><span class="lq-badge lq-badge--neutral">треугольник · Батырхан</span><span class="lq-badge lq-badge--success">ромб · Димаш</span><span class="lq-badge lq-badge--neutral">круг · Роза</span><span class="lq-badge lq-badge--neutral">квадрат · Кайрат</span></div></div>
+</div>
+<div class="hl-col hl-right"><p class="hl-h">Что работает</p><div class="lq-card" style="display:grid;gap:var(--lq-space-2);margin-bottom:var(--lq-space-4)"><div style="display:flex;justify-content:space-between;font-size:var(--lq-text-sm)"><span style="color:var(--lq-ink-2)">Телефоны участников</span><b style="color:var(--lq-success)">работают</b></div><div style="display:flex;justify-content:space-between;font-size:var(--lq-text-sm)"><span style="color:var(--lq-ink-2)">Приём ответов</span><b style="color:var(--lq-success)">идёт · 8 из 12</b></div><div style="display:flex;justify-content:space-between;font-size:var(--lq-text-sm)"><span style="color:var(--lq-ink-2)">Звук с ноутбука</span><b style="color:var(--lq-success)">идёт</b></div><div style="display:flex;justify-content:space-between;font-size:var(--lq-text-sm)"><span style="color:var(--lq-ink-2)">Экран зала</span><b style="color:var(--lq-danger)">нет связи</b></div></div><div class="lq-card" style="background:var(--lq-surface-2);border-color:transparent"><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Экран подключится сам, как только вернётся сеть, и покажет то состояние, в котором игра будет в этот момент — не то, на котором он оборвался.</p></div></div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--danger">экран зала отключён</span><span class="lq-hostbar__spacer"></span><div class="lq-hostbar__stat"><b>9 с</b><span>приём идёт</span></div><div class="hl-main"><button class="lq-btn lq-btn--lg" style="min-width:300px">Закрыть приём</button></div></div>
+</div></div>
+<div class="pv-caption">12 · Проектор отвалился</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-badge lq-badge--neutral">пульт</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Перенести пульт на телефон</b><span style="flex:1"></span><button class="lq-btn lq-btn--ghost">Отмена</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 460px;min-height:0">
+<div class="hl-col">
+<div class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-6);margin-bottom:var(--lq-space-5)">
+<div style="width:170px;height:170px;border-radius:var(--lq-radius-lg);background:repeating-conic-gradient(var(--lq-ink) 0 25%, #fff 0 50%) 0 0/20px 20px;flex:none"></div>
+<div style="display:grid;gap:var(--lq-space-2)"><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-xl)">Наведите камеру телефона</b><p style="margin:0;color:var(--lq-ink-2)">Ноутбук останется подключённым — вести можно с обоих устройств одновременно. Главная кнопка на телефоне та же, что здесь внизу.</p><span class="lq-badge lq-badge--neutral">ссылка живёт 5 минут</span></div>
+</div>
+<p class="hl-h">Что доступно с телефона</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--lq-space-3);max-width:760px">
+<div class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-3)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--lq-success)" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"></path></svg><span style="font-size:var(--lq-text-sm)">Главная кнопка перехода</span></div>
+<div class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-3)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--lq-success)" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"></path></svg><span style="font-size:var(--lq-text-sm)">Пауза и +10 секунд</span></div>
+<div class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-3)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--lq-success)" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"></path></svg><span style="font-size:var(--lq-text-sm)">Правильный ответ перед глазами</span></div>
+<div class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-3);opacity:.6"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--lq-ink-3)" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"></path></svg><span style="font-size:var(--lq-text-sm)">Судейство и корректировки — только с ноутбука</span></div>
+</div>
+</div>
+<div class="hl-col hl-right">
+<p class="hl-h">Пульт на телефоне</p>
+<div class="pv-phone" style="width:280px;height:560px;border-width:9px;border-radius:34px;margin:0 auto"><div class="pv-phone-inner" style="padding-top:32px"><div class="lq-player">
+<div class="lq-player__top"><span class="lq-badge lq-badge--neutral">Р3 · в4</span><span style="margin-left:auto" class="lq-timer"><span class="lq-timer__num" style="font-size:var(--lq-text-2xl)">12</span></span></div>
+<div style="padding:0 var(--lq-space-4)"><div class="lq-timer-bar"><div class="lq-timer-bar__fill" style="width:60%"></div></div></div>
+<div class="lq-player__body" style="padding:var(--lq-space-3);gap:var(--lq-space-3)">
+<div style="font-family:var(--lq-font-display);font-weight:800;font-size:var(--lq-text-base);line-height:var(--lq-leading-snug)">Чей это голос?</div>
+<div class="lq-card" style="padding:var(--lq-space-3);display:flex;align-items:center;gap:var(--lq-space-2)"><svg width="16" height="16" fill="var(--lq-ans-b)" aria-hidden="true"><use href="#sh-diamond"></use></svg><b style="font-size:var(--lq-text-sm)">Димаш</b><span class="lq-badge lq-badge--success" style="margin-left:auto;font-size:10px">верный</span></div>
+<div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">ответили 8 из 12</div>
+<div style="margin-top:auto;display:grid;gap:var(--lq-space-2)"><button class="lq-btn lq-btn--xl lq-btn--block" style="min-height:64px">Закрыть приём</button><div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--lq-space-2)"><button class="lq-btn lq-btn--ghost">Пауза</button><button class="lq-btn lq-btn--ghost">+10 с</button></div></div>
+</div>
+</div></div></div>
+</div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--neutral">ноутбук останется активным</span><span class="lq-hostbar__spacer"></span><div class="lq-hostbar__stat"><b>5:00</b><span>ссылка активна</span></div><div class="hl-main"><button class="lq-btn lq-btn--lg" style="min-width:300px">Вернуться к игре</button></div></div>
+</div></div>
+<div class="pv-caption">13 · Пульт на телефоне</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-badge lq-badge--warning">отмена перехода</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Ответ вскрыт 4 секунды назад</b><span style="flex:1"></span></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 420px;min-height:0">
+<div class="hl-col" style="display:grid;place-content:center;justify-items:center;gap:var(--lq-space-6);text-align:center">
+<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--lq-warning)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"></path><path d="M4 9h11a5 5 0 0 1 0 10h-3"></path></svg>
+<div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-3xl)">Вернуть вопрос как было?</div><p style="margin:var(--lq-space-3) 0 0;color:var(--lq-ink-2);max-width:52ch">Экран зала снова покажет закрытый вопрос без ответа, начисления отменятся, места вернутся. Участники увидят «ведущий вернул вопрос» — скрыть это нельзя, ответ они уже видели.</p></div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-4)"><span class="lq-badge lq-badge--warning">отмена доступна ещё 26 секунд</span></div>
+<div style="display:flex;gap:var(--lq-space-3)"><button class="lq-btn lq-btn--ghost lq-btn--lg">Нет, оставить</button><button class="lq-btn lq-btn--accent lq-btn--lg">Вернуть вопрос</button></div>
+</div>
+<div class="hl-col hl-right">
+<p class="hl-h">Что откатится</p>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2);margin-bottom:var(--lq-space-4)"><div style="display:flex;justify-content:space-between;font-size:var(--lq-text-sm)"><span style="color:var(--lq-ink-2)">Начислено командам</span><b>7 команд</b></div><div style="display:flex;justify-content:space-between;font-size:var(--lq-text-sm)"><span style="color:var(--lq-ink-2)">Очков суммарно</span><b>8 340</b></div><div style="display:flex;justify-content:space-between;font-size:var(--lq-text-sm)"><span style="color:var(--lq-ink-2)">Изменится мест</span><b>4</b></div></div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2);margin-bottom:var(--lq-space-4)"><b style="font-family:var(--lq-font-display)">Почему без «вы уверены?»</b><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Ни один переход в игре не спрашивает подтверждения — вопросы открываются и закрываются одним нажатием. Вместо этого у каждого есть 30 секунд на отмену, и это единственный экран, где отмена показывается явно.</p></div>
+<div class="lq-card" style="background:var(--lq-surface-2);border-color:transparent"><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Через 30 секунд вопрос считается сыгранным. Поправить счёт после этого можно только вручную, через корректировку с комментарием.</p></div>
+</div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--warning">отмена · 26 с</span><span class="lq-hostbar__spacer"></span><button class="lq-btn lq-btn--ghost">Вернуть вопрос</button><div class="hl-main"><button class="lq-btn lq-btn--lg" style="min-width:300px">Следующий вопрос</button></div></div>
+</div></div>
+<div class="pv-caption">14 · Откат последнего перехода</div>
+</div>
+
+<p class="pv-note">Сбои и откат собраны здесь, а не в файле живой игры, потому что все три — про потерю контроля над переходом: экран показал не то, пульт оказался в руке, а не на столе, переход случился раньше времени. Во всех трёх случаях состояние игры остаётся источником правды, а устройства к нему подключаются: экран, подключившись заново, показывает не то место, где оборвался, а то, где игра сейчас.</p>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showNotes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Витрина&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return { showNotes: String(this.props.showNotes ?? true) };
+  }
+}
+</script>
+</body>
+</html>

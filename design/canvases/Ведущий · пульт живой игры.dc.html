@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="lq.css">
+<style>
+[data-notes="false"] .pv-note { display: none; }
+.hl-nav { display:flex; align-items:center; gap:var(--lq-space-3); padding:var(--lq-space-3) var(--lq-space-5); background:var(--lq-surface); border-bottom:1px solid var(--lq-border); }
+.hl-col { padding:var(--lq-space-5); overflow:hidden; }
+.hl-right { background:var(--lq-surface); border-left:1px solid var(--lq-border); }
+.hl-h { font-size:var(--lq-text-xs); font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--lq-ink-3); margin:0 0 var(--lq-space-3); }
+.hl-team { display:grid; grid-template-columns:32px 1fr auto; align-items:center; gap:var(--lq-space-3); padding:var(--lq-space-2) var(--lq-space-3); border-radius:var(--lq-radius-sm); font-size:var(--lq-text-sm); }
+.hl-team b { font-weight:700; }
+.hl-mirror { background:var(--lq-stage-bg); color:var(--lq-stage-ink); border-radius:var(--lq-radius-lg); padding:var(--lq-space-6); display:flex; flex-direction:column; gap:var(--lq-space-4); }
+.hl-main { display:flex; align-items:center; gap:var(--lq-space-3); }
+.hl-mirror .lq-board__row { background:var(--lq-stage-bg-2); border-color:transparent; color:var(--lq-stage-ink); }
+.hl-mirror .lq-board__rank { color:var(--lq-stage-ink-2); }
+.hl-mirror .lq-board__delta { color:#4ADE80; }
+.hl-mirror .lq-board__row[data-place="1"] { background:var(--lq-accent-soft); color:var(--lq-ink); }
+.hl-mirror .lq-board__row[data-place="1"] .lq-board__rank { color:var(--lq-accent-deep); }
+.hl-mirror .lq-card { background:var(--lq-stage-bg-2); border-color:transparent; color:var(--lq-stage-ink); }
+a { color: var(--lq-primary); }
+a:hover { color: var(--lq-primary-hover); }
+</style>
+</helmet>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+<symbol id="sh-triangle" viewBox="0 0 24 24"><path d="M12 3 22 21H2z"></path></symbol>
+<symbol id="sh-diamond" viewBox="0 0 24 24"><path d="M12 2 22 12 12 22 2 12z"></path></symbol>
+<symbol id="sh-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"></circle></symbol>
+<symbol id="sh-square" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2.5"></rect></symbol>
+</svg>
+
+<div class="pv-head">
+<h1>Ведущий · пульт живой игры</h1>
+<p>Тринадцать состояний ноутбука 1440×900, пока идёт вечер. Ведущий стоит и смотрит в экран урывками между репликами, поэтому главное действие всегда занимает одно и то же место в правой части <code>.lq-hostbar</code> и меняет только подпись. Подтверждений нет нигде: вместо «вы уверены?» рядом появляется отмена с обратным отсчётом.</p>
+</div>
+
+<div class="pv-wrap" style="max-width:none" data-notes="{{ showNotes }}">
+<div style="display:grid;gap:var(--lq-space-12);justify-items:start">
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-live"><span class="lq-live__dot"></span>сбор</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Вечер 12 апреля</b><span style="flex:1"></span><span class="lq-badge lq-badge--neutral">раунд 1 из 6</span><button class="lq-btn lq-btn--ghost">Пауза</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 400px;min-height:0">
+<div class="hl-col">
+<p class="hl-h">Зал видит это</p>
+<div class="hl-mirror" style="align-items:center;justify-content:center;height:calc(100% - 34px)">
+<div style="color:var(--lq-stage-ink-2);font-size:var(--lq-text-xl)">livequiz.kz · войдите с телефона</div>
+<div style="font-family:var(--lq-font-display);font-weight:900;font-size:8rem;line-height:1;letter-spacing:.08em;font-variant-numeric:tabular-nums">481203</div>
+<div style="width:180px;height:180px;border-radius:var(--lq-radius-lg);background:repeating-conic-gradient(#fff 0 25%, var(--lq-stage-bg-2) 0 50%) 0 0/22px 22px"></div>
+<div style="color:var(--lq-stage-ink-2)">12 команд · 34 участника</div>
+</div>
+</div>
+<div class="hl-col hl-right">
+<p class="hl-h">Подключаются</p>
+<div style="display:grid;gap:2px;max-height:600px;overflow:hidden">
+<div class="hl-team"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-b);font-size:11px">ЖБ</span><b>Жеті батыр</b><span class="lq-badge lq-badge--success">5</span></div>
+<div class="hl-team"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-c);font-size:11px">КС</span><b>Көк сұңқар</b><span class="lq-badge lq-badge--success">6</span></div>
+<div class="hl-team"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-d);font-size:11px">ТБ</span><b>Тобылғы</b><span class="lq-badge lq-badge--success">4</span></div>
+<div class="hl-team"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-a);font-size:11px">АТ</span><b>Алтын тобы</b><span class="lq-badge lq-badge--success">3</span></div>
+<div class="hl-team"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-e);font-size:11px">СБ</span><b>Сарыарқа</b><span class="lq-badge lq-badge--neutral">2</span></div>
+<div class="hl-team" style="background:var(--lq-warning-soft)"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-f);font-size:11px">?</span><b style="color:var(--lq-warning)">Команда без названия</b><span class="lq-badge lq-badge--warning">1</span></div>
+<div class="hl-team" style="color:var(--lq-ink-3)"><span></span><span>…ещё 6 команд</span><span></span></div>
+</div>
+<div class="lq-card" style="margin-top:var(--lq-space-5);display:grid;gap:var(--lq-space-2)"><b style="font-family:var(--lq-font-display)">Вход после старта</b><label class="lq-switch" aria-checked="true"><span class="lq-switch__track"><span class="lq-switch__thumb"></span></span><span class="lq-switch__label">Пускать опоздавших</span></label><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Они увидят, сколько раундов пропустили, и войдут со следующего вопроса.</p></div>
+</div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--neutral">12 команд</span><span class="lq-badge lq-badge--neutral">34 участника</span><span class="lq-hostbar__spacer"></span><div class="lq-hostbar__stat"><b>481203</b><span>код игры</span></div><div class="hl-main" style="padding-left:var(--lq-space-4)"><button class="lq-btn lq-btn--lg" style="min-width:300px">Начать игру</button></div></div>
+</div></div>
+<div class="pv-caption">1 · Сбор команд</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-live"><span class="lq-live__dot"></span>в эфире</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Раунд 2 · вопрос 3</b><span style="flex:1"></span><span class="lq-badge lq-badge--neutral">вопрос не открыт</span><button class="lq-btn lq-btn--ghost">Пауза</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 400px;min-height:0">
+<div class="hl-col" style="display:grid;grid-template-rows:auto 1fr;gap:var(--lq-space-4)">
+<div>
+<p class="hl-h">Зал видит это</p>
+<div class="hl-mirror" style="align-items:center;justify-content:center;height:210px"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-4xl)">Раунд 2 · Города</div><div style="color:var(--lq-stage-ink-2)">вопрос 3 из 8</div></div>
+</div>
+<div>
+<p class="hl-h">Только вы видите это</p>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-4)">
+<div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl);line-height:var(--lq-leading-snug)">В каком году Астана стала столицей Казахстана?</div>
+<div class="lq-tiles">
+<div class="lq-tile lq-tile--a" style="min-height:56px;font-size:var(--lq-text-base);opacity:.5"><svg class="lq-tile__shape" style="width:20px;height:20px" aria-hidden="true"><use href="#sh-triangle"></use></svg><span class="lq-tile__text">1994</span></div>
+<div class="lq-tile lq-tile--b" data-state="correct" style="min-height:56px;font-size:var(--lq-text-base)"><svg class="lq-tile__shape" style="width:20px;height:20px" aria-hidden="true"><use href="#sh-diamond"></use></svg><span class="lq-tile__text">1997 · верный</span></div>
+<div class="lq-tile lq-tile--c" style="min-height:56px;font-size:var(--lq-text-base);opacity:.5"><svg class="lq-tile__shape" style="width:20px;height:20px" aria-hidden="true"><use href="#sh-circle"></use></svg><span class="lq-tile__text">1998</span></div>
+<div class="lq-tile lq-tile--d" style="min-height:56px;font-size:var(--lq-text-base);opacity:.5"><svg class="lq-tile__shape" style="width:20px;height:20px" aria-hidden="true"><use href="#sh-square"></use></svg><span class="lq-tile__text">2001</span></div>
+</div>
+<div style="padding-top:var(--lq-space-3);border-top:1px solid var(--lq-border)"><span class="lq-badge lq-badge--neutral">пояснение для сцены</span><p style="margin:var(--lq-space-2) 0 0;color:var(--lq-ink-2)">Столицу перенесли из Алматы 10 декабря 1997 года, статус закрепили в 1998-м.</p></div>
+</div>
+</div>
+</div>
+<div class="hl-col hl-right"><p class="hl-h">Команды · 12</p><div style="display:grid;gap:2px"><div class="hl-team"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-b);font-size:11px">ЖБ</span><b>Жеті батыр</b><span style="color:var(--lq-ink-3)">готовы</span></div><div class="hl-team"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-c);font-size:11px">КС</span><b>Көк сұңқар</b><span style="color:var(--lq-ink-3)">готовы</span></div><div class="hl-team"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-d);font-size:11px">ТБ</span><b>Тобылғы</b><span style="color:var(--lq-ink-3)">готовы</span></div><div class="hl-team" style="background:var(--lq-danger-soft)"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-a);font-size:11px">АТ</span><b>Алтын тобы</b><span style="color:var(--lq-danger)">нет связи</span></div></div><p style="color:var(--lq-ink-3);font-size:var(--lq-text-sm);margin-top:var(--lq-space-4)">Вопрос уйдёт на все телефоны одновременно. Команда без связи получит его при возврате, таймер для неё общий.</p></div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--neutral">вопрос 3 из 8</span><span class="lq-hostbar__spacer"></span><div class="lq-hostbar__stat"><b>20 с</b><span>окно ответа</span></div><div class="hl-main" style="padding-left:var(--lq-space-4)"><button class="lq-btn lq-btn--lg" style="min-width:300px">Открыть вопрос</button></div></div>
+</div></div>
+<div class="pv-caption">2 · Вопрос подготовлен</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-live"><span class="lq-live__dot"></span>вопрос открыт</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Раунд 2 · вопрос 3</b><span style="flex:1"></span><span class="lq-timer"><span class="lq-timer__num">12</span></span><button class="lq-btn lq-btn--ghost">Пауза</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 400px;min-height:0">
+<div class="hl-col" style="display:grid;grid-template-rows:auto auto 1fr;gap:var(--lq-space-4)">
+<div><p class="hl-h">Зеркало сцены</p><div class="hl-mirror" style="height:250px">
+<div style="display:flex;align-items:center;gap:var(--lq-space-4)"><span class="lq-live"><span class="lq-live__dot"></span>раунд 2</span><span style="flex:1"></span><span style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-3xl);color:var(--lq-accent);font-variant-numeric:tabular-nums">12</span></div>
+<div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl);line-height:var(--lq-leading-tight)">В каком году Астана стала столицей Казахстана?</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--lq-space-2)"><div class="lq-tile lq-tile--a" style="min-height:44px;font-size:var(--lq-text-sm);padding:var(--lq-space-2) var(--lq-space-3)"><svg class="lq-tile__shape" style="width:16px;height:16px" aria-hidden="true"><use href="#sh-triangle"></use></svg><span class="lq-tile__text">1994</span></div><div class="lq-tile lq-tile--b" style="min-height:44px;font-size:var(--lq-text-sm);padding:var(--lq-space-2) var(--lq-space-3)"><svg class="lq-tile__shape" style="width:16px;height:16px" aria-hidden="true"><use href="#sh-diamond"></use></svg><span class="lq-tile__text">1997</span></div><div class="lq-tile lq-tile--c" style="min-height:44px;font-size:var(--lq-text-sm);padding:var(--lq-space-2) var(--lq-space-3)"><svg class="lq-tile__shape" style="width:16px;height:16px" aria-hidden="true"><use href="#sh-circle"></use></svg><span class="lq-tile__text">1998</span></div><div class="lq-tile lq-tile--d" style="min-height:44px;font-size:var(--lq-text-sm);padding:var(--lq-space-2) var(--lq-space-3)"><svg class="lq-tile__shape" style="width:16px;height:16px" aria-hidden="true"><use href="#sh-square"></use></svg><span class="lq-tile__text">2001</span></div></div>
+</div></div>
+<div><div class="lq-timer-bar" style="height:16px"><div class="lq-timer-bar__fill" style="width:60%"></div></div></div>
+<div>
+<p class="hl-h">Голоса · зал их не видит</p>
+<div class="lq-votes">
+<div class="lq-vote"><svg class="lq-vote__shape" fill="var(--lq-ans-a)" aria-hidden="true"><use href="#sh-triangle"></use></svg><div class="lq-vote__track"><div class="lq-vote__fill" style="width:14%;background:var(--lq-ans-a)"></div></div><span class="lq-vote__count">2</span></div>
+<div class="lq-vote"><svg class="lq-vote__shape" fill="var(--lq-ans-b)" aria-hidden="true"><use href="#sh-diamond"></use></svg><div class="lq-vote__track"><div class="lq-vote__fill" style="width:64%;background:var(--lq-ans-b)"></div></div><span class="lq-vote__count">9</span></div>
+<div class="lq-vote"><svg class="lq-vote__shape" fill="var(--lq-ans-c)" aria-hidden="true"><use href="#sh-circle"></use></svg><div class="lq-vote__track"><div class="lq-vote__fill" style="width:22%;background:var(--lq-ans-c)"></div></div><span class="lq-vote__count">3</span></div>
+<div class="lq-vote"><svg class="lq-vote__shape" fill="var(--lq-ans-d)" aria-hidden="true"><use href="#sh-square"></use></svg><div class="lq-vote__track"><div class="lq-vote__fill" style="width:0%;background:var(--lq-ans-d)"></div></div><span class="lq-vote__count">0</span></div>
+</div>
+</div>
+</div>
+<div class="hl-col hl-right">
+<p class="hl-h">Статусы команд</p>
+<div style="display:grid;gap:2px">
+<div class="hl-team" style="background:var(--lq-success-soft)"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-b);font-size:11px">ЖБ</span><b>Жеті батыр</b><span style="color:var(--lq-success);font-weight:700">ответили</span></div>
+<div class="hl-team" style="background:var(--lq-success-soft)"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-c);font-size:11px">КС</span><b>Көк сұңқар</b><span style="color:var(--lq-success);font-weight:700">ответили</span></div>
+<div class="hl-team"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-d);font-size:11px">ТБ</span><b>Тобылғы</b><span style="color:var(--lq-ink-3)">думают</span></div>
+<div class="hl-team"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-a);font-size:11px">АТ</span><b>Алтын тобы</b><span style="color:var(--lq-ink-3)">думают</span></div>
+<div class="hl-team" style="background:var(--lq-danger-soft)"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-e);font-size:11px">СБ</span><b>Сарыарқа</b><span style="color:var(--lq-danger);font-weight:700">нет связи</span></div>
+<div class="hl-team" style="background:var(--lq-warning-soft)"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-f);font-size:11px">ЖС</span><b>Жас ұрпақ</b><span style="color:var(--lq-warning);font-weight:700">уходил из вкладки</span></div>
+<div class="hl-team" style="background:var(--lq-success-soft)"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-b);font-size:11px">ДС</span><b>Дала сазы</b><span style="color:var(--lq-success);font-weight:700">ответили</span></div>
+<div class="hl-team"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-c);font-size:11px">АР</span><b>Арқа</b><span style="color:var(--lq-ink-3)">думают</span></div>
+</div>
+<p style="color:var(--lq-ink-3);font-size:var(--lq-text-sm);margin-top:var(--lq-space-4)">«Уходил из вкладки» — только отметка в журнале. Ответ команды принимается как обычно.</p>
+</div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--neutral">ответили 9 из 12</span><span class="lq-hostbar__spacer"></span><div class="lq-hostbar__stat"><b>12</b><span>секунд</span></div><div class="lq-hostbar__stat"><b>+10 с</b><span>добавить</span></div><div class="hl-main" style="padding-left:var(--lq-space-4)"><button class="lq-btn lq-btn--lg" style="min-width:300px">Закрыть приём</button></div></div>
+</div></div>
+<div class="pv-caption">3 · Вопрос открыт</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-live"><span class="lq-live__dot"></span>последние секунды</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Раунд 2 · вопрос 3</b><span style="flex:1"></span><span class="lq-timer"><span class="lq-timer__num" data-urgent="true">5</span></span><button class="lq-btn lq-btn--ghost">Пауза</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 400px;min-height:0">
+<div class="hl-col" style="display:grid;grid-template-rows:auto auto 1fr;gap:var(--lq-space-4)">
+<div><p class="hl-h">Зеркало сцены</p><div class="hl-mirror" style="height:230px;align-items:center;justify-content:center"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:7rem;line-height:1;color:var(--lq-danger);font-variant-numeric:tabular-nums">5</div><div style="color:var(--lq-stage-ink-2);font-size:var(--lq-text-xl)">последние секунды</div></div></div>
+<div><div class="lq-timer-bar" style="height:16px"><div class="lq-timer-bar__fill" data-urgent="true" style="width:20%"></div></div></div>
+<div class="lq-card" style="align-self:start;display:flex;gap:var(--lq-space-4);align-items:center;background:var(--lq-warning-soft);border-color:transparent">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--lq-warning)" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+<div style="flex:1"><b>Три команды ещё не ответили</b><div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">Тобылғы, Сарыарқа, Арқа. У Сарыарқы была потеря связи 40 секунд назад.</div></div>
+<button class="lq-btn lq-btn--accent">+10 секунд</button>
+</div>
+</div>
+<div class="hl-col hl-right">
+<p class="hl-h">Молчат · 3</p>
+<div style="display:grid;gap:2px;margin-bottom:var(--lq-space-5)">
+<div class="hl-team" style="background:var(--lq-warning-soft);box-shadow:inset 0 0 0 2px var(--lq-warning)"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-d);font-size:11px">ТБ</span><b>Тобылғы</b><span style="color:var(--lq-warning);font-weight:700">думают</span></div>
+<div class="hl-team" style="background:var(--lq-warning-soft);box-shadow:inset 0 0 0 2px var(--lq-warning)"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-e);font-size:11px">СБ</span><b>Сарыарқа</b><span style="color:var(--lq-danger);font-weight:700">связь вернулась</span></div>
+<div class="hl-team" style="background:var(--lq-warning-soft);box-shadow:inset 0 0 0 2px var(--lq-warning)"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-c);font-size:11px">АР</span><b>Арқа</b><span style="color:var(--lq-warning);font-weight:700">думают</span></div>
+</div>
+<p class="hl-h">Ответили · 9</p>
+<div style="display:grid;gap:2px;opacity:.5">
+<div class="hl-team"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-b);font-size:11px">ЖБ</span><b>Жеті батыр</b><span style="color:var(--lq-success)">2,4 с</span></div>
+<div class="hl-team"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-c);font-size:11px">КС</span><b>Көк сұңқар</b><span style="color:var(--lq-success)">5,1 с</span></div>
+<div class="hl-team"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-b);font-size:11px">ДС</span><b>Дала сазы</b><span style="color:var(--lq-success)">9,8 с</span></div>
+<div class="hl-team"><span style="grid-column:2;color:var(--lq-ink-3)">…ещё 6</span></div>
+</div>
+</div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--warning">молчат 3 из 12</span><span class="lq-hostbar__spacer"></span><div class="lq-hostbar__stat"><b>5</b><span>секунд</span></div><button class="lq-btn lq-btn--accent">+10 секунд</button><div class="hl-main" style="padding-left:var(--lq-space-4)"><button class="lq-btn lq-btn--lg" style="min-width:300px">Закрыть приём</button></div></div>
+</div></div>
+<div class="pv-caption">4 · Осталось 5 секунд</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-badge lq-badge--neutral">приём закрыт</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Раунд 2 · вопрос 3</b><span style="flex:1"></span><button class="lq-btn lq-btn--ghost">Открыть снова</button><button class="lq-btn lq-btn--ghost">Пауза</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 400px;min-height:0">
+<div class="hl-col" style="display:grid;grid-template-rows:auto 1fr;gap:var(--lq-space-4)">
+<div><p class="hl-h">Зал видит это</p><div class="hl-mirror" style="height:200px;align-items:center;justify-content:center"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-4xl)">Время вышло</div><div style="color:var(--lq-stage-ink-2)">ответили 12 из 12</div></div></div>
+<div>
+<p class="hl-h">Распределение · ответ ещё не вскрыт</p>
+<div class="lq-votes" style="gap:var(--lq-space-4)">
+<div class="lq-vote"><svg class="lq-vote__shape" fill="var(--lq-ans-a)" aria-hidden="true"><use href="#sh-triangle"></use></svg><div class="lq-vote__track" style="height:44px"><div class="lq-vote__fill" style="width:17%;background:var(--lq-ans-a)"></div></div><span class="lq-vote__count">2</span></div>
+<div class="lq-vote"><svg class="lq-vote__shape" fill="var(--lq-ans-b)" aria-hidden="true"><use href="#sh-diamond"></use></svg><div class="lq-vote__track" style="height:44px"><div class="lq-vote__fill" style="width:58%;background:var(--lq-ans-b)"></div></div><span class="lq-vote__count">7</span></div>
+<div class="lq-vote"><svg class="lq-vote__shape" fill="var(--lq-ans-c)" aria-hidden="true"><use href="#sh-circle"></use></svg><div class="lq-vote__track" style="height:44px"><div class="lq-vote__fill" style="width:25%;background:var(--lq-ans-c)"></div></div><span class="lq-vote__count">3</span></div>
+<div class="lq-vote"><svg class="lq-vote__shape" fill="var(--lq-ans-d)" aria-hidden="true"><use href="#sh-square"></use></svg><div class="lq-vote__track" style="height:44px"><div class="lq-vote__fill" style="width:0%;background:var(--lq-ans-d)"></div></div><span class="lq-vote__count">0</span></div>
+</div>
+<div class="lq-card" style="margin-top:var(--lq-space-5);display:flex;gap:var(--lq-space-3);align-items:center"><span class="lq-badge lq-badge--success">верный · ромб</span><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Пояснение для сцены: столицу перенесли из Алматы 10 декабря 1997 года.</p></div>
+</div>
+</div>
+<div class="hl-col hl-right"><p class="hl-h">Кто что выбрал</p><div style="display:grid;gap:2px">
+<div class="hl-team"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-b);font-size:11px">ЖБ</span><b>Жеті батыр</b><svg width="18" height="18" fill="var(--lq-ans-b)" aria-hidden="true"><use href="#sh-diamond"></use></svg></div>
+<div class="hl-team"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-c);font-size:11px">КС</span><b>Көк сұңқар</b><svg width="18" height="18" fill="var(--lq-ans-c)" aria-hidden="true"><use href="#sh-circle"></use></svg></div>
+<div class="hl-team"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-d);font-size:11px">ТБ</span><b>Тобылғы</b><svg width="18" height="18" fill="var(--lq-ans-b)" aria-hidden="true"><use href="#sh-diamond"></use></svg></div>
+<div class="hl-team"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-a);font-size:11px">АТ</span><b>Алтын тобы</b><svg width="18" height="18" fill="var(--lq-ans-a)" aria-hidden="true"><use href="#sh-triangle"></use></svg></div>
+<div class="hl-team"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-e);font-size:11px">СБ</span><b>Сарыарқа</b><svg width="18" height="18" fill="var(--lq-ans-b)" aria-hidden="true"><use href="#sh-diamond"></use></svg></div>
+</div>
+<p style="color:var(--lq-ink-3);font-size:var(--lq-text-sm);margin-top:var(--lq-space-4)">Пока ответ не вскрыт, «Открыть снова» вернёт вопрос всем — очки и время ответа сохранятся.</p>
+</div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--neutral">12 из 12 ответили</span><span class="lq-hostbar__spacer"></span><div class="lq-hostbar__stat"><b>7</b><span>верных</span></div><button class="lq-btn lq-btn--ghost">Открыть снова</button><div class="hl-main" style="padding-left:var(--lq-space-4)"><button class="lq-btn lq-btn--lg" style="min-width:300px">Показать ответ</button></div></div>
+</div></div>
+<div class="pv-caption">5 · Приём закрыт, ответ не вскрыт</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-badge lq-badge--success">ответ вскрыт</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Раунд 2 · вопрос 3</b><span style="flex:1"></span><button class="lq-btn lq-btn--ghost">Отменить начисление</button><button class="lq-btn lq-btn--ghost">Пауза</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 400px;min-height:0">
+<div class="hl-col" style="display:grid;grid-template-rows:auto 1fr;gap:var(--lq-space-4)">
+<div><p class="hl-h">Зал видит это</p><div class="hl-mirror" style="height:190px;align-items:center;justify-content:center;gap:var(--lq-space-3)"><div class="lq-tile lq-tile--b" data-state="correct" style="min-height:64px;font-size:var(--lq-text-2xl);padding:0 var(--lq-space-8)"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-diamond"></use></svg><span class="lq-tile__text">1997</span></div><div style="color:var(--lq-stage-ink-2);text-align:center;max-width:60ch">Столицу перенесли из Алматы 10 декабря 1997 года, статус закрепили в 1998-м.</div></div></div>
+<div>
+<p class="hl-h">Начисления</p>
+<div class="lq-board">
+<div class="lq-board__row" data-place="1"><span class="lq-board__rank">1</span><span class="lq-avatar" style="background:var(--lq-ans-b)">ЖБ</span><span class="lq-board__name">Жеті батыр</span><span style="display:grid;justify-items:end"><span class="lq-board__score">9 480</span><span class="lq-board__delta">+1 480 · 2,4 с</span></span></div>
+<div class="lq-board__row"><span class="lq-board__rank">2</span><span class="lq-avatar" style="background:var(--lq-ans-d)">ТБ</span><span class="lq-board__name">Тобылғы</span><span style="display:grid;justify-items:end"><span class="lq-board__score">8 640</span><span class="lq-board__delta">+1 240 · ▲ 3 места</span></span></div>
+<div class="lq-board__row"><span class="lq-board__rank">3</span><span class="lq-avatar" style="background:var(--lq-ans-e)">СБ</span><span class="lq-board__name">Сарыарқа</span><span style="display:grid;justify-items:end"><span class="lq-board__score">8 100</span><span class="lq-board__delta">+1 050</span></span></div>
+<div class="lq-board__row"><span class="lq-board__rank">4</span><span class="lq-avatar" style="background:var(--lq-ans-c)">КС</span><span class="lq-board__name">Көк сұңқар</span><span style="display:grid;justify-items:end"><span class="lq-board__score">7 900</span><span class="lq-board__delta" style="color:var(--lq-danger)">+0 · ▼ 2 места</span></span></div>
+<div class="lq-board__row"><span class="lq-board__rank">5</span><span class="lq-avatar" style="background:var(--lq-ans-a)">АТ</span><span class="lq-board__name">Алтын тобы</span><span style="display:grid;justify-items:end"><span class="lq-board__score">7 400</span><span class="lq-board__delta" style="color:var(--lq-danger)">+0 · ▼ 1 место</span></span></div>
+</div>
+</div>
+</div>
+<div class="hl-col hl-right">
+<p class="hl-h">Что дальше</p>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3);margin-bottom:var(--lq-space-4)"><b style="font-family:var(--lq-font-display)">Вопрос 4 · Алматы</b><div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">choice · 4 варианта · 20 с</div><span class="lq-badge lq-badge--neutral">последний в раунде 2</span></div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2)"><b style="font-family:var(--lq-font-display)">Спорные ответы</b><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">В очереди судейства 3 открытых ответа из раунда 1. Их можно разобрать в любой момент, игра не остановится.</p><button class="lq-btn lq-btn--quiet" style="justify-self:start">К судейству · 3</button></div>
+<p style="color:var(--lq-ink-3);font-size:var(--lq-text-sm);margin-top:var(--lq-space-4)">«Отменить начисление» вверху действует, пока не открыт следующий вопрос.</p>
+</div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--success">начислено 12 командам</span><span class="lq-hostbar__spacer"></span><div class="lq-hostbar__stat"><b>7 / 12</b><span>верных</span></div><div class="lq-hostbar__stat"><b>4 / 8</b><span>вопрос в раунде</span></div><div class="hl-main" style="padding-left:var(--lq-space-4)"><button class="lq-btn lq-btn--lg" style="min-width:300px">Следующий вопрос</button></div></div>
+</div></div>
+<div class="pv-caption">6 · Ответ вскрыт</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-badge lq-badge--warning">пауза · 1:12</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Раунд 2 · вопрос 4</b><span style="flex:1"></span><span style="color:var(--lq-ink-3);font-size:var(--lq-text-sm)">таймер вопроса остановлен на 14 с</span></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 1fr;min-height:0">
+<div class="hl-col">
+<p class="hl-h">Зал видит это</p>
+<div class="hl-mirror" style="height:calc(100% - 34px);align-items:center;justify-content:center"><svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="var(--lq-accent)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-4xl)">Пауза</div><div style="color:var(--lq-stage-ink-2);max-width:44ch;text-align:center">Таймер остановлен, очки сохранены. Продолжим с того же вопроса.</div></div>
+</div>
+<div class="hl-col hl-right">
+<p class="hl-h">Только вы видите это</p>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3);margin-bottom:var(--lq-space-4)">
+<b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Что заморожено</b>
+<div class="hl-team" style="grid-template-columns:1fr auto;padding:0"><span style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Таймер вопроса</span><b>14 с из 20</b></div>
+<div class="hl-team" style="grid-template-columns:1fr auto;padding:0"><span style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Принятые ответы</span><b>6 из 12</b></div>
+<div class="hl-team" style="grid-template-columns:1fr auto;padding:0"><span style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Бонус за скорость</span><b>считается по чистому времени</b></div>
+</div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3);margin-bottom:var(--lq-space-4)"><b style="font-family:var(--lq-font-display)">Пока стоим</b><div style="display:flex;gap:var(--lq-space-2);flex-wrap:wrap"><button class="lq-btn lq-btn--quiet">Судейство · 3</button><button class="lq-btn lq-btn--quiet">Журнал решений</button><button class="lq-btn lq-btn--quiet">Флаги честности · 4</button></div></div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2)"><b style="font-family:var(--lq-font-display)">Причина паузы</b><input class="lq-input" value="Технический перерыв, вернулись к вопросу 4" style="min-height:44px"><p style="margin:0;color:var(--lq-ink-3);font-size:var(--lq-text-xs)">Попадёт в журнал вечера. Зал причину не видит.</p></div>
+</div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--warning">пауза 1:12</span><span class="lq-hostbar__spacer"></span><div class="lq-hostbar__stat"><b>14 с</b><span>останется на вопросе</span></div><div class="hl-main" style="padding-left:var(--lq-space-4)"><button class="lq-btn lq-btn--lg lq-btn--accent" style="min-width:300px">Снять паузу</button></div></div>
+</div></div>
+<div class="pv-caption">7 · Пауза</div>
+</div>
+
+<p class="pv-note">Главная кнопка на всех семи состояниях — правый край <code>.lq-hostbar</code>, ширина 300 px, меняется только подпись: «Начать игру» → «Открыть вопрос» → «Закрыть приём» → «Показать ответ» → «Следующий вопрос» → «Снять паузу». Ведущий ведёт вечер вслух и смотрит в ноутбук на полсекунды; если кнопка переезжает по состояниям, он вынужден каждый раз читать экран, и пауза в его речи попадает точно на кульминацию вопроса. Опасные действия сюда не попадают никогда — «Открыть снова» и «Отменить начисление» живут в другой части полосы, чтобы заученное движение к правому краю не могло откатить раунд.</p>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-badge lq-badge--warning">судейство</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Спорные ответы · раунд 1, вопрос 6</b><span style="flex:1"></span><span class="lq-badge lq-badge--neutral">игра идёт, вопрос 4</span><button class="lq-btn lq-btn--ghost">Вернуться к игре</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 360px;min-height:0">
+<div class="hl-col" style="overflow:auto">
+<p class="hl-h">По спорности · сверху самые неоднозначные</p>
+<div style="display:grid;gap:var(--lq-space-3)">
+<div class="lq-card" style="display:grid;grid-template-columns:1fr auto;gap:var(--lq-space-4);align-items:center">
+<div style="display:grid;gap:var(--lq-space-2)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-d);font-size:11px">ТБ</span><b>Тобылғы</b><span class="lq-badge lq-badge--warning">другая раскладка</span></div>
+<div style="display:flex;gap:var(--lq-space-6);align-items:baseline"><span style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">Балқаш</span><span style="color:var(--lq-ink-3);font-size:var(--lq-text-sm)">эталон: <b style="color:var(--lq-ink-2)">Балхаш</b></span></div>
+<p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Отличие только в қ / х — казахская раскладка. В списке синонимов такого написания нет.</p>
+</div>
+<div style="display:flex;gap:var(--lq-space-2)"><button class="lq-btn lq-btn--ghost">Отклонить</button><button class="lq-btn lq-btn--success">Засчитать</button></div>
+</div>
+<div class="lq-card" style="display:grid;grid-template-columns:1fr auto;gap:var(--lq-space-4);align-items:center">
+<div style="display:grid;gap:var(--lq-space-2)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-a);font-size:11px">АТ</span><b>Алтын тобы</b><span class="lq-badge lq-badge--warning">опечатка</span></div>
+<div style="display:flex;gap:var(--lq-space-6);align-items:baseline"><span style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">Балахш</span><span style="color:var(--lq-ink-3);font-size:var(--lq-text-sm)">эталон: <b style="color:var(--lq-ink-2)">Балхаш</b></span></div>
+<p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Две буквы переставлены. Строгость «1 опечатка» такое не пропускает.</p>
+</div>
+<div style="display:flex;gap:var(--lq-space-2)"><button class="lq-btn lq-btn--ghost">Отклонить</button><button class="lq-btn lq-btn--success">Засчитать</button></div>
+</div>
+<div class="lq-card" style="display:grid;grid-template-columns:1fr auto;gap:var(--lq-space-4);align-items:center">
+<div style="display:grid;gap:var(--lq-space-2)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-c);font-size:11px">КС</span><b>Көк сұңқар</b><span class="lq-badge lq-badge--warning">синоним не из списка</span></div>
+<div style="display:flex;gap:var(--lq-space-6);align-items:baseline"><span style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">оз. Балхаш</span><span style="color:var(--lq-ink-3);font-size:var(--lq-text-sm)">эталон: <b style="color:var(--lq-ink-2)">Балхаш</b></span></div>
+<p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Добавлено сокращение «оз.». В синонимах есть «озеро Балхаш», сокращения нет.</p>
+</div>
+<div style="display:flex;gap:var(--lq-space-2)"><button class="lq-btn lq-btn--ghost">Отклонить</button><button class="lq-btn lq-btn--success">Засчитать</button></div>
+</div>
+<div class="lq-card" style="display:grid;grid-template-columns:1fr auto;gap:var(--lq-space-4);align-items:center;opacity:.6">
+<div style="display:grid;gap:var(--lq-space-2)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span class="lq-avatar" style="width:30px;height:30px;background:var(--lq-ans-e);font-size:11px">СБ</span><b>Сарыарқа</b><span class="lq-badge lq-badge--neutral">решено</span></div>
+<div style="display:flex;gap:var(--lq-space-6);align-items:baseline"><span style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-xl)">Balqash</span><span style="color:var(--lq-success);font-size:var(--lq-text-sm)">засчитано 40 секунд назад</span></div>
+</div>
+<button class="lq-btn lq-btn--ghost">Отменить решение</button>
+</div>
+</div>
+</div>
+<div class="hl-col hl-right">
+<p class="hl-h">Вопрос</p>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2);margin-bottom:var(--lq-space-4)"><b style="font-family:var(--lq-font-display)">Самое большое озеро Казахстана</b><div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">text · строгость «1 опечатка»</div><div style="display:flex;gap:6px;flex-wrap:wrap"><span class="lq-badge lq-badge--neutral">Балхаш</span><span class="lq-badge lq-badge--neutral">озеро Балхаш</span><span class="lq-badge lq-badge--neutral">Balkhash</span></div></div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2)"><b style="font-family:var(--lq-font-display)">Сколько это стоит</b><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Засчитанный ответ добавит команде 1 000 очков плюс бонус за скорость по времени отправки. Таблица пересчитается сразу, зал увидит новые места на следующем экране результатов.</p></div>
+</div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--warning">3 в очереди</span><span class="lq-hostbar__spacer"></span><div class="lq-hostbar__stat"><b>1</b><span>решено</span></div><div class="hl-main" style="padding-left:var(--lq-space-4)"><button class="lq-btn lq-btn--lg" style="min-width:300px">Вернуться к игре</button></div></div>
+</div></div>
+<div class="pv-caption">8 · Очередь спорных ответов</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-badge lq-badge--warning">судейство</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Одно имя, семь написаний</b><span style="flex:1"></span><button class="lq-btn lq-btn--ghost">Вернуться к игре</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 360px;min-height:0">
+<div class="hl-col">
+<div class="lq-card" style="margin-bottom:var(--lq-space-4);display:flex;align-items:center;gap:var(--lq-space-4);background:var(--lq-primary-soft);border-color:transparent">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--lq-primary-hover)" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8h.01M11 12h1v4h1"></path></svg>
+<p style="margin:0;flex:1;color:var(--lq-ink-2)">Семь ответов отличаются только написанием одного имени. Решите разом — каждый останется отдельной строкой в журнале.</p>
+</div>
+<p class="hl-h">Написания «Балхаш» · 7 ответов от 7 команд</p>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:var(--lq-space-3)">
+<label class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);cursor:pointer"><span style="width:22px;height:22px;border-radius:6px;background:var(--lq-primary);display:grid;place-items:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"></path></svg></span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg);flex:1">Балқаш</b><span class="lq-badge lq-badge--neutral">2 команды</span></label>
+<label class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);cursor:pointer"><span style="width:22px;height:22px;border-radius:6px;background:var(--lq-primary);display:grid;place-items:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"></path></svg></span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg);flex:1">Balqash</b><span class="lq-badge lq-badge--neutral">1 команда</span></label>
+<label class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);cursor:pointer"><span style="width:22px;height:22px;border-radius:6px;background:var(--lq-primary);display:grid;place-items:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"></path></svg></span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg);flex:1">оз. Балхаш</b><span class="lq-badge lq-badge--neutral">2 команды</span></label>
+<label class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);cursor:pointer;opacity:.7"><span style="width:22px;height:22px;border-radius:6px;border:2px solid var(--lq-border-control)"></span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg);flex:1">Балахш</b><span class="lq-badge lq-badge--warning">опечатка · 1</span></label>
+<label class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);cursor:pointer;opacity:.7"><span style="width:22px;height:22px;border-radius:6px;border:2px solid var(--lq-border-control)"></span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg);flex:1">Балатон</b><span class="lq-badge lq-badge--danger">другое озеро · 1</span></label>
+</div>
+<div class="lq-card" style="margin-top:var(--lq-space-5);display:grid;gap:var(--lq-space-3)">
+<label class="lq-switch" aria-checked="true"><span class="lq-switch__track"><span class="lq-switch__thumb"></span></span><span class="lq-switch__label">Добавить отмеченные написания в синонимы вопроса</span></label>
+<p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">В следующих играх эти варианты засчитаются автоматически, судейство не понадобится.</p>
+</div>
+</div>
+<div class="hl-col hl-right">
+<p class="hl-h">Что произойдёт</p>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2);margin-bottom:var(--lq-space-4)">
+<div style="display:flex;justify-content:space-between"><span style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Засчитывается</span><b>5 ответов</b></div>
+<div style="display:flex;justify-content:space-between"><span style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Команд затронуто</span><b>5 из 12</b></div>
+<div style="display:flex;justify-content:space-between"><span style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Изменится мест</span><b>3</b></div>
+</div>
+<div class="lq-card" style="background:var(--lq-surface-2);border-color:transparent"><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Пять строк в журнале, одна отмена: откат вернёт все пять ответов в очередь.</p></div>
+</div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--neutral">выбрано 3 написания · 5 ответов</span><span class="lq-hostbar__spacer"></span><div class="lq-hostbar__stat"><b>+5 000</b><span>очков суммарно</span></div><div class="hl-main" style="padding-left:var(--lq-space-4)"><button class="lq-btn lq-btn--lg lq-btn--success" style="min-width:300px">Засчитать выбранные</button></div></div>
+</div></div>
+<div class="pv-caption">9 · Массовое решение</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-badge lq-badge--warning">корректировка</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Ручное изменение счёта · Тобылғы</b><span style="flex:1"></span><button class="lq-btn lq-btn--ghost">Отмена</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 400px;min-height:0">
+<div class="hl-col">
+<div style="max-width:680px;display:grid;gap:var(--lq-space-5)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-4)"><span class="lq-avatar lq-avatar--lg" style="background:var(--lq-ans-d)"><svg width="24" height="24" fill="#fff" aria-hidden="true"><use href="#sh-square"></use></svg></span><div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">Тобылғы</div><div style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">сейчас 8 640 очков · 2 место</div></div></div>
+<div style="display:grid;grid-template-columns:220px 1fr;gap:var(--lq-space-4);align-items:end">
+<label class="lq-field"><span class="lq-field__label">Изменение</span><input class="lq-input" value="+500" style="min-height:64px;font-family:var(--lq-font-display);font-size:var(--lq-text-2xl);font-weight:900;font-variant-numeric:tabular-nums"></label>
+<div class="pv-row"><button class="lq-btn lq-btn--quiet">−1 000</button><button class="lq-btn lq-btn--quiet">−500</button><button class="lq-btn lq-btn--quiet">+500</button><button class="lq-btn lq-btn--quiet">+1 000</button></div>
+</div>
+<label class="lq-field"><span class="lq-field__label">Комментарий · обязателен, попадёт в журнал игры</span><input class="lq-input" value="Ответ приняли устно — телефон капитана разрядился на вопросе 6" style="min-height:60px"></label>
+<div class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-4);background:var(--lq-surface-2);border-color:transparent"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--lq-ink-2)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"></path></svg><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Запись увидит любой, кто откроет журнал вечера, включая капитанов после игры. Команде уйдёт уведомление «счёт изменён ведущим».</p></div>
+</div>
+</div>
+<div class="hl-col hl-right">
+<p class="hl-h">Предпросмотр таблицы</p>
+<div class="lq-board">
+<div class="lq-board__row" data-place="1"><span class="lq-board__rank">1</span><span class="lq-avatar" style="background:var(--lq-ans-d)">ТБ</span><span class="lq-board__name">Тобылғы</span><span style="display:grid;justify-items:end"><span class="lq-board__score">9 140</span><span class="lq-board__delta">▲ 1 место</span></span></div>
+<div class="lq-board__row"><span class="lq-board__rank">2</span><span class="lq-avatar" style="background:var(--lq-ans-b)">ЖБ</span><span class="lq-board__name">Жеті батыр</span><span class="lq-board__score">9 480</span></div>
+<div class="lq-board__row"><span class="lq-board__rank">3</span><span class="lq-avatar" style="background:var(--lq-ans-e)">СБ</span><span class="lq-board__name">Сарыарқа</span><span class="lq-board__score">8 100</span></div>
+</div>
+<p style="color:var(--lq-ink-3);font-size:var(--lq-text-sm);margin-top:var(--lq-space-4)">Таблица на сцене обновится при следующем показе результатов, не сейчас.</p>
+</div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--neutral">комментарий заполнен</span><span class="lq-hostbar__spacer"></span><div class="lq-hostbar__stat"><b>8 640 → 9 140</b><span>после изменения</span></div><div class="hl-main" style="padding-left:var(--lq-space-4)"><button class="lq-btn lq-btn--lg" style="min-width:300px">Применить изменение</button></div></div>
+</div></div>
+<div class="pv-caption">10 · Ручная корректировка счёта</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-badge lq-badge--neutral">журнал</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Решения ведущего · вечер 12 апреля</b><span style="flex:1"></span><button class="lq-btn lq-btn--ghost">Выгрузить</button><button class="lq-btn lq-btn--ghost">Вернуться к игре</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 340px;min-height:0">
+<div class="hl-col" style="overflow:auto">
+<div style="display:grid;gap:var(--lq-space-2);max-width:860px">
+<div class="lq-card" style="display:grid;grid-template-columns:70px 1fr auto;gap:var(--lq-space-4);align-items:center;padding:var(--lq-space-4)"><span class="pv-mono">21:14</span><div><b>Счёт изменён вручную · Тобылғы +500</b><div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">«Ответ приняли устно — телефон капитана разрядился на вопросе 6»</div></div><button class="lq-btn lq-btn--ghost" style="min-height:38px">Откатить</button></div>
+<div class="lq-card" style="display:grid;grid-template-columns:70px 1fr auto;gap:var(--lq-space-4);align-items:center;padding:var(--lq-space-4)"><span class="pv-mono">21:09</span><div><b>Засчитано 5 ответов · написания «Балхаш»</b><div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">Балқаш, Balqash, оз. Балхаш · +5 000 суммарно</div></div><button class="lq-btn lq-btn--ghost" style="min-height:38px">Откатить</button></div>
+<div class="lq-card" style="display:grid;grid-template-columns:70px 1fr auto;gap:var(--lq-space-4);align-items:center;padding:var(--lq-space-4)"><span class="pv-mono">20:58</span><div><b>Добавлено 10 секунд · раунд 2, вопрос 3</b><div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">Молчали 3 команды</div></div><span class="lq-badge lq-badge--neutral">откат невозможен</span></div>
+<div class="lq-card" style="display:grid;grid-template-columns:70px 1fr auto;gap:var(--lq-space-4);align-items:center;padding:var(--lq-space-4)"><span class="pv-mono">20:41</span><div><b>Пауза 1:12</b><div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">«Технический перерыв, вернулись к вопросу 4»</div></div><span class="lq-badge lq-badge--neutral">откат невозможен</span></div>
+<div class="lq-card" style="display:grid;grid-template-columns:70px 1fr auto;gap:var(--lq-space-4);align-items:center;padding:var(--lq-space-4);opacity:.6"><span class="pv-mono">20:22</span><div><b>Отклонён ответ «Балатон» · Арқа</b><div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">Откачено в 20:24 — решение отменено</div></div><span class="lq-badge lq-badge--neutral">отменено</span></div>
+<div class="lq-card" style="display:grid;grid-template-columns:70px 1fr auto;gap:var(--lq-space-4);align-items:center;padding:var(--lq-space-4)"><span class="pv-mono">20:05</span><div><b>Игра начата · 12 команд</b></div><span class="lq-badge lq-badge--neutral">—</span></div>
+</div>
+</div>
+<div class="hl-col hl-right">
+<p class="hl-h">За вечер</p>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2);margin-bottom:var(--lq-space-4)"><div style="display:flex;justify-content:space-between"><span style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Решений судейства</span><b>9</b></div><div style="display:flex;justify-content:space-between"><span style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Ручных корректировок</span><b>1</b></div><div style="display:flex;justify-content:space-between"><span style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Откатов</span><b>1</b></div></div>
+<div class="lq-card" style="background:var(--lq-surface-2);border-color:transparent"><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Откат возвращает очки и места ровно в то состояние, что было до решения. Действия, изменившие ход игры в зале — добавленное время и пауза — не откатываются, они остаются записью.</p></div>
+</div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--neutral">11 записей</span><span class="lq-hostbar__spacer"></span><div class="lq-hostbar__stat"><b>21:14</b><span>последнее решение</span></div><div class="hl-main" style="padding-left:var(--lq-space-4)"><button class="lq-btn lq-btn--lg" style="min-width:300px">Вернуться к игре</button></div></div>
+</div></div>
+<div class="pv-caption">11 · Журнал решений</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-badge lq-badge--warning">флаги честности</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Сигналы за вечер · 4</b><span style="flex:1"></span><span class="lq-badge lq-badge--neutral">санкций не применяется</span><button class="lq-btn lq-btn--ghost">Вернуться к игре</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 380px;min-height:0">
+<div class="hl-col" style="overflow:auto">
+<div class="lq-card" style="margin-bottom:var(--lq-space-4);display:flex;gap:var(--lq-space-4);align-items:center;background:var(--lq-primary-soft);border-color:transparent"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--lq-primary-hover)" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8h.01M11 12h1v4h1"></path></svg><p style="margin:0;flex:1;color:var(--lq-ink-2)">Это подсказки, решение за вами. Система ничего не отнимает и никого не удаляет сама.</p></div>
+<div style="display:grid;gap:var(--lq-space-3)">
+<div class="lq-card" style="display:grid;grid-template-columns:1fr auto;gap:var(--lq-space-4);align-items:center">
+<div style="display:grid;gap:var(--lq-space-2)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span class="lq-badge lq-badge--warning">уход из вкладки</span><span style="color:var(--lq-ink-3);font-size:var(--lq-text-sm)">раунд 2, вопрос 3 · 21:02</span></div>
+<b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Жас ұрпақ · участник Ерлан</b>
+<p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Свернул вкладку на 9 секунд, вернулся и ответил верно. Столько же занимает входящий звонок или уведомление.</p>
+</div>
+<div style="display:flex;gap:var(--lq-space-2)"><button class="lq-btn lq-btn--ghost">Пропустить</button><button class="lq-btn lq-btn--quiet">Отметить</button></div>
+</div>
+<div class="lq-card" style="display:grid;grid-template-columns:1fr auto;gap:var(--lq-space-4);align-items:center">
+<div style="display:grid;gap:var(--lq-space-2)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span class="lq-badge lq-badge--warning">ответ впритык</span><span style="color:var(--lq-ink-3);font-size:var(--lq-text-sm)">раунд 2, вопрос 3 · 21:03</span></div>
+<b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Арқа · 19,7 с из 20</b>
+<p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Ответ ушёл за 0,3 секунды до дедлайна и оказался верным. Так выглядит и подсказка, и спор в команде до последнего.</p>
+</div>
+<div style="display:flex;gap:var(--lq-space-2)"><button class="lq-btn lq-btn--ghost">Пропустить</button><button class="lq-btn lq-btn--quiet">Отметить</button></div>
+</div>
+<div class="lq-card" style="display:grid;grid-template-columns:1fr auto;gap:var(--lq-space-4);align-items:center;border-color:var(--lq-warning)">
+<div style="display:grid;gap:var(--lq-space-2)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span class="lq-badge lq-badge--warning">совпадение ответов</span><span style="color:var(--lq-ink-3);font-size:var(--lq-text-sm)">раунд 1, вопросы 5–6 · 20:35</span></div>
+<b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Көк сұңқар и Дала сазы</b>
+<p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Два открытых ответа подряд совпали посимвольно, включая опечатку «Балахш», с разницей 1,2 секунды. Столы 4 и 5 стоят рядом.</p>
+</div>
+<div style="display:flex;gap:var(--lq-space-2)"><button class="lq-btn lq-btn--ghost">Пропустить</button><button class="lq-btn lq-btn--quiet">Отметить</button></div>
+</div>
+<div class="lq-card" style="display:grid;grid-template-columns:1fr auto;gap:var(--lq-space-4);align-items:center;opacity:.6">
+<div style="display:grid;gap:var(--lq-space-2)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span class="lq-badge lq-badge--neutral">просмотрено</span><span style="color:var(--lq-ink-3);font-size:var(--lq-text-sm)">раунд 1, вопрос 2 · 20:18</span></div>
+<b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Алтын тобы · уход из вкладки</b>
+</div>
+<button class="lq-btn lq-btn--ghost">Вернуть в список</button>
+</div>
+</div>
+</div>
+<div class="hl-col hl-right">
+<p class="hl-h">Что можно сделать</p>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3);margin-bottom:var(--lq-space-4)">
+<div style="display:flex;gap:var(--lq-space-3);align-items:flex-start"><span class="lq-badge lq-badge--neutral">1</span><p style="margin:0;font-size:var(--lq-text-sm);color:var(--lq-ink-2)">Ничего. Большинство сигналов объясняются звонком, плохой сетью или соседним столом.</p></div>
+<div style="display:flex;gap:var(--lq-space-3);align-items:flex-start"><span class="lq-badge lq-badge--neutral">2</span><p style="margin:0;font-size:var(--lq-text-sm);color:var(--lq-ink-2)">Сказать со сцены общей фразой, без имён.</p></div>
+<div style="display:flex;gap:var(--lq-space-3);align-items:flex-start"><span class="lq-badge lq-badge--neutral">3</span><p style="margin:0;font-size:var(--lq-text-sm);color:var(--lq-ink-2)">Снять очки вручную через корректировку — с комментарием в журнале.</p></div>
+</div>
+<div class="lq-card" style="background:var(--lq-surface-2);border-color:transparent"><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Отметка сигнала ничего не меняет в счёте. Она нужна, чтобы после вечера было видно, что вы это заметили.</p></div>
+</div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--warning">3 неразобранных</span><span class="lq-hostbar__spacer"></span><div class="lq-hostbar__stat"><b>0</b><span>санкций</span></div><div class="hl-main" style="padding-left:var(--lq-space-4)"><button class="lq-btn lq-btn--lg" style="min-width:300px">Вернуться к игре</button></div></div>
+</div></div>
+<div class="pv-caption">12 · Флаги честности</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:flex;flex-direction:column;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="hl-nav"><span class="lq-badge lq-badge--warning">флаги честности</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Көк сұңқар · история сигналов</b><span style="flex:1"></span><button class="lq-btn lq-btn--ghost">Назад к списку</button></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 400px;min-height:0">
+<div class="hl-col" style="overflow:auto">
+<div style="display:flex;align-items:center;gap:var(--lq-space-4);margin-bottom:var(--lq-space-5)"><span class="lq-avatar lq-avatar--lg" style="background:var(--lq-ans-c)"><svg width="24" height="24" fill="#fff" aria-hidden="true"><use href="#sh-circle"></use></svg></span><div style="flex:1"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">Көк сұңқар</div><div style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">6 участников · стол 4 · 7 900 очков · 4 место</div></div><span class="lq-badge lq-badge--warning">3 сигнала за вечер</span></div>
+<div style="display:grid;gap:var(--lq-space-2);max-width:860px">
+<div class="lq-card" style="display:grid;grid-template-columns:70px 1fr auto;gap:var(--lq-space-4);align-items:center;padding:var(--lq-space-4)"><span class="pv-mono">20:35</span><div><b>Совпадение с Дала сазы</b><div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">Два открытых ответа подряд, посимвольно, разница 1,2 с</div></div><span class="lq-badge lq-badge--warning">не разобрано</span></div>
+<div class="lq-card" style="display:grid;grid-template-columns:70px 1fr auto;gap:var(--lq-space-4);align-items:center;padding:var(--lq-space-4)"><span class="pv-mono">20:47</span><div><b>Ответ впритык · 19,4 с из 20</b><div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">Раунд 1, вопрос 8 · ответ верный</div></div><span class="lq-badge lq-badge--neutral">пропущено</span></div>
+<div class="lq-card" style="display:grid;grid-template-columns:70px 1fr auto;gap:var(--lq-space-4);align-items:center;padding:var(--lq-space-4)"><span class="pv-mono">21:03</span><div><b>Уход из вкладки · участник Асель</b><div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">14 секунд, вернулась и не ответила</div></div><span class="lq-badge lq-badge--neutral">пропущено</span></div>
+</div>
+<p class="hl-h" style="margin-top:var(--lq-space-6)">Скорость ответов по вопросам</p>
+<div style="display:flex;align-items:flex-end;gap:8px;height:110px;max-width:860px">
+<span style="flex:1;height:44%;background:var(--lq-indigo-300);border-radius:4px"></span><span style="flex:1;height:62%;background:var(--lq-indigo-300);border-radius:4px"></span><span style="flex:1;height:38%;background:var(--lq-indigo-300);border-radius:4px"></span><span style="flex:1;height:70%;background:var(--lq-indigo-300);border-radius:4px"></span><span style="flex:1;height:96%;background:var(--lq-warning);border-radius:4px"></span><span style="flex:1;height:92%;background:var(--lq-warning);border-radius:4px"></span><span style="flex:1;height:50%;background:var(--lq-indigo-300);border-radius:4px"></span><span style="flex:1;height:97%;background:var(--lq-warning);border-radius:4px"></span><span style="flex:1;height:56%;background:var(--lq-indigo-300);border-radius:4px"></span><span style="flex:1;height:48%;background:var(--lq-indigo-300);border-radius:4px"></span>
+</div>
+<p style="color:var(--lq-ink-3);font-size:var(--lq-text-sm);margin-top:var(--lq-space-2);max-width:860px">Оранжевым — ответы в последние две секунды. У команды из шести человек долгое обсуждение — обычное дело.</p>
+</div>
+<div class="hl-col hl-right">
+<p class="hl-h">Ваши варианты</p>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3);margin-bottom:var(--lq-space-4)">
+<button class="lq-btn lq-btn--ghost lq-btn--block">Отметить и оставить как есть</button>
+<button class="lq-btn lq-btn--ghost lq-btn--block">Скорректировать счёт вручную</button>
+<button class="lq-btn lq-btn--danger lq-btn--block">Удалить команду из игры</button>
+<p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Любое из трёх — ваше решение, записывается в журнал с комментарием и откатывается оттуда же.</p>
+</div>
+<div class="lq-card" style="background:var(--lq-surface-2);border-color:transparent"><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Команда не знает о своих сигналах и не получает уведомлений. Пока вы ничего не решили, для неё вечер идёт как обычно.</p></div>
+</div>
+</div>
+<div class="lq-hostbar"><span class="lq-badge lq-badge--warning">3 сигнала</span><span class="lq-hostbar__spacer"></span><div class="lq-hostbar__stat"><b>0</b><span>решений по команде</span></div><div class="hl-main" style="padding-left:var(--lq-space-4)"><button class="lq-btn lq-btn--lg" style="min-width:300px">Вернуться к игре</button></div></div>
+</div></div>
+<div class="pv-caption">13 · Карточка команды</div>
+</div>
+
+<p class="pv-note">Сигналы честности не приводят к автоматическим санкциям, потому что каждый из них имеет обычное объяснение: уход из вкладки — входящий звонок, ответ за 0,3 секунды до дедлайна — спор в команде до последнего, посимвольное совпадение — два стола рядом, где одна опечатка расходится на слух. Автоматический штраф ошибётся на глазах у зала, и спорить с ним придётся ведущему, у которого нет кнопки «система была неправа». Поэтому пульт показывает наблюдение с временем и цифрой, а действие остаётся ручным и попадает в журнал с комментарием.</p>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showNotes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Витрина&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return { showNotes: String(this.props.showNotes ?? true) };
+  }
+}
+</script>
+</body>
+</html>

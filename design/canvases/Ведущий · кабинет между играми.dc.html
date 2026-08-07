@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="lq.css">
+<style>
+[data-notes="false"] .pv-note { display: none; }
+.ha-side { background:var(--lq-surface); border-right:1px solid var(--lq-border); padding:var(--lq-space-5) var(--lq-space-4); display:flex; flex-direction:column; gap:var(--lq-space-1); }
+.ha-nav { display:flex; align-items:center; gap:var(--lq-space-3); padding:var(--lq-space-3); border-radius:var(--lq-radius-md); font-size:var(--lq-text-sm); font-weight:600; color:var(--lq-ink-2); cursor:pointer; }
+.ha-nav[data-sel="true"] { background:var(--lq-primary-soft); color:var(--lq-primary-hover); }
+.ha-main { padding:var(--lq-space-6) var(--lq-space-8); overflow:hidden; }
+.ha-h1 { font-family:var(--lq-font-display); font-weight:900; font-size:var(--lq-text-2xl); margin:0; }
+.ha-h { font-size:var(--lq-text-xs); font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--lq-ink-3); margin:0 0 var(--lq-space-3); }
+.ha-bar { height:10px; border-radius:var(--lq-radius-full); background:var(--lq-primary); }
+.ha-track { height:10px; border-radius:var(--lq-radius-full); background:var(--lq-indigo-100); overflow:hidden; }
+.ha-th { display:grid; gap:var(--lq-space-3); padding:var(--lq-space-3) var(--lq-space-4); background:var(--lq-surface-2); border-bottom:1px solid var(--lq-border); font-size:var(--lq-text-xs); font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--lq-ink-3); }
+.ha-tr { display:grid; gap:var(--lq-space-3); padding:var(--lq-space-4); border-bottom:1px solid var(--lq-border); align-items:center; font-size:var(--lq-text-sm); }
+.ha-table { border:1px solid var(--lq-border); border-radius:var(--lq-radius-md); overflow:hidden; background:var(--lq-surface); }
+a { color: var(--lq-primary); }
+a:hover { color: var(--lq-primary-hover); }
+</style>
+</helmet>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+<symbol id="sh-triangle" viewBox="0 0 24 24"><path d="M12 3 22 21H2z"></path></symbol>
+<symbol id="sh-diamond" viewBox="0 0 24 24"><path d="M12 2 22 12 12 22 2 12z"></path></symbol>
+<symbol id="sh-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"></circle></symbol>
+<symbol id="sh-square" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2.5"></rect></symbol>
+</svg>
+
+<div class="pv-head">
+<h1>Ведущий · кабинет между играми</h1>
+<p>Девять экранов 1440×900 для того, что происходит не в вечер игры: расписание по площадкам, библиотека сценариев, постоянные команды, разборы прошедших игр и аналитика отдельных вопросов. Ведущий здесь управляет практикой, а не одной игрой, поэтому кабинет живёт вокруг календаря и повторов, а не вокруг кнопки «начать».</p>
+</div>
+
+<div class="pv-wrap" style="max-width:none" data-notes="{{ showNotes }}">
+<div style="display:grid;gap:var(--lq-space-12);justify-items:start">
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:grid;grid-template-columns:240px 1fr;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="ha-side">
+<div style="display:flex;align-items:center;gap:var(--lq-space-2);padding:var(--lq-space-2) var(--lq-space-3) var(--lq-space-5)"><span style="width:28px;height:28px;border-radius:var(--lq-radius-sm);background:var(--lq-primary);display:grid;place-items:center"><svg width="15" height="15" fill="#fff" aria-hidden="true"><use href="#sh-triangle"></use></svg></span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">livequiz</b></div>
+<div class="ha-nav" data-sel="true">Главная</div><div class="ha-nav">Библиотека</div><div class="ha-nav">Расписание</div><div class="ha-nav">Площадки</div><div class="ha-nav">Команды</div><div class="ha-nav">Разборы</div><div style="flex:1"></div><div class="ha-nav">Настройки</div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-3);border-top:1px solid var(--lq-border);margin-top:var(--lq-space-3)"><span class="lq-avatar" style="width:32px;height:32px;font-size:12px">АЖ</span><div style="font-size:var(--lq-text-sm)"><b>Айдос</b><div style="color:var(--lq-ink-3);font-size:var(--lq-text-xs)">47 игр</div></div></div>
+</div>
+<div class="ha-main">
+<div style="display:flex;align-items:baseline;gap:var(--lq-space-4);margin-bottom:var(--lq-space-5)"><h1 class="ha-h1">Четверг, 9 апреля</h1><span style="color:var(--lq-ink-2)">до ближайшей игры 3 дня</span></div>
+<div class="lq-card lq-card--raised" style="display:grid;grid-template-columns:1fr auto;gap:var(--lq-space-6);align-items:center;margin-bottom:var(--lq-space-5);padding:var(--lq-space-6)">
+<div style="display:grid;gap:var(--lq-space-3)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span class="lq-badge">ближайшая игра</span><span style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">суббота, 12 апреля · 20:00</span></div>
+<div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-3xl);line-height:1.1">Вечер 12 апреля · Города и кино</div>
+<div style="display:flex;gap:var(--lq-space-5);color:var(--lq-ink-2);font-size:var(--lq-text-sm)"><span>Бар «Дом 36», Алматы</span><span>6 раундов · 34 вопроса</span><span>≈ 1 ч 55 мин</span><span>ожидается 12 команд</span></div>
+<div style="display:flex;gap:var(--lq-space-2)"><span class="lq-badge lq-badge--danger">3 незаполненных</span><span class="lq-badge lq-badge--warning">2 повтора для «Жеті батыр»</span></div>
+</div>
+<div style="display:grid;gap:var(--lq-space-3);width:260px"><button class="lq-btn lq-btn--xl lq-btn--block">Открыть конструктор</button><button class="lq-btn lq-btn--ghost lq-btn--block">Быстрый запуск</button></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--lq-space-5)">
+<div>
+<p class="ha-h">Черновики · 3</p>
+<div style="display:grid;gap:var(--lq-space-2)">
+<div class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-4)"><div style="flex:1"><b>Корпоратив «Казцинк»</b><div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">4 раунда · 18 вопросов · изменён вчера</div></div><span class="lq-badge lq-badge--warning">без даты</span></div>
+<div class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-4)"><div style="flex:1"><b>Музыкальный вечер · 90-е</b><div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">6 раундов · 30 вопросов · изменён 2 апреля</div></div><span class="lq-badge lq-badge--neutral">26 апреля</span></div>
+<div class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-4)"><div style="flex:1"><b>Без названия</b><div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">1 раунд · 3 вопроса · создан 28 марта</div></div><button class="lq-btn lq-btn--quiet" style="min-height:34px;font-size:var(--lq-text-xs)">Удалить</button></div>
+</div>
+</div>
+<div>
+<p class="ha-h">Последняя игра</p>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3);padding:var(--lq-space-4)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-3)"><b style="flex:1;font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Вечер 29 марта</b><span class="lq-badge lq-badge--neutral">«Дом 36»</span></div>
+<div style="display:flex;gap:var(--lq-space-6);font-size:var(--lq-text-sm);color:var(--lq-ink-2)"><span>11 команд</span><span>32 вопроса</span><span>средняя верность 58%</span></div>
+<div class="lq-board" style="gap:4px">
+<div class="lq-board__row" data-place="1" style="padding:var(--lq-space-2) var(--lq-space-3)"><span class="lq-board__rank">1</span><span class="lq-avatar" style="width:28px;height:28px;font-size:11px;background:var(--lq-ans-b)">ЖБ</span><span class="lq-board__name">Жеті батыр</span><span class="lq-board__score" style="font-size:var(--lq-text-base)">18 400</span></div>
+<div class="lq-board__row" style="padding:var(--lq-space-2) var(--lq-space-3)"><span class="lq-board__rank">2</span><span class="lq-avatar" style="width:28px;height:28px;font-size:11px;background:var(--lq-ans-c)">КС</span><span class="lq-board__name">Көк сұңқар</span><span class="lq-board__score" style="font-size:var(--lq-text-base)">17 100</span></div>
+</div>
+<button class="lq-btn lq-btn--quiet" style="justify-self:start">Открыть разбор</button>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+<div class="pv-caption">1 · Главная кабинета</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:grid;grid-template-columns:240px 1fr;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="ha-side"><div style="display:flex;align-items:center;gap:var(--lq-space-2);padding:var(--lq-space-2) var(--lq-space-3) var(--lq-space-5)"><span style="width:28px;height:28px;border-radius:var(--lq-radius-sm);background:var(--lq-primary);display:grid;place-items:center"><svg width="15" height="15" fill="#fff" aria-hidden="true"><use href="#sh-triangle"></use></svg></span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">livequiz</b></div><div class="ha-nav">Главная</div><div class="ha-nav" data-sel="true">Библиотека</div><div class="ha-nav">Расписание</div><div class="ha-nav">Площадки</div><div class="ha-nav">Команды</div><div class="ha-nav">Разборы</div><div style="flex:1"></div><div class="ha-nav">Настройки</div></div>
+<div class="ha-main">
+<div style="display:flex;align-items:center;gap:var(--lq-space-4);margin-bottom:var(--lq-space-4)"><h1 class="ha-h1">Библиотека квизов</h1><span class="lq-badge lq-badge--neutral">14 сценариев</span><span style="flex:1"></span><button class="lq-btn">Новый квиз</button></div>
+<div class="pv-row" style="margin-bottom:var(--lq-space-5)"><div class="lq-seg"><button class="lq-seg__item" aria-pressed="true">все</button><button class="lq-seg__item">игрались</button><button class="lq-seg__item">черновики</button><button class="lq-seg__item">шаблоны</button></div><div class="lq-seg"><button class="lq-seg__item" aria-pressed="true">по дате</button><button class="lq-seg__item">по верности</button><button class="lq-seg__item">по числу игр</button></div><input class="lq-input" placeholder="Поиск по названию и темам" style="max-width:280px;min-height:44px"></div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--lq-space-4)">
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3)">
+<div style="display:flex;align-items:start;gap:var(--lq-space-2)"><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg);flex:1">Города и кино</b><span class="lq-badge lq-badge--neutral">6 р.</span></div>
+<div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">Играли 3 раза · «Дом 36», «Барака», корпоратив Kaspi</div>
+<div><div style="display:flex;justify-content:space-between;font-size:var(--lq-text-xs);color:var(--lq-ink-3);margin-bottom:4px"><span>средняя верность</span><b style="color:var(--lq-ink)">58%</b></div><div class="ha-track"><div class="ha-bar" style="width:58%"></div></div></div>
+<div style="display:flex;gap:var(--lq-space-4);font-size:var(--lq-text-sm);color:var(--lq-ink-2)"><span>34 вопроса</span><span>11–13 команд</span></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="lq-badge lq-badge--neutral">география</span><span class="lq-badge lq-badge--neutral">кино</span></div>
+</div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3)">
+<div style="display:flex;align-items:start;gap:var(--lq-space-2)"><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg);flex:1">Музыка 90-х и 2000-х</b><span class="lq-badge lq-badge--neutral">5 р.</span></div>
+<div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">Играли 5 раз · «Дом 36» ×3, «Барака» ×2</div>
+<div><div style="display:flex;justify-content:space-between;font-size:var(--lq-text-xs);color:var(--lq-ink-3);margin-bottom:4px"><span>средняя верность</span><b style="color:var(--lq-ink)">71%</b></div><div class="ha-track"><div class="ha-bar" style="width:71%;background:var(--lq-success)"></div></div></div>
+<div style="display:flex;gap:var(--lq-space-4);font-size:var(--lq-text-sm);color:var(--lq-ink-2)"><span>28 вопросов</span><span>8–14 команд</span></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="lq-badge lq-badge--neutral">музыка</span><span class="lq-badge lq-badge--warning">лёгкий</span></div>
+</div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3)">
+<div style="display:flex;align-items:start;gap:var(--lq-space-2)"><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg);flex:1">Наука и техника</b><span class="lq-badge lq-badge--neutral">6 р.</span></div>
+<div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">Играли 2 раза · корпоратив «Казцинк», «Барака»</div>
+<div><div style="display:flex;justify-content:space-between;font-size:var(--lq-text-xs);color:var(--lq-ink-3);margin-bottom:4px"><span>средняя верность</span><b style="color:var(--lq-ink)">34%</b></div><div class="ha-track"><div class="ha-bar" style="width:34%;background:var(--lq-danger)"></div></div></div>
+<div style="display:flex;gap:var(--lq-space-4);font-size:var(--lq-text-sm);color:var(--lq-ink-2)"><span>30 вопросов</span><span>6–9 команд</span></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="lq-badge lq-badge--neutral">наука</span><span class="lq-badge lq-badge--danger">тяжёлый для бара</span></div>
+</div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3)">
+<div style="display:flex;align-items:start;gap:var(--lq-space-2)"><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg);flex:1">Казахстан за 30 лет</b><span class="lq-badge lq-badge--neutral">4 р.</span></div>
+<div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">Играли 2 раза · «Дом 36», Наурыз-вечер</div>
+<div><div style="display:flex;justify-content:space-between;font-size:var(--lq-text-xs);color:var(--lq-ink-3);margin-bottom:4px"><span>средняя верность</span><b style="color:var(--lq-ink)">62%</b></div><div class="ha-track"><div class="ha-bar" style="width:62%"></div></div></div>
+<div style="display:flex;gap:var(--lq-space-4);font-size:var(--lq-text-sm);color:var(--lq-ink-2)"><span>24 вопроса</span><span>10–12 команд</span></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="lq-badge lq-badge--neutral">история</span></div>
+</div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3);opacity:.75">
+<div style="display:flex;align-items:start;gap:var(--lq-space-2)"><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg);flex:1">Корпоратив «Казцинк»</b><span class="lq-badge lq-badge--warning">черновик</span></div>
+<div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">Не игрался · создан 6 апреля</div>
+<div style="display:flex;gap:var(--lq-space-4);font-size:var(--lq-text-sm);color:var(--lq-ink-2)"><span>18 вопросов</span><span>4 раунда</span></div>
+</div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3);border-style:dashed;place-content:center;justify-items:center;color:var(--lq-ink-3)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg><b>Новый квиз</b></div>
+</div>
+</div>
+</div></div>
+<div class="pv-caption">2 · Библиотека квизов</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:grid;grid-template-columns:240px 1fr;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="ha-side"><div style="display:flex;align-items:center;gap:var(--lq-space-2);padding:var(--lq-space-2) var(--lq-space-3) var(--lq-space-5)"><span style="width:28px;height:28px;border-radius:var(--lq-radius-sm);background:var(--lq-primary);display:grid;place-items:center"><svg width="15" height="15" fill="#fff" aria-hidden="true"><use href="#sh-triangle"></use></svg></span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">livequiz</b></div><div class="ha-nav">Главная</div><div class="ha-nav">Библиотека</div><div class="ha-nav" data-sel="true">Расписание</div><div class="ha-nav">Площадки</div><div class="ha-nav">Команды</div><div class="ha-nav">Разборы</div><div style="flex:1"></div><div class="ha-nav">Настройки</div></div>
+<div class="ha-main">
+<div style="display:flex;align-items:center;gap:var(--lq-space-4);margin-bottom:var(--lq-space-4)"><h1 class="ha-h1">Апрель 2026</h1><div class="lq-seg"><button class="lq-seg__item">‹</button><button class="lq-seg__item" aria-pressed="true">месяц</button><button class="lq-seg__item">›</button></div><span style="flex:1"></span><div class="pv-row"><span class="lq-badge" style="background:var(--lq-indigo-100)">Дом 36</span><span class="lq-badge lq-badge--success">Барака</span><span class="lq-badge lq-badge--warning">корпоративы</span></div><button class="lq-btn">Запланировать</button></div>
+<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:var(--lq-space-2);font-size:var(--lq-text-xs);color:var(--lq-ink-3);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:var(--lq-space-2)"><span>пн</span><span>вт</span><span>ср</span><span>чт</span><span>пт</span><span>сб</span><span>вс</span></div>
+<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:var(--lq-space-2)">
+<div class="lq-card" style="min-height:108px;padding:var(--lq-space-3);opacity:.5"><span style="font-family:var(--lq-font-display);font-weight:800;color:var(--lq-ink-3)">30</span></div>
+<div class="lq-card" style="min-height:108px;padding:var(--lq-space-3);opacity:.5"><span style="font-family:var(--lq-font-display);font-weight:800;color:var(--lq-ink-3)">31</span></div>
+<div class="lq-card" style="min-height:108px;padding:var(--lq-space-3)"><span style="font-family:var(--lq-font-display);font-weight:800">1</span></div>
+<div class="lq-card" style="min-height:108px;padding:var(--lq-space-3)"><span style="font-family:var(--lq-font-display);font-weight:800">2</span></div>
+<div class="lq-card" style="min-height:108px;padding:var(--lq-space-3);display:grid;gap:6px;align-content:start"><span style="font-family:var(--lq-font-display);font-weight:800">3</span><div style="background:var(--lq-success-soft);color:var(--lq-success);border-radius:6px;padding:4px 6px;font-size:11px;font-weight:700">20:00 Барака</div></div>
+<div class="lq-card" style="min-height:108px;padding:var(--lq-space-3);display:grid;gap:6px;align-content:start"><span style="font-family:var(--lq-font-display);font-weight:800">4</span><div style="background:var(--lq-indigo-100);color:var(--lq-primary-hover);border-radius:6px;padding:4px 6px;font-size:11px;font-weight:700">20:00 Дом 36</div></div>
+<div class="lq-card" style="min-height:108px;padding:var(--lq-space-3)"><span style="font-family:var(--lq-font-display);font-weight:800">5</span></div>
+<div class="lq-card" style="min-height:108px;padding:var(--lq-space-3)"><span style="font-family:var(--lq-font-display);font-weight:800">6</span></div>
+<div class="lq-card" style="min-height:108px;padding:var(--lq-space-3)"><span style="font-family:var(--lq-font-display);font-weight:800">7</span></div>
+<div class="lq-card" style="min-height:108px;padding:var(--lq-space-3)"><span style="font-family:var(--lq-font-display);font-weight:800">8</span></div>
+<div class="lq-card lq-card--raised" style="min-height:108px;padding:var(--lq-space-3);border:2px solid var(--lq-primary);display:grid;gap:6px;align-content:start"><span style="font-family:var(--lq-font-display);font-weight:800;color:var(--lq-primary)">9 · сегодня</span></div>
+<div class="lq-card" style="min-height:108px;padding:var(--lq-space-3);display:grid;gap:6px;align-content:start"><span style="font-family:var(--lq-font-display);font-weight:800">10</span><div style="background:var(--lq-warning-soft);color:var(--lq-warning);border-radius:6px;padding:4px 6px;font-size:11px;font-weight:700">19:00 Казцинк</div></div>
+<div class="lq-card" style="min-height:108px;padding:var(--lq-space-3)"><span style="font-family:var(--lq-font-display);font-weight:800">11</span></div>
+<div class="lq-card" style="min-height:108px;padding:var(--lq-space-3);display:grid;gap:6px;align-content:start"><span style="font-family:var(--lq-font-display);font-weight:800">12</span><div style="background:var(--lq-indigo-100);color:var(--lq-primary-hover);border-radius:6px;padding:4px 6px;font-size:11px;font-weight:700">20:00 Дом 36</div><span style="font-size:10px;color:var(--lq-danger);font-weight:700">3 незаполненных</span></div>
+<div class="lq-card" style="min-height:108px;padding:var(--lq-space-3)"><span style="font-family:var(--lq-font-display);font-weight:800">13</span></div>
+<div class="lq-card" style="min-height:108px;padding:var(--lq-space-3)"><span style="font-family:var(--lq-font-display);font-weight:800">14</span></div>
+<div class="lq-card" style="min-height:108px;padding:var(--lq-space-3)"><span style="font-family:var(--lq-font-display);font-weight:800">15</span></div>
+<div class="lq-card" style="min-height:108px;padding:var(--lq-space-3)"><span style="font-family:var(--lq-font-display);font-weight:800">16</span></div>
+<div class="lq-card" style="min-height:108px;padding:var(--lq-space-3);display:grid;gap:6px;align-content:start"><span style="font-family:var(--lq-font-display);font-weight:800">17</span><div style="background:var(--lq-success-soft);color:var(--lq-success);border-radius:6px;padding:4px 6px;font-size:11px;font-weight:700">20:00 Барака</div></div>
+<div class="lq-card" style="min-height:108px;padding:var(--lq-space-3);display:grid;gap:6px;align-content:start"><span style="font-family:var(--lq-font-display);font-weight:800">18</span><div style="background:var(--lq-indigo-100);color:var(--lq-primary-hover);border-radius:6px;padding:4px 6px;font-size:11px;font-weight:700">20:00 Дом 36</div></div>
+<div class="lq-card" style="min-height:108px;padding:var(--lq-space-3)"><span style="font-family:var(--lq-font-display);font-weight:800">19</span></div>
+</div>
+<div style="display:flex;gap:var(--lq-space-6);margin-top:var(--lq-space-5);color:var(--lq-ink-2);font-size:var(--lq-text-sm)"><span>В апреле 7 игр · 3 площадки</span><span>Свободные субботы: 5, 26</span><span class="lq-badge lq-badge--warning">10 и 12 апреля подряд — сценарии пересекаются на 6 вопросов</span></div>
+</div>
+</div></div>
+<div class="pv-caption">3 · Расписание</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:grid;grid-template-columns:240px 1fr;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="ha-side"><div style="display:flex;align-items:center;gap:var(--lq-space-2);padding:var(--lq-space-2) var(--lq-space-3) var(--lq-space-5)"><span style="width:28px;height:28px;border-radius:var(--lq-radius-sm);background:var(--lq-primary);display:grid;place-items:center"><svg width="15" height="15" fill="#fff" aria-hidden="true"><use href="#sh-triangle"></use></svg></span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">livequiz</b></div><div class="ha-nav">Главная</div><div class="ha-nav">Библиотека</div><div class="ha-nav">Расписание</div><div class="ha-nav" data-sel="true">Площадки</div><div class="ha-nav">Команды</div><div class="ha-nav">Разборы</div><div style="flex:1"></div><div class="ha-nav">Настройки</div></div>
+<div class="ha-main">
+<div style="display:flex;align-items:center;gap:var(--lq-space-4);margin-bottom:var(--lq-space-5)"><h1 class="ha-h1">Площадки</h1><span class="lq-badge lq-badge--neutral">4 заведения</span><span style="flex:1"></span><button class="lq-btn">Добавить площадку</button></div>
+<div style="display:grid;gap:var(--lq-space-4)">
+<div class="lq-card" style="display:grid;grid-template-columns:1fr 300px;gap:var(--lq-space-6)">
+<div style="display:grid;gap:var(--lq-space-3)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-3)"><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-xl)">Бар «Дом 36»</b><span class="lq-badge">каждую субботу</span></div>
+<div style="display:flex;gap:var(--lq-space-8)">
+<div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">23</div><div style="color:var(--lq-ink-3);font-size:var(--lq-text-xs)">игры проведено</div></div>
+<div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">11–13</div><div style="color:var(--lq-ink-3);font-size:var(--lq-text-xs)">команд обычно</div></div>
+<div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">1:50</div><div style="color:var(--lq-ink-3);font-size:var(--lq-text-xs)">средняя длина вечера</div></div>
+<div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">61%</div><div style="color:var(--lq-ink-3);font-size:var(--lq-text-xs)">средняя верность</div></div>
+</div>
+<div><span class="ha-h" style="display:block">Заметки</span><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Проектор тусклый, картинки только контрастные. Звук через их пульт — приходить за 40 минут. Стол 4 и 5 стоят вплотную, ответы часто совпадают. Кухня закрывается в 23:00, после этого зал пустеет за 15 минут.</p></div>
+</div>
+<div style="display:grid;gap:var(--lq-space-3);align-content:start"><span class="ha-h">Ближайшая</span><div class="lq-card" style="padding:var(--lq-space-3);background:var(--lq-surface-2);border-color:transparent"><b>12 апреля · 20:00</b><div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">Города и кино</div></div><button class="lq-btn lq-btn--quiet lq-btn--block">История 23 игр</button></div>
+</div>
+<div class="lq-card" style="display:grid;grid-template-columns:1fr 300px;gap:var(--lq-space-6)">
+<div style="display:grid;gap:var(--lq-space-3)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-3)"><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-xl)">Кафе «Барака»</b><span class="lq-badge lq-badge--neutral">раз в две недели</span></div>
+<div style="display:flex;gap:var(--lq-space-8)">
+<div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">14</div><div style="color:var(--lq-ink-3);font-size:var(--lq-text-xs)">игры проведено</div></div>
+<div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">7–9</div><div style="color:var(--lq-ink-3);font-size:var(--lq-text-xs)">команд обычно</div></div>
+<div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">1:25</div><div style="color:var(--lq-ink-3);font-size:var(--lq-text-xs)">средняя длина вечера</div></div>
+<div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">54%</div><div style="color:var(--lq-ink-3);font-size:var(--lq-text-xs)">средняя верность</div></div>
+</div>
+<div><span class="ha-h" style="display:block">Заметки</span><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Зал маленький, микрофон не нужен. Публика младше, музыкальные раунды заходят лучше исторических. Wi-Fi слабый у окна — предупреждать команды за третьим столом.</p></div>
+</div>
+<div style="display:grid;gap:var(--lq-space-3);align-content:start"><span class="ha-h">Ближайшая</span><div class="lq-card" style="padding:var(--lq-space-3);background:var(--lq-surface-2);border-color:transparent"><b>17 апреля · 20:00</b><div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">Музыка 90-х</div></div><button class="lq-btn lq-btn--quiet lq-btn--block">История 14 игр</button></div>
+</div>
+<div class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-6);padding:var(--lq-space-4) var(--lq-space-5)"><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg);flex:1">Корпоративы · выездные</b><span style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">9 игр · 6–10 команд · заметка: своё оборудование обязательно</span><button class="lq-btn lq-btn--quiet">Открыть</button></div>
+</div>
+</div>
+</div></div>
+<div class="pv-caption">4 · Площадки</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:grid;grid-template-columns:240px 1fr;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="ha-side"><div style="display:flex;align-items:center;gap:var(--lq-space-2);padding:var(--lq-space-2) var(--lq-space-3) var(--lq-space-5)"><span style="width:28px;height:28px;border-radius:var(--lq-radius-sm);background:var(--lq-primary);display:grid;place-items:center"><svg width="15" height="15" fill="#fff" aria-hidden="true"><use href="#sh-triangle"></use></svg></span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">livequiz</b></div><div class="ha-nav">Главная</div><div class="ha-nav">Библиотека</div><div class="ha-nav">Расписание</div><div class="ha-nav">Площадки</div><div class="ha-nav" data-sel="true">Команды</div><div class="ha-nav">Разборы</div><div style="flex:1"></div><div class="ha-nav">Настройки</div></div>
+<div class="ha-main">
+<div style="display:flex;align-items:center;gap:var(--lq-space-4);margin-bottom:var(--lq-space-4)"><h1 class="ha-h1">Постоянные команды</h1><span class="lq-badge lq-badge--neutral">9 команд</span><span style="flex:1"></span><div class="lq-seg"><button class="lq-seg__item" aria-pressed="true">все</button><button class="lq-seg__item">придут 12 апреля</button></div></div>
+<div style="display:grid;grid-template-columns:1fr 460px;gap:var(--lq-space-5)">
+<div class="ha-table">
+<div class="ha-th" style="grid-template-columns:1fr 70px 90px 110px 120px"><span>Команда</span><span>Игр</span><span>Лучшее</span><span>Средняя</span><span>Последняя</span></div>
+<div class="ha-tr" style="grid-template-columns:1fr 70px 90px 110px 120px;background:var(--lq-primary-soft)"><div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span class="lq-avatar" style="width:30px;height:30px;font-size:11px;background:var(--lq-ans-b)">ЖБ</span><b>Жеті батыр</b></div><span>14</span><span>1 место</span><span>2,4</span><span>29 марта</span></div>
+<div class="ha-tr" style="grid-template-columns:1fr 70px 90px 110px 120px"><div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span class="lq-avatar" style="width:30px;height:30px;font-size:11px;background:var(--lq-ans-c)">КС</span><b>Көк сұңқар</b></div><span>12</span><span>1 место</span><span>3,1</span><span>29 марта</span></div>
+<div class="ha-tr" style="grid-template-columns:1fr 70px 90px 110px 120px"><div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span class="lq-avatar" style="width:30px;height:30px;font-size:11px;background:var(--lq-ans-d)">ТБ</span><b>Тобылғы</b></div><span>9</span><span>2 место</span><span>4,0</span><span>29 марта</span></div>
+<div class="ha-tr" style="grid-template-columns:1fr 70px 90px 110px 120px"><div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span class="lq-avatar" style="width:30px;height:30px;font-size:11px;background:var(--lq-ans-a)">АТ</span><b>Алтын тобы</b></div><span>7</span><span>3 место</span><span>5,3</span><span>15 марта</span></div>
+<div class="ha-tr" style="grid-template-columns:1fr 70px 90px 110px 120px"><div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span class="lq-avatar" style="width:30px;height:30px;font-size:11px;background:var(--lq-ans-e)">СБ</span><b>Сарыарқа</b></div><span>6</span><span>2 место</span><span>4,8</span><span>29 марта</span></div>
+<div class="ha-tr" style="grid-template-columns:1fr 70px 90px 110px 120px"><div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span class="lq-avatar" style="width:30px;height:30px;font-size:11px;background:var(--lq-ans-f)">ДС</span><b>Дала сазы</b></div><span>5</span><span>4 место</span><span>6,2</span><span>29 марта</span></div>
+<div class="ha-tr" style="grid-template-columns:1fr 70px 90px 110px 120px;border-bottom:0"><div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span class="lq-avatar" style="width:30px;height:30px;font-size:11px;background:var(--lq-ans-b)">АР</span><b>Арқа</b></div><span>4</span><span>5 место</span><span>7,0</span><span>15 марта</span></div>
+</div>
+<div style="display:grid;gap:var(--lq-space-4);align-content:start">
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span class="lq-avatar lq-avatar--lg" style="background:var(--lq-ans-b)"><svg width="22" height="22" fill="#fff" aria-hidden="true"><use href="#sh-diamond"></use></svg></span><div style="flex:1"><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-xl)">Жеті батыр</b><div style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">14 игр · 5 участников · «Дом 36»</div></div></div>
+<div><span class="ha-h" style="display:block">Места по играм</span><div style="display:flex;align-items:flex-end;gap:5px;height:64px"><span style="flex:1;height:80%;background:var(--lq-indigo-300);border-radius:3px"></span><span style="flex:1;height:60%;background:var(--lq-indigo-300);border-radius:3px"></span><span style="flex:1;height:100%;background:var(--lq-accent);border-radius:3px"></span><span style="flex:1;height:70%;background:var(--lq-indigo-300);border-radius:3px"></span><span style="flex:1;height:100%;background:var(--lq-accent);border-radius:3px"></span><span style="flex:1;height:55%;background:var(--lq-indigo-300);border-radius:3px"></span><span style="flex:1;height:85%;background:var(--lq-indigo-300);border-radius:3px"></span><span style="flex:1;height:100%;background:var(--lq-accent);border-radius:3px"></span></div></div>
+</div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3);border-color:var(--lq-warning)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-2)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--lq-warning)" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 3 22 20H2z"></path><path d="M12 10v4M12 17h.01"></path></svg><b style="font-family:var(--lq-font-display)">Им уже задавали · 112 вопросов</b></div>
+<p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">В сценарии на 12 апреля пересекаются два вопроса. Оба из раунда «Города».</p>
+<div style="display:grid;gap:var(--lq-space-2)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-3);background:var(--lq-warning-soft);border-radius:var(--lq-radius-md);font-size:var(--lq-text-sm)"><span style="flex:1"><b>Самое большое озеро Казахстана</b><div style="color:var(--lq-ink-2)">задавали 8 марта · ответили верно</div></span><button class="lq-btn lq-btn--ghost" style="min-height:34px;font-size:var(--lq-text-xs)">Заменить</button></div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-3);background:var(--lq-warning-soft);border-radius:var(--lq-radius-md);font-size:var(--lq-text-sm)"><span style="flex:1"><b>Что за здание · Хан Шатыр</b><div style="color:var(--lq-ink-2)">задавали 8 марта · ответили верно</div></span><button class="lq-btn lq-btn--ghost" style="min-height:34px;font-size:var(--lq-text-xs)">Заменить</button></div>
+</div>
+<button class="lq-btn lq-btn--quiet" style="justify-self:start">Все 112 заданных вопросов</button>
+</div>
+<div class="lq-card" style="background:var(--lq-surface-2);border-color:transparent"><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Учитывается состав: если команда пришла новым составом, старые вопросы для неё не считаются заданными.</p></div>
+</div>
+</div>
+</div>
+</div></div>
+<div class="pv-caption">5 · Постоянные команды</div>
+</div>
+<p class="pv-note">История заданных вопросов стоит выше средних мест и графиков, потому что повтор — единственная ошибка, которую зал замечает мгновенно и вслух: команда, уже слышавшая вопрос про Балхаш, отвечает за две секунды, соседи это видят, и остаток раунда обсуждают не квиз, а ведущего. Средний процент верных ответов такого не вызывает — по нему ведущий подкручивает сложность в следующий раз, спокойно и постфактум. Поэтому пересечения показаны как список конкретных вопросов с кнопкой «Заменить» прямо в карточке команды, а статистика мест ужата до одной полосы.</p>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:grid;grid-template-columns:240px 1fr;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="ha-side"><div style="display:flex;align-items:center;gap:var(--lq-space-2);padding:var(--lq-space-2) var(--lq-space-3) var(--lq-space-5)"><span style="width:28px;height:28px;border-radius:var(--lq-radius-sm);background:var(--lq-primary);display:grid;place-items:center"><svg width="15" height="15" fill="#fff" aria-hidden="true"><use href="#sh-triangle"></use></svg></span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">livequiz</b></div><div class="ha-nav">Главная</div><div class="ha-nav">Библиотека</div><div class="ha-nav">Расписание</div><div class="ha-nav">Площадки</div><div class="ha-nav">Команды</div><div class="ha-nav" data-sel="true">Разборы</div><div style="flex:1"></div><div class="ha-nav">Настройки</div></div>
+<div class="ha-main" style="overflow:auto">
+<div style="display:flex;align-items:center;gap:var(--lq-space-4);margin-bottom:var(--lq-space-4)"><h1 class="ha-h1">Вечер 29 марта · «Дом 36»</h1><span class="lq-badge lq-badge--neutral">11 команд · 32 вопроса · 1:52</span><span style="flex:1"></span><button class="lq-btn lq-btn--ghost">Выгрузить</button><button class="lq-btn lq-btn--quiet">Повторить сценарий</button></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--lq-space-5)">
+<div style="display:grid;gap:var(--lq-space-4);align-content:start">
+<div><p class="ha-h">Итоговая таблица</p>
+<div class="lq-board">
+<div class="lq-board__row" data-place="1"><span class="lq-board__rank">1</span><span class="lq-avatar" style="background:var(--lq-ans-b)">ЖБ</span><span class="lq-board__name">Жеті батыр</span><span class="lq-board__score">18 400</span></div>
+<div class="lq-board__row"><span class="lq-board__rank">2</span><span class="lq-avatar" style="background:var(--lq-ans-c)">КС</span><span class="lq-board__name">Көк сұңқар</span><span class="lq-board__score">17 100</span></div>
+<div class="lq-board__row"><span class="lq-board__rank">3</span><span class="lq-avatar" style="background:var(--lq-ans-d)">ТБ</span><span class="lq-board__name">Тобылғы</span><span class="lq-board__score">15 900</span></div>
+<div class="lq-board__row"><span class="lq-board__rank">4</span><span class="lq-avatar" style="background:var(--lq-ans-e)">СБ</span><span class="lq-board__name">Сарыарқа</span><span class="lq-board__score">14 200</span></div>
+<div class="lq-board__row"><span class="lq-board__rank">5</span><span class="lq-avatar" style="background:var(--lq-ans-a)">АТ</span><span class="lq-board__name">Алтын тобы</span><span class="lq-board__score">12 750</span></div>
+</div>
+</div>
+<div><p class="ha-h">Верность по раундам</p>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3)">
+<div style="display:grid;grid-template-columns:130px 1fr 44px;gap:var(--lq-space-3);align-items:center;font-size:var(--lq-text-sm)"><span>1 · Разминка</span><div class="ha-track"><div class="ha-bar" style="width:82%;background:var(--lq-success)"></div></div><b>82%</b></div>
+<div style="display:grid;grid-template-columns:130px 1fr 44px;gap:var(--lq-space-3);align-items:center;font-size:var(--lq-text-sm)"><span>2 · Города</span><div class="ha-track"><div class="ha-bar" style="width:64%"></div></div><b>64%</b></div>
+<div style="display:grid;grid-template-columns:130px 1fr 44px;gap:var(--lq-space-3);align-items:center;font-size:var(--lq-text-sm)"><span>3 · Музыка</span><div class="ha-track"><div class="ha-bar" style="width:71%"></div></div><b>71%</b></div>
+<div style="display:grid;grid-template-columns:130px 1fr 44px;gap:var(--lq-space-3);align-items:center;font-size:var(--lq-text-sm)"><span>4 · Что на экране</span><div class="ha-track"><div class="ha-bar" style="width:38%;background:var(--lq-danger)"></div></div><b>38%</b></div>
+<div style="display:grid;grid-template-columns:130px 1fr 44px;gap:var(--lq-space-3);align-items:center;font-size:var(--lq-text-sm)"><span>5 · Логика</span><div class="ha-track"><div class="ha-bar" style="width:44%;background:var(--lq-danger)"></div></div><b>44%</b></div>
+<div style="display:grid;grid-template-columns:130px 1fr 44px;gap:var(--lq-space-3);align-items:center;font-size:var(--lq-text-sm)"><span>6 · Финал</span><div class="ha-track"><div class="ha-bar" style="width:55%"></div></div><b>55%</b></div>
+</div>
+</div>
+</div>
+<div style="display:grid;gap:var(--lq-space-4);align-content:start">
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2);border-color:var(--lq-danger)"><span class="lq-badge lq-badge--danger">самый сложный</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Сколько лет Туркестану по официальной датировке?</b><div style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Раунд 4 · verно 1 из 11 команд · 9%. Половина зала не ответила вовсе — окно 20 с оказалось коротким для estimate.</div><button class="lq-btn lq-btn--quiet" style="justify-self:start">Аналитика вопроса</button></div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2);border-color:var(--lq-success)"><span class="lq-badge lq-badge--success">самый лёгкий</span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">В каком году Астана стала столицей?</b><div style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Раунд 2 · верно 11 из 11 команд · 100%, среднее время 3,1 с. Как разминка работает, как вопрос — нет.</div><button class="lq-btn lq-btn--quiet" style="justify-self:start">Аналитика вопроса</button></div>
+<div><p class="ha-h">Ручные решения ведущего · 5</p>
+<div class="ha-table">
+<div class="ha-tr" style="grid-template-columns:60px 1fr;border-bottom:1px solid var(--lq-border)"><span class="pv-mono">21:14</span><span>Счёт вручную · Тобылғы +500 · «телефон капитана разрядился»</span></div>
+<div class="ha-tr" style="grid-template-columns:60px 1fr"><span class="pv-mono">21:09</span><span>Засчитано 5 написаний «Балхаш» · +5 000</span></div>
+<div class="ha-tr" style="grid-template-columns:60px 1fr"><span class="pv-mono">20:58</span><span>Добавлено 10 секунд · раунд 2, вопрос 3</span></div>
+<div class="ha-tr" style="grid-template-columns:60px 1fr"><span class="pv-mono">20:41</span><span>Пауза 1:12 · «технический перерыв»</span></div>
+<div class="ha-tr" style="grid-template-columns:60px 1fr;border-bottom:0"><span class="pv-mono">20:24</span><span>Откат решения по ответу «Балатон»</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+<div class="pv-caption">6 · Разбор прошедшей игры</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:grid;grid-template-columns:240px 1fr;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="ha-side"><div style="display:flex;align-items:center;gap:var(--lq-space-2);padding:var(--lq-space-2) var(--lq-space-3) var(--lq-space-5)"><span style="width:28px;height:28px;border-radius:var(--lq-radius-sm);background:var(--lq-primary);display:grid;place-items:center"><svg width="15" height="15" fill="#fff" aria-hidden="true"><use href="#sh-triangle"></use></svg></span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">livequiz</b></div><div class="ha-nav">Главная</div><div class="ha-nav" data-sel="true">Библиотека</div><div class="ha-nav">Расписание</div><div class="ha-nav">Площадки</div><div class="ha-nav">Команды</div><div class="ha-nav">Разборы</div><div style="flex:1"></div><div class="ha-nav">Настройки</div></div>
+<div class="ha-main">
+<div style="display:flex;align-items:center;gap:var(--lq-space-3);margin-bottom:var(--lq-space-2);color:var(--lq-ink-3);font-size:var(--lq-text-sm)"><span>Библиотека</span><span>·</span><span>Вопрос</span><span>·</span><span class="lq-badge lq-badge--neutral">choice · география</span></div>
+<h1 class="ha-h1" style="margin-bottom:var(--lq-space-5)">В каком году Астана стала столицей Казахстана?</h1>
+<div style="display:grid;grid-template-columns:1fr 380px;gap:var(--lq-space-5)">
+<div style="display:grid;gap:var(--lq-space-4);align-content:start">
+<div class="lq-card" style="display:grid;gap:var(--lq-space-4)">
+<div style="display:flex;gap:var(--lq-space-8)">
+<div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-3xl)">4</div><div style="color:var(--lq-ink-3);font-size:var(--lq-text-xs)">игры с этим вопросом</div></div>
+<div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-3xl);color:var(--lq-success)">94%</div><div style="color:var(--lq-ink-3);font-size:var(--lq-text-xs)">верных ответов</div></div>
+<div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-3xl)">3,4 с</div><div style="color:var(--lq-ink-3);font-size:var(--lq-text-xs)">среднее время</div></div>
+<div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-3xl)">0</div><div style="color:var(--lq-ink-3);font-size:var(--lq-text-xs)">спорных ответов</div></div>
+</div>
+</div>
+<div><p class="ha-h">По играм</p>
+<div class="ha-table">
+<div class="ha-th" style="grid-template-columns:110px 1fr 110px 1fr 70px"><span>Дата</span><span>Площадка</span><span>Команд</span><span>Верных</span><span></span></div>
+<div class="ha-tr" style="grid-template-columns:110px 1fr 110px 1fr 70px"><span class="pv-mono">29 марта</span><span>Дом 36</span><span>11</span><div class="ha-track"><div class="ha-bar" style="width:100%;background:var(--lq-success)"></div></div><b>100%</b></div>
+<div class="ha-tr" style="grid-template-columns:110px 1fr 110px 1fr 70px"><span class="pv-mono">8 марта</span><span>Дом 36</span><span>12</span><div class="ha-track"><div class="ha-bar" style="width:92%;background:var(--lq-success)"></div></div><b>92%</b></div>
+<div class="ha-tr" style="grid-template-columns:110px 1fr 110px 1fr 70px"><span class="pv-mono">14 февраля</span><span>Барака</span><span>8</span><div class="ha-track"><div class="ha-bar" style="width:88%;background:var(--lq-success)"></div></div><b>88%</b></div>
+<div class="ha-tr" style="grid-template-columns:110px 1fr 110px 1fr 70px;border-bottom:0"><span class="pv-mono">18 января</span><span>Казцинк</span><span>7</span><div class="ha-track"><div class="ha-bar" style="width:96%;background:var(--lq-success)"></div></div><b>96%</b></div>
+</div>
+</div>
+<div><p class="ha-h">Как распределялись ответы · все 4 игры</p>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3)">
+<div style="display:grid;grid-template-columns:26px 1fr 60px;gap:var(--lq-space-3);align-items:center"><svg width="20" height="20" fill="var(--lq-ans-a)" aria-hidden="true"><use href="#sh-triangle"></use></svg><div class="ha-track"><div class="ha-bar" style="width:4%;background:var(--lq-ans-a)"></div></div><span style="font-size:var(--lq-text-sm)">1994 · 2</span></div>
+<div style="display:grid;grid-template-columns:26px 1fr 60px;gap:var(--lq-space-3);align-items:center"><svg width="20" height="20" fill="var(--lq-ans-b)" aria-hidden="true"><use href="#sh-diamond"></use></svg><div class="ha-track"><div class="ha-bar" style="width:94%;background:var(--lq-ans-b)"></div></div><b style="font-size:var(--lq-text-sm)">1997 · 36</b></div>
+<div style="display:grid;grid-template-columns:26px 1fr 60px;gap:var(--lq-space-3);align-items:center"><svg width="20" height="20" fill="var(--lq-ans-c)" aria-hidden="true"><use href="#sh-circle"></use></svg><div class="ha-track"><div class="ha-bar" style="width:2%;background:var(--lq-ans-c)"></div></div><span style="font-size:var(--lq-text-sm)">1998 · 1</span></div>
+<div style="display:grid;grid-template-columns:26px 1fr 60px;gap:var(--lq-space-3);align-items:center"><svg width="20" height="20" fill="var(--lq-ans-d)" aria-hidden="true"><use href="#sh-square"></use></svg><div class="ha-track"><div class="ha-bar" style="width:0%;background:var(--lq-ans-d)"></div></div><span style="font-size:var(--lq-text-sm)">2001 · 0</span></div>
+</div>
+</div>
+</div>
+<div style="display:grid;gap:var(--lq-space-4);align-content:start">
+<div class="lq-card" style="border-color:var(--lq-warning);display:grid;gap:var(--lq-space-3)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-2)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--lq-warning)" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 3 22 20H2z"></path><path d="M12 10v4M12 17h.01"></path></svg><b style="font-family:var(--lq-font-display)">Слишком лёгкий</b></div>
+<p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">94% верных за 3,4 секунды и мёртвый вариант «2001»: вопрос не разделяет зал, а занимает минуту вечера. Он годится только первым в разминке.</p>
+<div style="display:grid;gap:var(--lq-space-2)">
+<button class="lq-btn lq-btn--ghost lq-btn--block">Усложнить: убрать 2001, добавить 1995</button>
+<button class="lq-btn lq-btn--ghost lq-btn--block">Перевести в разминку</button>
+<button class="lq-btn lq-btn--ghost lq-btn--block">Убрать из библиотеки</button>
+</div>
+</div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2)"><b style="font-family:var(--lq-font-display)">Кому уже задавали</b><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">7 постоянных команд, включая «Жеті батыр» и «Көк сұңқар» — они играют 12 апреля.</p><button class="lq-btn lq-btn--quiet" style="justify-self:start">Список команд</button></div>
+<div class="lq-card" style="background:var(--lq-surface-2);border-color:transparent"><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Рекомендация — наблюдение по четырём играм, а не правило. Для корпоратива с новой аудиторией лёгкий вопрос в начале работает.</p></div>
+</div>
+</div>
+</div>
+</div></div>
+<div class="pv-caption">7 · Аналитика вопроса</div>
+</div>
+
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:grid;grid-template-columns:240px 1fr;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="ha-side"><div style="display:flex;align-items:center;gap:var(--lq-space-2);padding:var(--lq-space-2) var(--lq-space-3) var(--lq-space-5)"><span style="width:28px;height:28px;border-radius:var(--lq-radius-sm);background:var(--lq-primary);display:grid;place-items:center"><svg width="15" height="15" fill="#fff" aria-hidden="true"><use href="#sh-triangle"></use></svg></span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">livequiz</b></div><div class="ha-nav">Главная</div><div class="ha-nav">Библиотека</div><div class="ha-nav">Расписание</div><div class="ha-nav">Площадки</div><div class="ha-nav">Команды</div><div class="ha-nav">Разборы</div><div style="flex:1"></div><div class="ha-nav" data-sel="true">Настройки</div></div>
+<div class="ha-main">
+<h1 class="ha-h1" style="margin-bottom:var(--lq-space-5)">Настройки</h1>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--lq-space-5);max-width:1060px">
+<div style="display:grid;gap:var(--lq-space-4);align-content:start">
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3)">
+<b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Язык интерфейса</b>
+<div class="lq-seg" style="width:100%"><button class="lq-seg__item" style="flex:1" aria-pressed="true">Русский</button><button class="lq-seg__item" style="flex:1">Қазақша</button><button class="lq-seg__item" style="flex:1">English</button></div>
+<p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Отдельно от языка зала: телефоны участников и экран сцены переключаются в настройках игры.</p>
+<div style="display:grid;grid-template-columns:1fr auto;gap:var(--lq-space-3);align-items:center;padding-top:var(--lq-space-3);border-top:1px solid var(--lq-border)"><span style="font-size:var(--lq-text-sm)">Язык зала по умолчанию</span><div class="lq-seg"><button class="lq-seg__item" aria-pressed="true">ru + kk</button><button class="lq-seg__item">только ru</button></div></div>
+</div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3)">
+<b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Правила по умолчанию</b>
+<p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Применяются к новым раундам. Каждый раунд может их переопределить.</p>
+<div style="display:grid;gap:var(--lq-space-3)">
+<div style="display:grid;grid-template-columns:1fr 130px;gap:var(--lq-space-3);align-items:center"><span style="font-size:var(--lq-text-sm)">Окно ответа</span><input class="lq-input" value="20 с" style="min-height:42px"></div>
+<div style="display:grid;grid-template-columns:1fr 130px;gap:var(--lq-space-3);align-items:center"><span style="font-size:var(--lq-text-sm)">Очки за верный ответ</span><input class="lq-input" value="1 000" style="min-height:42px;font-variant-numeric:tabular-nums"></div>
+<div style="display:grid;grid-template-columns:1fr 130px;gap:var(--lq-space-3);align-items:center"><span style="font-size:var(--lq-text-sm)">Бонус за скорость</span><input class="lq-input" value="до +500" style="min-height:42px"></div>
+<label class="lq-switch" aria-checked="true"><span class="lq-switch__track"><span class="lq-switch__thumb"></span></span><span class="lq-switch__label">Перемешивать варианты</span></label>
+<label class="lq-switch" aria-checked="true"><span class="lq-switch__track"><span class="lq-switch__thumb"></span></span><span class="lq-switch__label">Можно передумать до конца таймера</span></label>
+<label class="lq-switch" aria-checked="false"><span class="lq-switch__track"><span class="lq-switch__thumb"></span></span><span class="lq-switch__label">Показывать голоса залу во время вопроса</span></label>
+<label class="lq-switch" aria-checked="true"><span class="lq-switch__track"><span class="lq-switch__thumb"></span></span><span class="lq-switch__label">Пускать опоздавших после старта</span></label>
+</div>
+</div>
+</div>
+<div style="display:grid;gap:var(--lq-space-4);align-content:start">
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3)">
+<b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Экран зала</b>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--lq-space-3)">
+<label class="lq-field"><span class="lq-field__label">Название вечера</span><input class="lq-input" value="Квиз в Доме 36" style="min-height:44px"></label>
+<div><span class="lq-field__label">Логотип площадки</span><div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span style="width:44px;height:44px;border-radius:var(--lq-radius-md);background:var(--lq-indigo-100);display:grid;place-items:center;color:var(--lq-ink-3);font-size:var(--lq-text-xs)">лого</span><button class="lq-btn lq-btn--ghost" style="min-height:40px">Загрузить</button></div></div>
+</div>
+<div><span class="lq-field__label">Акцент экрана зала</span><div style="display:flex;gap:var(--lq-space-2)"><span style="width:44px;height:44px;border-radius:var(--lq-radius-md);background:var(--lq-primary);box-shadow:0 0 0 3px var(--lq-ink)"></span><span style="width:44px;height:44px;border-radius:var(--lq-radius-md);background:var(--lq-accent)"></span><span style="width:44px;height:44px;border-radius:var(--lq-radius-md);background:var(--lq-ans-d)"></span><span style="width:44px;height:44px;border-radius:var(--lq-radius-md);background:var(--lq-ans-e)"></span></div></div>
+<div style="border-radius:var(--lq-radius-md);overflow:hidden;border:4px solid #14122E">
+<div class="lq-stage" style="min-height:0;padding:var(--lq-space-5);gap:var(--lq-space-3)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span style="width:26px;height:26px;border-radius:6px;background:var(--lq-stage-bg-2)"></span><b style="font-family:var(--lq-font-display)">Квиз в Доме 36</b><span style="flex:1"></span><span class="lq-live"><span class="lq-live__dot"></span>раунд 2</span></div>
+<div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-xl)">Так зал увидит шапку</div>
+</div>
+</div>
+<label class="lq-switch" aria-checked="false"><span class="lq-switch__track"><span class="lq-switch__thumb"></span></span><span class="lq-switch__label">Показывать логотип livequiz в углу</span></label>
+</div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2)"><b style="font-family:var(--lq-font-display)">Профиль</b><div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span class="lq-avatar lq-avatar--lg">АЖ</span><div style="flex:1"><b>Айдос Жумабеков</b><div style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">47 игр · с ноября 2024</div></div><button class="lq-btn lq-btn--ghost" style="min-height:38px">Изменить</button></div></div>
+</div>
+</div>
+</div>
+</div></div>
+<div class="pv-caption">8 · Настройки ведущего</div>
+</div>
+
+<div style="display:flex;gap:var(--lq-space-6);flex-wrap:wrap">
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg);transform-origin:top left"><div style="height:900px;display:grid;grid-template-columns:240px 1fr;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="ha-side"><div style="display:flex;align-items:center;gap:var(--lq-space-2);padding:var(--lq-space-2) var(--lq-space-3) var(--lq-space-5)"><span style="width:28px;height:28px;border-radius:var(--lq-radius-sm);background:var(--lq-primary);display:grid;place-items:center"><svg width="15" height="15" fill="#fff" aria-hidden="true"><use href="#sh-triangle"></use></svg></span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">livequiz</b></div><div class="ha-nav">Главная</div><div class="ha-nav" data-sel="true">Библиотека</div><div class="ha-nav">Расписание</div><div class="ha-nav">Площадки</div><div class="ha-nav">Команды</div><div class="ha-nav">Разборы</div><div style="flex:1"></div><div class="ha-nav">Настройки</div></div>
+<div class="ha-main" style="display:grid;place-content:center;justify-items:center;text-align:center;gap:var(--lq-space-5)">
+<svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="var(--lq-indigo-300)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M7 9h10M7 13h6"></path></svg>
+<div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">Здесь будут ваши квизы</div><p style="margin:var(--lq-space-2) 0 0;color:var(--lq-ink-2);max-width:52ch">Сценарий переживает игру: после вечера он остаётся в библиотеке со статистикой и его можно провести на другой площадке.</p></div>
+<div style="display:flex;gap:var(--lq-space-3)"><button class="lq-btn lq-btn--lg">Собрать первый квиз</button><button class="lq-btn lq-btn--ghost lq-btn--lg">Взять шаблон «Классический вечер»</button></div>
+<p style="margin:0;color:var(--lq-ink-3);font-size:var(--lq-text-sm)">Шаблон — 6 готовых раундов на 34 вопроса, всё можно менять.</p>
+</div>
+</div></div>
+<div class="pv-caption">9а · Пустая библиотека</div>
+</div>
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:grid;grid-template-columns:240px 1fr;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="ha-side"><div style="display:flex;align-items:center;gap:var(--lq-space-2);padding:var(--lq-space-2) var(--lq-space-3) var(--lq-space-5)"><span style="width:28px;height:28px;border-radius:var(--lq-radius-sm);background:var(--lq-primary);display:grid;place-items:center"><svg width="15" height="15" fill="#fff" aria-hidden="true"><use href="#sh-triangle"></use></svg></span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">livequiz</b></div><div class="ha-nav">Главная</div><div class="ha-nav">Библиотека</div><div class="ha-nav" data-sel="true">Расписание</div><div class="ha-nav">Площадки</div><div class="ha-nav">Команды</div><div class="ha-nav">Разборы</div><div style="flex:1"></div><div class="ha-nav">Настройки</div></div>
+<div class="ha-main" style="display:grid;place-content:center;justify-items:center;text-align:center;gap:var(--lq-space-5)">
+<svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="var(--lq-indigo-300)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>
+<div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">Игр пока не запланировано</div><p style="margin:var(--lq-space-2) 0 0;color:var(--lq-ink-2);max-width:52ch">Дата и площадка нужны не для порядка: по ним считается, каким командам вопросы уже задавали и сколько времени займёт вечер.</p></div>
+<button class="lq-btn lq-btn--lg">Запланировать игру</button>
+</div>
+</div></div>
+<div class="pv-caption">9б · Пустое расписание</div>
+</div>
+<div>
+<div class="pv-screen" style="width:1440px;background:var(--lq-bg)"><div style="height:900px;display:grid;grid-template-columns:240px 1fr;background:var(--lq-bg);font-family:var(--lq-font-ui);color:var(--lq-ink)">
+<div class="ha-side"><div style="display:flex;align-items:center;gap:var(--lq-space-2);padding:var(--lq-space-2) var(--lq-space-3) var(--lq-space-5)"><span style="width:28px;height:28px;border-radius:var(--lq-radius-sm);background:var(--lq-primary);display:grid;place-items:center"><svg width="15" height="15" fill="#fff" aria-hidden="true"><use href="#sh-triangle"></use></svg></span><b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">livequiz</b></div><div class="ha-nav">Главная</div><div class="ha-nav">Библиотека</div><div class="ha-nav">Расписание</div><div class="ha-nav">Площадки</div><div class="ha-nav" data-sel="true">Команды</div><div class="ha-nav">Разборы</div><div style="flex:1"></div><div class="ha-nav">Настройки</div></div>
+<div class="ha-main" style="display:grid;place-content:center;justify-items:center;text-align:center;gap:var(--lq-space-5)">
+<svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="var(--lq-indigo-300)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2 20a7 7 0 0 1 14 0"></path><circle cx="17.5" cy="9.5" r="2.5"></circle><path d="M16 20a6 6 0 0 1 6-6"></path></svg>
+<div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">Постоянные команды появятся сами</div><p style="margin:var(--lq-space-2) 0 0;color:var(--lq-ink-2);max-width:56ch">Команда попадает сюда, когда сыграет у вас второй раз. С этого момента система помнит, какие вопросы ей уже задавали, и предупредит о повторе при сборке следующего вечера.</p></div>
+<button class="lq-btn lq-btn--ghost lq-btn--lg">Провести первую игру</button>
+</div>
+</div></div>
+<div class="pv-caption">9в · Пустой список команд</div>
+</div>
+</div>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showNotes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Витрина&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return { showNotes: String(this.props.showNotes ?? true) };
+  }
+}
+</script>
+</body>
+</html>

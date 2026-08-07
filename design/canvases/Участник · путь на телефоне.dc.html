@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="lq.css">
+<style>
+[data-wrap="true"] .pv-scroll > .pv-row { flex-wrap: wrap; }
+[data-notes="false"] .pv-note { display: none; }
+.pv-scroll::-webkit-scrollbar { height: 10px; }
+.pv-scroll::-webkit-scrollbar-thumb { background: var(--lq-indigo-200); border-radius: 999px; }
+a { color: var(--lq-primary); }
+a:hover { color: var(--lq-primary-hover); }
+</style>
+</helmet>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+<symbol id="sh-triangle" viewBox="0 0 24 24"><path d="M12 3 22 21H2z"></path></symbol>
+<symbol id="sh-diamond" viewBox="0 0 24 24"><path d="M12 2 22 12 12 22 2 12z"></path></symbol>
+<symbol id="sh-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"></circle></symbol>
+<symbol id="sh-square" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2.5"></rect></symbol>
+<symbol id="sh-star" viewBox="0 0 24 24"><path d="m12 2 2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"></path></symbol>
+<symbol id="sh-hex" viewBox="0 0 24 24"><path d="M12 2 21 7v10l-9 5-9-5V7z"></path></symbol>
+</svg>
+
+<div class="pv-head">
+<h1>Участник · путь на телефоне</h1>
+<p>Двадцать семь состояний одного телефона за вечер: вход в игру, восемь форматов раунда, реакция на ответ и сбои. Меню и навигации нет ни на одном экране — телефон показывает ровно то, что происходит в зале сейчас.</p>
+</div>
+
+<div class="pv-wrap" data-wrap="{{ wrapRows }}" data-notes="{{ showNotes }}">
+
+<section class="pv-section">
+<h2>Вход и команда</h2>
+<div class="pv-scroll"><div class="pv-row">
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player">
+<div class="lq-player__body" style="justify-content:center;gap:var(--lq-space-6)">
+<div style="display:flex;align-items:center;justify-content:center;gap:var(--lq-space-2)"><span style="width:34px;height:34px;border-radius:var(--lq-radius-md);background:var(--lq-primary);display:grid;place-items:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><use href="#sh-triangle"></use></svg></span><span style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">livequiz</span></div>
+<div style="text-align:center"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl);line-height:var(--lq-leading-tight)">Введите код игры</div><p style="margin:var(--lq-space-1) 0 0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Шесть цифр с экрана в зале</p></div>
+<div class="lq-code"><div class="lq-code__cell" data-active="true"></div><div class="lq-code__cell"></div><div class="lq-code__cell"></div><div class="lq-code__cell"></div><div class="lq-code__cell"></div><div class="lq-code__cell"></div></div>
+<div style="margin-top:auto;display:grid;gap:var(--lq-space-3)"><button class="lq-btn lq-btn--xl lq-btn--block" disabled>Войти в игру</button><button class="lq-btn lq-btn--accent lq-btn--xl lq-btn--block"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><path d="M14 14h3v3h-3zM20 14v3M14 20h3M20 20h.01"></path></svg>Сканировать QR</button><p style="text-align:center;margin:0;color:var(--lq-ink-3);font-size:var(--lq-text-xs)">QR висит на сцене и на каждом столе</p></div>
+</div></div></div></div><div class="pv-caption">1 · Стартовый экран</div></div>
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player">
+<div class="lq-player__body" style="justify-content:center;gap:var(--lq-space-6)">
+<div style="text-align:center;font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">Введите код игры</div>
+<div>
+<div class="lq-code"><div class="lq-code__cell" data-filled="true" style="border-color:var(--lq-danger)">4</div><div class="lq-code__cell" data-filled="true" style="border-color:var(--lq-danger)">8</div><div class="lq-code__cell" data-filled="true" style="border-color:var(--lq-danger)">1</div><div class="lq-code__cell" data-filled="true" style="border-color:var(--lq-danger)">2</div><div class="lq-code__cell" data-filled="true" style="border-color:var(--lq-danger)">0</div><div class="lq-code__cell" data-filled="true" style="border-color:var(--lq-danger)">3</div></div>
+<div class="lq-field__error" style="justify-content:center;margin-top:var(--lq-space-3)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v6M12 16.5h.01"></path></svg>Такой игры нет. Проверьте код на экране</div>
+</div>
+<div style="margin-top:auto;display:grid;gap:var(--lq-space-3)"><button class="lq-btn lq-btn--xl lq-btn--block">Ввести заново</button><button class="lq-btn lq-btn--accent lq-btn--xl lq-btn--block">Сканировать QR</button></div>
+</div></div></div></div><div class="pv-caption">2 · Код не подошёл</div></div>
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player">
+<div class="lq-player__top"><span class="lq-live"><span class="lq-live__dot"></span>идёт игра</span></div>
+<div class="lq-player__body" style="justify-content:center;gap:var(--lq-space-5)">
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3)">
+<span class="lq-badge lq-badge--warning">вечер уже начался</span>
+<div style="font-family:var(--lq-font-display);font-weight:800;font-size:var(--lq-text-xl);line-height:var(--lq-leading-snug)">Вы пропустили 2 раунда</div>
+<p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Очки за них не начисляются и доиграть их нельзя. Сейчас идёт раунд 3 из 6 — вы включаетесь со следующего вопроса.</p>
+<div style="display:grid;gap:var(--lq-space-2);padding-top:var(--lq-space-2);border-top:1px solid var(--lq-border)"><div style="display:flex;justify-content:space-between;font-size:var(--lq-text-sm);color:var(--lq-ink-2)"><span>Раунд 1 · Разминка</span><b>пропущен</b></div><div style="display:flex;justify-content:space-between;font-size:var(--lq-text-sm);color:var(--lq-ink-2)"><span>Раунд 2 · Музыка</span><b>пропущен</b></div><div style="display:flex;justify-content:space-between;font-size:var(--lq-text-sm);color:var(--lq-success)"><span>Раунд 3 · Кино</span><b>идёт сейчас</b></div></div>
+</div>
+<div style="margin-top:auto;display:grid;gap:var(--lq-space-3)"><button class="lq-btn lq-btn--xl lq-btn--block">Всё равно войти</button><button class="lq-btn lq-btn--ghost lq-btn--block">Назад к коду</button></div>
+</div></div></div></div><div class="pv-caption">3 · Вход посреди вечера</div></div>
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player">
+<div class="lq-player__wait">
+<svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="var(--lq-ink-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+<h2>Вход закрыт</h2>
+<p>Ведущий закрыл регистрацию после второго раунда — это правило вечера, а не ошибка связи.</p>
+<div class="lq-card" style="text-align:left;display:grid;gap:var(--lq-space-2);width:100%">
+<div style="font-weight:700;font-size:var(--lq-text-sm)">Что можно сделать</div>
+<p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Подойти к ведущему — он может впустить вас вручную с его пульта. Код игры <b>481203</b> назовите ему вслух.</p>
+</div>
+<button class="lq-btn lq-btn--ghost lq-btn--block">Ввести другой код</button>
+</div>
+</div></div></div><div class="pv-caption">4 · Игра закрыта для входа</div></div>
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player">
+<div class="lq-player__top"><span class="lq-badge lq-badge--neutral">игра 481203</span><span style="margin-left:auto;font-size:var(--lq-text-xs);color:var(--lq-ink-3)">шаг 1 из 2</span></div>
+<div class="lq-player__body" style="gap:var(--lq-space-5)">
+<label class="lq-field"><span class="lq-field__label">Как вас зовут</span><input class="lq-input" value="Алия" style="font-size:var(--lq-text-lg);font-weight:600"></label>
+<div>
+<span class="lq-field__label">Выберите команду</span>
+<div style="display:grid;gap:var(--lq-space-2)">
+<button class="lq-round" style="grid-template-columns:auto 1fr auto;align-items:center;display:grid"><span class="lq-avatar" style="background:var(--lq-ans-b)">ЖБ</span><span><span class="lq-round__name">Жеті батыр</span><span class="lq-round__desc">4 участника</span></span><span class="lq-badge lq-badge--neutral">есть места</span></button>
+<button class="lq-round" aria-pressed="true" style="grid-template-columns:auto 1fr auto;align-items:center;display:grid"><span class="lq-avatar" style="background:var(--lq-ans-d)">АТ</span><span><span class="lq-round__name">Алтын тобы</span><span class="lq-round__desc">3 участника</span></span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--lq-primary)" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"></path></svg></button>
+<button class="lq-round" style="grid-template-columns:auto 1fr auto;align-items:center;display:grid;opacity:.55"><span class="lq-avatar" style="background:var(--lq-ans-c)">КС</span><span><span class="lq-round__name">Көк сұңқар</span><span class="lq-round__desc">6 участников</span></span><span class="lq-badge lq-badge--neutral">полная</span></button>
+</div>
+</div>
+<div style="margin-top:auto;display:grid;gap:var(--lq-space-3)"><button class="lq-btn lq-btn--xl lq-btn--block">Войти в «Алтын тобы»</button><button class="lq-btn lq-btn--quiet lq-btn--block">Создать свою команду</button></div>
+</div></div></div></div><div class="pv-caption">5 · Имя и выбор команды</div></div>
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player">
+<div class="lq-player__top"><span class="lq-badge lq-badge--neutral">игра 481203</span><span style="margin-left:auto;font-size:var(--lq-text-xs);color:var(--lq-ink-3)">шаг 2 из 2</span></div>
+<div class="lq-player__body" style="gap:var(--lq-space-5)">
+<div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">Своя команда</div>
+<label class="lq-field"><span class="lq-field__label">Название</span><input class="lq-input" value="Тобылғы" style="font-size:var(--lq-text-lg);font-weight:600"></label>
+<div>
+<span class="lq-field__label">Цвет команды</span>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--lq-space-3)">
+<button style="min-height:72px;border:0;border-radius:var(--lq-radius-lg);background:var(--lq-ans-a);box-shadow:var(--lq-press) var(--lq-ans-a-deep);display:grid;place-items:center;cursor:pointer"><svg width="26" height="26" fill="rgba(255,255,255,.92)" aria-hidden="true"><use href="#sh-triangle"></use></svg></button>
+<button style="min-height:72px;border:0;border-radius:var(--lq-radius-lg);background:var(--lq-ans-b);box-shadow:var(--lq-press) var(--lq-ans-b-deep);display:grid;place-items:center;cursor:pointer"><svg width="26" height="26" fill="rgba(255,255,255,.92)" aria-hidden="true"><use href="#sh-diamond"></use></svg></button>
+<button style="min-height:72px;border:0;border-radius:var(--lq-radius-lg);background:var(--lq-ans-c);box-shadow:var(--lq-press) var(--lq-ans-c-deep);display:grid;place-items:center;cursor:pointer"><svg width="26" height="26" fill="rgba(255,255,255,.92)" aria-hidden="true"><use href="#sh-circle"></use></svg></button>
+<button style="min-height:72px;border:0;border-radius:var(--lq-radius-lg);background:var(--lq-ans-d);box-shadow:0 1px 0 0 var(--lq-ans-d-deep),0 0 0 4px var(--lq-ink);transform:translateY(4px);display:grid;place-items:center;cursor:pointer"><svg width="26" height="26" fill="#fff" aria-hidden="true"><use href="#sh-square"></use></svg></button>
+<button style="min-height:72px;border:0;border-radius:var(--lq-radius-lg);background:var(--lq-ans-e);box-shadow:var(--lq-press) var(--lq-ans-e-deep);display:grid;place-items:center;cursor:pointer"><svg width="26" height="26" fill="rgba(255,255,255,.92)" aria-hidden="true"><use href="#sh-star"></use></svg></button>
+<button style="min-height:72px;border:0;border-radius:var(--lq-radius-lg);background:var(--lq-ans-f);box-shadow:var(--lq-press) var(--lq-ans-f-deep);display:grid;place-items:center;cursor:pointer"><svg width="26" height="26" fill="rgba(255,255,255,.92)" aria-hidden="true"><use href="#sh-hex"></use></svg></button>
+</div>
+<p style="margin:var(--lq-space-2) 0 0;color:var(--lq-ink-3);font-size:var(--lq-text-xs)">Цвет и фигура — так команду называют со сцены</p>
+</div>
+<div style="margin-top:auto"><button class="lq-btn lq-btn--xl lq-btn--block">Создать и войти</button></div>
+</div></div></div></div><div class="pv-caption">6 · Создание команды</div></div>
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player">
+<div class="lq-player__top"><span class="lq-live"><span class="lq-live__dot"></span>в лобби</span><span style="margin-left:auto" class="lq-badge lq-badge--neutral">21 в игре</span></div>
+<div class="lq-player__body" style="gap:var(--lq-space-5)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span class="lq-avatar lq-avatar--lg" style="background:var(--lq-ans-d)"><svg width="24" height="24" fill="#fff" aria-hidden="true"><use href="#sh-square"></use></svg></span><div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl);line-height:1.1">Тобылғы</div><div style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">зелёный квадрат · 4 участника</div></div></div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-3);padding:var(--lq-space-4)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span class="lq-avatar" style="background:var(--lq-ans-d)">А</span><span style="font-weight:700">Алия</span><span class="lq-badge" style="margin-left:auto">это вы</span></div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span class="lq-avatar" style="background:var(--lq-ans-d)">Д</span><span style="font-weight:700">Дамир</span><span class="lq-badge lq-badge--neutral" style="margin-left:auto">капитан</span></div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span class="lq-avatar" style="background:var(--lq-ans-d)">С</span><span style="font-weight:700">Сая</span></div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-3)"><span class="lq-avatar" style="background:var(--lq-ans-d)">Н</span><span style="font-weight:700">Нурлан</span></div>
+</div>
+<div class="lq-player__wait" style="flex:1;padding:var(--lq-space-4)">
+<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--lq-primary)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+<p style="margin:0">Ждём ведущего. Игра начнётся с его пульта — телефон обновится сам.</p>
+</div>
+</div></div></div></div><div class="pv-caption">7 · Лобби команды</div></div>
+
+</div></div>
+<p class="pv-note">Кнопка «Всё равно войти» на экране 3 стоит рядом со списком пропущенных раундов, потому что в зале человек спрашивает соседа «а я много потерял?» — ответ должен быть на том же экране, что и решение, иначе он идёт к ведущему и задерживает вопрос. Пропущенные раунды перечислены поимённо, а не числом, чтобы опоздавший понял, что именно нельзя доиграть.</p>
+</section>
+
+<section class="pv-section">
+<h2>Восемь форматов раунда</h2>
+<div class="pv-scroll"><div class="pv-row">
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player">
+<div class="lq-player__top"><span class="lq-badge lq-badge--neutral">Раунд 3 · вопрос 2</span><span style="margin-left:auto" class="lq-timer"><span class="lq-timer__num">14</span></span></div>
+<div style="padding:0 var(--lq-space-4)"><div class="lq-timer-bar"><div class="lq-timer-bar__fill" style="width:70%"></div></div></div>
+<div class="lq-player__body">
+<div style="font-family:var(--lq-font-display);font-weight:800;font-size:var(--lq-text-xl);line-height:var(--lq-leading-snug)">В каком году Астана стала столицей Казахстана?</div>
+<div class="lq-player__answers"><div class="lq-tiles">
+<button class="lq-tile lq-tile--a"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-triangle"></use></svg><span class="lq-tile__text">1994</span></button>
+<button class="lq-tile lq-tile--b"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-diamond"></use></svg><span class="lq-tile__text">1997</span></button>
+<button class="lq-tile lq-tile--c"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-circle"></use></svg><span class="lq-tile__text">1998</span></button>
+<button class="lq-tile lq-tile--d"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-square"></use></svg><span class="lq-tile__text">2001</span></button>
+</div></div>
+</div></div></div></div><div class="pv-caption">8 · choice · 4 плитки</div></div>
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player">
+<div class="lq-player__top"><span class="lq-badge lq-badge--neutral">Раунд 3 · вопрос 3</span><span style="margin-left:auto" class="lq-timer"><span class="lq-timer__num">21</span></span></div>
+<div style="padding:0 var(--lq-space-4)"><div class="lq-timer-bar"><div class="lq-timer-bar__fill" style="width:85%"></div></div></div>
+<div class="lq-player__body">
+<div style="font-family:var(--lq-font-display);font-weight:800;font-size:var(--lq-text-lg);line-height:var(--lq-leading-snug)">Какой из городов стоит на берегу Каспийского моря?</div>
+<div class="lq-player__answers"><div class="lq-tiles lq-tiles--six">
+<button class="lq-tile lq-tile--a" style="min-height:70px;font-size:var(--lq-text-base)"><svg class="lq-tile__shape" style="width:22px;height:22px" aria-hidden="true"><use href="#sh-triangle"></use></svg><span class="lq-tile__text">Актау</span></button>
+<button class="lq-tile lq-tile--b" style="min-height:70px;font-size:var(--lq-text-base)"><svg class="lq-tile__shape" style="width:22px;height:22px" aria-hidden="true"><use href="#sh-diamond"></use></svg><span class="lq-tile__text">Атырау</span></button>
+<button class="lq-tile lq-tile--c" style="min-height:70px;font-size:var(--lq-text-base)"><svg class="lq-tile__shape" style="width:22px;height:22px" aria-hidden="true"><use href="#sh-circle"></use></svg><span class="lq-tile__text">Актобе</span></button>
+<button class="lq-tile lq-tile--d" style="min-height:70px;font-size:var(--lq-text-base)"><svg class="lq-tile__shape" style="width:22px;height:22px" aria-hidden="true"><use href="#sh-square"></use></svg><span class="lq-tile__text">Тараз</span></button>
+<button class="lq-tile lq-tile--e" style="min-height:70px;font-size:var(--lq-text-base)"><svg class="lq-tile__shape" style="width:22px;height:22px" aria-hidden="true"><use href="#sh-star"></use></svg><span class="lq-tile__text">Орал</span></button>
+<button class="lq-tile lq-tile--f" style="min-height:70px;font-size:var(--lq-text-base)"><svg class="lq-tile__shape" style="width:22px;height:22px" aria-hidden="true"><use href="#sh-hex"></use></svg><span class="lq-tile__text">Семей</span></button>
+</div></div>
+</div></div></div></div><div class="pv-caption">9 · choice · 6 плиток</div></div>
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player">
+<div class="lq-player__top"><span class="lq-badge lq-badge--neutral">Раунд 3 · вопрос 4</span><span style="margin-left:auto" class="lq-timer"><span class="lq-timer__num">9</span></span></div>
+<div style="padding:0 var(--lq-space-4)"><div class="lq-timer-bar"><div class="lq-timer-bar__fill" style="width:45%"></div></div></div>
+<div class="lq-player__body">
+<div style="font-family:var(--lq-font-display);font-weight:800;font-size:var(--lq-text-xl);line-height:var(--lq-leading-snug)">Байконур арендован Россией до 2050 года.</div>
+<div class="lq-player__answers"><div class="lq-tiles lq-tiles--single">
+<button class="lq-tile lq-tile--d" style="min-height:150px;justify-content:center;font-size:var(--lq-text-3xl);font-weight:900"><svg class="lq-tile__shape" style="width:38px;height:38px" aria-hidden="true"><use href="#sh-square"></use></svg><span class="lq-tile__text" style="flex:none">Правда</span></button>
+<button class="lq-tile lq-tile--a" style="min-height:150px;justify-content:center;font-size:var(--lq-text-3xl);font-weight:900"><svg class="lq-tile__shape" style="width:38px;height:38px" aria-hidden="true"><use href="#sh-triangle"></use></svg><span class="lq-tile__text" style="flex:none">Ложь</span></button>
+</div></div>
+</div></div></div></div><div class="pv-caption">10 · truefalse</div></div>
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player">
+<div class="lq-player__top"><span class="lq-badge lq-badge--neutral">Раунд 4 · музыкальный</span><span style="margin-left:auto" class="lq-timer"><span class="lq-timer__num">18</span></span></div>
+<div style="padding:0 var(--lq-space-4)"><div class="lq-timer-bar"><div class="lq-timer-bar__fill" style="width:60%"></div></div></div>
+<div class="lq-player__body">
+<div class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);background:var(--lq-accent-soft);border-color:transparent">
+<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--lq-accent-deep)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+<div><div style="font-family:var(--lq-font-display);font-weight:800">Слушайте отрывок</div><div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">Звук идёт из зала. На телефон он не передаётся — не поднимайте громкость.</div></div>
+</div>
+<div style="display:flex;justify-content:center;align-items:flex-end;gap:5px;height:56px">
+<span style="width:6px;height:24px;background:var(--lq-indigo-300);border-radius:3px"></span><span style="width:6px;height:44px;background:var(--lq-primary);border-radius:3px"></span><span style="width:6px;height:16px;background:var(--lq-indigo-300);border-radius:3px"></span><span style="width:6px;height:52px;background:var(--lq-primary);border-radius:3px"></span><span style="width:6px;height:30px;background:var(--lq-indigo-300);border-radius:3px"></span><span style="width:6px;height:40px;background:var(--lq-primary);border-radius:3px"></span><span style="width:6px;height:20px;background:var(--lq-indigo-300);border-radius:3px"></span><span style="width:6px;height:36px;background:var(--lq-indigo-300);border-radius:3px"></span>
+</div>
+<div style="font-family:var(--lq-font-display);font-weight:800;font-size:var(--lq-text-lg)">Чей это голос?</div>
+<div class="lq-player__answers"><div class="lq-tiles">
+<button class="lq-tile lq-tile--a"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-triangle"></use></svg><span class="lq-tile__text">Батырхан</span></button>
+<button class="lq-tile lq-tile--b"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-diamond"></use></svg><span class="lq-tile__text">Роза</span></button>
+<button class="lq-tile lq-tile--c"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-circle"></use></svg><span class="lq-tile__text">Димаш</span></button>
+<button class="lq-tile lq-tile--d"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-square"></use></svg><span class="lq-tile__text">Кайрат</span></button>
+</div></div>
+</div></div></div></div><div class="pv-caption">11 · audio</div></div>
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player">
+<div class="lq-player__top"><span class="lq-badge lq-badge--neutral">Раунд 5 · вопрос 1</span><span style="margin-left:auto" class="lq-timer"><span class="lq-timer__num">16</span></span></div>
+<div style="padding:0 var(--lq-space-4)"><div class="lq-timer-bar"><div class="lq-timer-bar__fill" style="width:55%"></div></div></div>
+<div class="lq-player__body">
+<div class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);background:var(--lq-primary-soft);border-color:transparent">
+<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--lq-primary-hover)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2"></rect><path d="M8 21h8M12 17v4"></path></svg>
+<div><div style="font-family:var(--lq-font-display);font-weight:800">Смотрите на экран</div><div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">Картинка показывается только в зале. На телефон она не приходит.</div></div>
+</div>
+<div style="font-family:var(--lq-font-display);font-weight:800;font-size:var(--lq-text-lg)">Что за здание на снимке?</div>
+<div class="lq-player__answers"><div class="lq-tiles">
+<button class="lq-tile lq-tile--a"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-triangle"></use></svg><span class="lq-tile__text">Байтерек</span></button>
+<button class="lq-tile lq-tile--b"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-diamond"></use></svg><span class="lq-tile__text">Хан Шатыр</span></button>
+<button class="lq-tile lq-tile--c"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-circle"></use></svg><span class="lq-tile__text">Дворец мира</span></button>
+<button class="lq-tile lq-tile--d"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-square"></use></svg><span class="lq-tile__text">Астана Опера</span></button>
+</div></div>
+</div></div></div></div><div class="pv-caption">12 · image</div></div>
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player">
+<div class="lq-player__top"><span class="lq-badge lq-badge--neutral">Раунд 5 · вопрос 2</span><span style="margin-left:auto" class="lq-timer"><span class="lq-timer__num">25</span></span></div>
+<div style="padding:0 var(--lq-space-4)"><div class="lq-timer-bar"><div class="lq-timer-bar__fill" style="width:80%"></div></div></div>
+<div class="lq-player__body">
+<div style="font-family:var(--lq-font-display);font-weight:800;font-size:var(--lq-text-xl);line-height:var(--lq-leading-snug)">Как называется самое большое озеро Казахстана?</div>
+<span class="lq-badge lq-badge--neutral">открытый ответ · одна попытка</span>
+<div class="lq-player__answers" style="display:grid;gap:var(--lq-space-3)">
+<label class="lq-field"><span class="lq-field__label">Ваш ответ</span><input class="lq-input" value="Балхаш" style="min-height:64px;font-family:var(--lq-font-display);font-size:var(--lq-text-2xl);font-weight:800;border-color:var(--lq-primary);box-shadow:0 0 0 4px var(--lq-indigo-100)"></label>
+<p style="margin:0;color:var(--lq-ink-3);font-size:var(--lq-text-xs)">Регистр и лишние пробелы не важны. Ошибку в одну букву ведущий засчитает вручную.</p>
+<button class="lq-btn lq-btn--xl lq-btn--block">Отправить ответ</button>
+</div>
+</div></div></div></div><div class="pv-caption">13 · text · открытый ответ</div></div>
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player">
+<div class="lq-player__top"><span class="lq-badge lq-badge--neutral">Раунд 6 · вопрос 1</span><span style="margin-left:auto" class="lq-timer"><span class="lq-timer__num">33</span></span></div>
+<div style="padding:0 var(--lq-space-4)"><div class="lq-timer-bar"><div class="lq-timer-bar__fill" style="width:75%"></div></div></div>
+<div class="lq-player__body">
+<div style="font-family:var(--lq-font-display);font-weight:800;font-size:var(--lq-text-lg);line-height:var(--lq-leading-snug)">Расставьте города с запада на восток</div>
+<div class="lq-player__answers" style="display:grid;gap:var(--lq-space-3)">
+<div style="display:grid;gap:var(--lq-space-2)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-3) var(--lq-space-4);background:var(--lq-surface);border:1px solid var(--lq-border);border-radius:var(--lq-radius-md);min-height:60px"><span style="font-family:var(--lq-font-display);font-weight:900;color:var(--lq-ink-3);width:18px">1</span><span style="font-weight:700;flex:1">Атырау</span><svg width="20" height="20" viewBox="0 0 24 24" stroke="var(--lq-ink-3)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 8h.01M8 12h.01M8 16h.01M16 8h.01M16 12h.01M16 16h.01"></path></svg></div>
+<div style="height:60px;border:2px dashed var(--lq-indigo-300);border-radius:var(--lq-radius-md);background:var(--lq-indigo-100)"></div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-3) var(--lq-space-4);background:var(--lq-surface);border:1px solid var(--lq-border);border-radius:var(--lq-radius-md);min-height:60px"><span style="font-family:var(--lq-font-display);font-weight:900;color:var(--lq-ink-3);width:18px">3</span><span style="font-weight:700;flex:1">Караганда</span><svg width="20" height="20" viewBox="0 0 24 24" stroke="var(--lq-ink-3)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 8h.01M8 12h.01M8 16h.01M16 8h.01M16 12h.01M16 16h.01"></path></svg></div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-3) var(--lq-space-4);background:var(--lq-surface);border:1px solid var(--lq-border);border-radius:var(--lq-radius-md);min-height:60px"><span style="font-family:var(--lq-font-display);font-weight:900;color:var(--lq-ink-3);width:18px">4</span><span style="font-weight:700;flex:1">Өскемен</span><svg width="20" height="20" viewBox="0 0 24 24" stroke="var(--lq-ink-3)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 8h.01M8 12h.01M8 16h.01M16 8h.01M16 12h.01M16 16h.01"></path></svg></div>
+<div style="position:relative;display:flex;align-items:center;gap:var(--lq-space-3);padding:var(--lq-space-3) var(--lq-space-4);background:var(--lq-surface);border:2px solid var(--lq-primary);border-radius:var(--lq-radius-md);min-height:60px;box-shadow:var(--lq-shadow-lg);transform:translateY(-116px) rotate(-1.4deg) scale(1.03);z-index:2"><span style="font-family:var(--lq-font-display);font-weight:900;color:var(--lq-primary);width:18px">2</span><span style="font-weight:700;flex:1">Кызылорда</span><svg width="20" height="20" viewBox="0 0 24 24" stroke="var(--lq-primary)" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M8 8h.01M8 12h.01M8 16h.01M16 8h.01M16 12h.01M16 16h.01"></path></svg></div>
+</div>
+<button class="lq-btn lq-btn--xl lq-btn--block" style="margin-top:-52px">Зафиксировать порядок</button>
+</div>
+</div></div></div></div><div class="pv-caption">14 · order · перетаскивание</div></div>
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player">
+<div class="lq-player__top"><span class="lq-badge lq-badge--neutral">Раунд 6 · вопрос 2</span><span style="margin-left:auto" class="lq-timer"><span class="lq-timer__num">20</span></span></div>
+<div style="padding:0 var(--lq-space-4)"><div class="lq-timer-bar"><div class="lq-timer-bar__fill" style="width:65%"></div></div></div>
+<div class="lq-player__body">
+<div style="font-family:var(--lq-font-display);font-weight:800;font-size:var(--lq-text-lg);line-height:var(--lq-leading-snug)">Сколько километров от Алматы до Астаны по трассе?</div>
+<span class="lq-badge lq-badge--neutral">чем ближе — тем больше очков</span>
+<div class="lq-player__answers" style="display:grid;gap:var(--lq-space-3)">
+<div style="text-align:center;padding:var(--lq-space-5) var(--lq-space-4);background:var(--lq-surface);border:2px solid var(--lq-primary);border-radius:var(--lq-radius-lg);box-shadow:0 0 0 4px var(--lq-indigo-100)">
+<div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-5xl);line-height:1;font-variant-numeric:tabular-nums">1 200</div>
+<div style="color:var(--lq-ink-3);font-size:var(--lq-text-sm);margin-top:var(--lq-space-1)">километров</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--lq-space-2)">
+<button class="lq-btn lq-btn--quiet" style="min-height:52px">−100</button><button class="lq-btn lq-btn--quiet" style="min-height:52px">−10</button><button class="lq-btn lq-btn--quiet" style="min-height:52px">+10</button>
+</div>
+<button class="lq-btn lq-btn--xl lq-btn--block">Отправить число</button>
+</div>
+</div></div></div></div><div class="pv-caption">15 · estimate</div></div>
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player">
+<div class="lq-player__top"><span class="lq-badge lq-badge--warning">ставка до вопроса</span><span style="margin-left:auto" class="lq-timer"><span class="lq-timer__num">12</span></span></div>
+<div style="padding:0 var(--lq-space-4)"><div class="lq-timer-bar"><div class="lq-timer-bar__fill" style="width:50%"></div></div></div>
+<div class="lq-player__body">
+<div style="text-align:center"><div style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Баланс команды</div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-4xl);font-variant-numeric:tabular-nums;line-height:1.1">2 400</div></div>
+<p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm);text-align:center">Вопрос вы ещё не видели. Известна только тема: <b>кино</b>.</p>
+<div class="lq-player__answers" style="display:grid;gap:var(--lq-space-3)">
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--lq-space-2)">
+<button class="lq-btn lq-btn--quiet" style="min-height:56px;font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">100</button>
+<button class="lq-btn lq-btn--quiet" style="min-height:56px;font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">300</button>
+<button class="lq-btn" style="min-height:56px;font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">500</button>
+</div>
+<button class="lq-btn lq-btn--accent lq-btn--xl lq-btn--block">Ва-банк · 2 400</button>
+<p style="margin:0;color:var(--lq-ink-3);font-size:var(--lq-text-xs);text-align:center">Проигрыш списывает ставку целиком. Изменить её после показа вопроса нельзя.</p>
+</div>
+</div></div></div></div><div class="pv-caption">16 · bet · ставка до вопроса</div></div>
+
+</div></div>
+<p class="pv-note">У всех восьми форматов зона действия прижата к низу экрана (<code>.lq-player__answers</code> с <code>margin-top:auto</code>), поэтому вопрос меняет высоту, а плитки, поле и кнопка остаются под тем же пальцем — при 20-секундном таймере переучиваться на каждом формате некогда. В audio и image верхняя плашка сразу объясняет, почему на телефоне нет звука и картинки: без неё участник тратит секунды на попытку прибавить громкость.</p>
+</section>
+
+<section class="pv-section">
+<h2>Вокруг ответа</h2>
+<div class="pv-scroll"><div class="pv-row">
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player lq-player--dim">
+<div class="lq-player__top"><span class="lq-badge lq-badge--neutral">Раунд 4 · музыкальный</span></div>
+<div class="lq-player__wait">
+<svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="var(--lq-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+<h2 style="color:var(--lq-stage-ink)">Приготовьтесь</h2>
+<p>Смотрите на экран. Вопрос появится здесь, когда ведущий его откроет.</p>
+</div>
+</div></div></div><div class="pv-caption">17 · До открытия вопроса</div></div>
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player">
+<div class="lq-player__top"><span class="lq-badge lq-badge--neutral">Раунд 3 · вопрос 2</span><span style="margin-left:auto" class="lq-timer"><span class="lq-timer__num">8</span></span></div>
+<div style="padding:0 var(--lq-space-4)"><div class="lq-timer-bar"><div class="lq-timer-bar__fill" style="width:40%"></div></div></div>
+<div class="lq-player__wait">
+<svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="var(--lq-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m8 12.5 2.7 2.7L16 9.5"></path></svg>
+<h2>Ответ принят</h2>
+<p>Вы выбрали <b>ромб — 1997</b>. Ждём остальных.</p>
+<span class="lq-badge lq-badge--neutral">ответили 14 из 21</span>
+</div>
+</div></div></div><div class="pv-caption">18 · Ответ отправлен</div></div>
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player">
+<div class="lq-player__top"><span class="lq-badge lq-badge--danger">последние секунды</span><span style="margin-left:auto" class="lq-timer"><span class="lq-timer__num" data-urgent="true">3</span></span></div>
+<div style="padding:0 var(--lq-space-4)"><div class="lq-timer-bar"><div class="lq-timer-bar__fill" data-urgent="true" style="width:12%"></div></div></div>
+<div class="lq-player__body">
+<div style="font-family:var(--lq-font-display);font-weight:800;font-size:var(--lq-text-xl);line-height:var(--lq-leading-snug)">В каком году Астана стала столицей Казахстана?</div>
+<div class="lq-player__answers"><div class="lq-tiles">
+<button class="lq-tile lq-tile--a"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-triangle"></use></svg><span class="lq-tile__text">1994</span></button>
+<button class="lq-tile lq-tile--b"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-diamond"></use></svg><span class="lq-tile__text">1997</span></button>
+<button class="lq-tile lq-tile--c"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-circle"></use></svg><span class="lq-tile__text">1998</span></button>
+<button class="lq-tile lq-tile--d"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-square"></use></svg><span class="lq-tile__text">2001</span></button>
+</div></div>
+</div></div></div></div><div class="pv-caption">19 · Последние 3 секунды</div></div>
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player">
+<div class="lq-player__top"><span class="lq-badge lq-badge--neutral">Раунд 3 · вопрос 2</span><span style="margin-left:auto" class="lq-badge lq-badge--danger">время вышло</span></div>
+<div class="lq-player__wait">
+<svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="var(--lq-ink-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+<h2>Вы не успели</h2>
+<p>Ответ не был отправлен — за этот вопрос 0 очков. Правильный вариант покажут на экране.</p>
+<div class="lq-card" style="width:100%;display:flex;align-items:center;gap:var(--lq-space-3);text-align:left"><span class="lq-avatar" style="background:var(--lq-ans-d)">7</span><div><div style="font-weight:700">Место команды не изменилось</div><div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2)">Тобылғы · 7-е из 12</div></div></div>
+</div>
+</div></div></div><div class="pv-caption">20 · Время вышло</div></div>
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player" style="background:var(--lq-success-soft)">
+<div class="lq-player__top"><span class="lq-badge lq-badge--success">верно</span></div>
+<div class="lq-player__body" style="gap:var(--lq-space-4)">
+<div style="text-align:center;padding-top:var(--lq-space-4)">
+<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--lq-success)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m8 12.5 2.7 2.7L16 9.5"></path></svg>
+<div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-4xl);color:var(--lq-success);line-height:1.1;margin-top:var(--lq-space-2)">+1 240</div>
+<div style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">ромб — 1997</div>
+</div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2)">
+<div style="display:flex;justify-content:space-between;font-size:var(--lq-text-sm)"><span style="color:var(--lq-ink-2)">За правильный ответ</span><b style="font-variant-numeric:tabular-nums">1 000</b></div>
+<div style="display:flex;justify-content:space-between;font-size:var(--lq-text-sm)"><span style="color:var(--lq-ink-2)">Бонус за скорость · 2,4 с</span><b style="font-variant-numeric:tabular-nums">+240</b></div>
+<div style="display:flex;justify-content:space-between;padding-top:var(--lq-space-2);border-top:1px solid var(--lq-border)"><span style="font-weight:700">Итого у команды</span><b style="font-family:var(--lq-font-display);font-variant-numeric:tabular-nums">8 640</b></div>
+</div>
+<div class="lq-board" style="margin-top:auto"><div class="lq-board__row" data-me="true"><span class="lq-board__rank">4</span><span class="lq-avatar" style="background:var(--lq-ans-d)"><svg width="18" height="18" fill="#fff" aria-hidden="true"><use href="#sh-square"></use></svg></span><span class="lq-board__name">Тобылғы</span><span style="display:grid;justify-items:end"><span class="lq-board__score">8 640</span><span class="lq-board__delta">▲ 3 места</span></span></div></div>
+</div></div></div></div><div class="pv-caption">21 · Верный ответ</div></div>
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player" style="background:var(--lq-danger-soft)">
+<div class="lq-player__top"><span class="lq-badge lq-badge--danger">неверно</span></div>
+<div class="lq-player__body" style="gap:var(--lq-space-4)">
+<div style="text-align:center;padding-top:var(--lq-space-4)">
+<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--lq-danger)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m9 9 6 6M15 9l-6 6"></path></svg>
+<div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-3xl);color:var(--lq-danger);line-height:1.1;margin-top:var(--lq-space-2)">+0</div>
+<div style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">вы выбрали круг — 1998</div>
+</div>
+<div>
+<div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2);margin-bottom:var(--lq-space-2)">Правильный ответ</div>
+<div class="lq-tiles lq-tiles--single"><div class="lq-tile lq-tile--b" data-state="correct" style="cursor:default"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-diamond"></use></svg><span class="lq-tile__text">1997</span></div></div>
+</div>
+<div class="lq-board" style="margin-top:auto"><div class="lq-board__row" data-me="true"><span class="lq-board__rank">9</span><span class="lq-avatar" style="background:var(--lq-ans-d)"><svg width="18" height="18" fill="#fff" aria-hidden="true"><use href="#sh-square"></use></svg></span><span class="lq-board__name">Тобылғы</span><span style="display:grid;justify-items:end"><span class="lq-board__score">7 400</span><span class="lq-board__delta" style="color:var(--lq-danger)">▼ 2 места</span></span></div></div>
+</div></div></div></div><div class="pv-caption">22 · Неверный ответ</div></div>
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player" style="background:var(--lq-warning-soft)">
+<div class="lq-player__top"><span class="lq-badge lq-badge--warning">частично верно</span></div>
+<div class="lq-player__body" style="gap:var(--lq-space-4)">
+<div style="text-align:center;padding-top:var(--lq-space-4)">
+<div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-4xl);color:var(--lq-warning);line-height:1.1">+450</div>
+<div style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">3 из 4 позиций на месте</div>
+</div>
+<div class="lq-card" style="display:grid;gap:var(--lq-space-2);padding:var(--lq-space-4)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-3);font-size:var(--lq-text-sm)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--lq-success)" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"></path></svg><b style="flex:1">Атырау</b><span style="color:var(--lq-ink-3)">1</span></div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-3);font-size:var(--lq-text-sm)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--lq-danger)" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"></path></svg><b style="flex:1">Караганда</b><span style="color:var(--lq-danger)">было 3 · надо 4</span></div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-3);font-size:var(--lq-text-sm)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--lq-danger)" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"></path></svg><b style="flex:1">Өскемен</b><span style="color:var(--lq-danger)">было 4 · надо 3</span></div>
+<div style="display:flex;justify-content:space-between;padding-top:var(--lq-space-2);border-top:1px solid var(--lq-border);font-size:var(--lq-text-sm)"><span style="color:var(--lq-ink-2)">150 очков за позицию</span><b>3 × 150 = 450</b></div>
+</div>
+<div class="lq-board" style="margin-top:auto"><div class="lq-board__row" data-me="true"><span class="lq-board__rank">6</span><span class="lq-avatar" style="background:var(--lq-ans-d)"><svg width="18" height="18" fill="#fff" aria-hidden="true"><use href="#sh-square"></use></svg></span><span class="lq-board__name">Тобылғы</span><span style="display:grid;justify-items:end"><span class="lq-board__score">7 850</span><span class="lq-board__delta">▲ 1 место</span></span></div></div>
+</div></div></div></div><div class="pv-caption">23 · Частично верно</div></div>
+
+</div></div>
+<p class="pv-note">Экраны 21–23 показывают разбор очков строкой, а не одним числом: в живой игре спор «почему у нас меньше, чем у соседнего стола» решается тем, что бонус за скорость и цена позиции названы явно — ведущему не приходится объяснять формулу вслух. Экран 19 не гасит и не подсвечивает плитки: в последние секунды палец уже летит к цели, любое изменение раскладки в этот момент означает промах.</p>
+</section>
+
+<section class="pv-section">
+<h2>Крайние случаи</h2>
+<div class="pv-scroll"><div class="pv-row">
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player">
+<div class="lq-player__top"><span class="lq-badge lq-badge--neutral">Раунд 3 · вопрос 2</span><span style="margin-left:auto" class="lq-timer"><span class="lq-timer__num">7</span></span></div>
+<div style="padding:0 var(--lq-space-4)"><div class="lq-timer-bar"><div class="lq-timer-bar__fill" style="width:35%"></div></div></div>
+<div class="lq-player__wait">
+<svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="var(--lq-warning)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2.5 8.5a16 16 0 0 1 19 0"></path><path d="M5.5 12.3a11 11 0 0 1 13 0"></path><path d="M8.5 16a6 6 0 0 1 7 0"></path><path d="M12 19.5h.01"></path><path d="M3 3l18 18" stroke="var(--lq-danger)"></path></svg>
+<h2>Связь пропала</h2>
+<p>Ваш ответ <b>ромб — 1997</b> сохранён на телефоне и уйдёт сам, как только сеть вернётся. Нажимать ещё раз не нужно.</p>
+<span class="lq-badge lq-badge--warning">переотправка · попытка 2</span>
+</div>
+</div></div></div><div class="pv-caption">24 · Обрыв связи</div></div>
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player lq-player--dim">
+<div class="lq-player__top"><span class="lq-badge lq-badge--warning">пауза</span></div>
+<div class="lq-player__wait">
+<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="var(--lq-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>
+<h2 style="color:var(--lq-stage-ink)">Ведущий поставил паузу</h2>
+<p>Таймер остановлен, очки сохранены. Игра продолжится с того же вопроса.</p>
+</div>
+</div></div></div><div class="pv-caption">25 · Пауза</div></div>
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player">
+<div class="lq-player__wait">
+<svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="var(--lq-danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M17 9.5 22 14M22 9.5 17 14"></path></svg>
+<h2>Вас удалили из игры</h2>
+<p>Ведущий убрал вас из команды «Тобылғы». Очки команды остались у команды.</p>
+<div class="lq-card" style="width:100%;text-align:left"><p style="margin:0;color:var(--lq-ink-2);font-size:var(--lq-text-sm)">Если это ошибка — подойдите к ведущему, он вернёт вас за одно нажатие. Код игры <b>481203</b>.</p></div>
+<button class="lq-btn lq-btn--ghost lq-btn--block">Вернуться к вводу кода</button>
+</div>
+</div></div></div><div class="pv-caption">26 · Удаление из игры</div></div>
+
+<div><div class="pv-phone"><div class="pv-phone-inner"><div class="lq-player" style="background:var(--lq-accent-soft)">
+<div class="lq-player__top"><span class="lq-badge lq-badge--warning">игра окончена</span></div>
+<div class="lq-player__body" style="gap:var(--lq-space-5)">
+<div style="text-align:center;padding-top:var(--lq-space-6)">
+<div style="color:var(--lq-ink-2);font-weight:600">Тобылғы</div>
+<div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-5xl);line-height:1;margin:var(--lq-space-2) 0">3 место</div>
+<div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-3xl);font-variant-numeric:tabular-nums">14 320</div>
+<div style="color:var(--lq-ink-2);font-size:var(--lq-text-sm)">очков за 6 раундов · из 12 команд</div>
+</div>
+<div class="lq-board">
+<div class="lq-board__row" data-place="1"><span class="lq-board__rank">1</span><span class="lq-avatar" style="background:var(--lq-ans-b)"><svg width="18" height="18" fill="#fff" aria-hidden="true"><use href="#sh-diamond"></use></svg></span><span class="lq-board__name">Жеті батыр</span><span class="lq-board__score">17 900</span></div>
+<div class="lq-board__row"><span class="lq-board__rank">2</span><span class="lq-avatar" style="background:var(--lq-ans-c)"><svg width="18" height="18" fill="#fff" aria-hidden="true"><use href="#sh-circle"></use></svg></span><span class="lq-board__name">Көк сұңқар</span><span class="lq-board__score">15 100</span></div>
+<div class="lq-board__row" data-me="true"><span class="lq-board__rank">3</span><span class="lq-avatar" style="background:var(--lq-ans-d)"><svg width="18" height="18" fill="#fff" aria-hidden="true"><use href="#sh-square"></use></svg></span><span class="lq-board__name">Тобылғы</span><span class="lq-board__score">14 320</span></div>
+</div>
+<div style="margin-top:auto"><button class="lq-btn lq-btn--xl lq-btn--block">Посмотреть полную таблицу</button></div>
+</div></div></div></div><div class="pv-caption">27 · Финал</div></div>
+
+</div></div>
+<p class="pv-note">На экранах 24 и 26 указан код игры <b>481203</b>: оба состояния заканчиваются походом к ведущему, а он спрашивает код первым делом — если участник вылетел, экрана с кодом у него уже нет. Пауза (25) — единственное состояние, которое перекрашивает экран в тёмный: в затемнённом зале двадцать белых телефонов в момент паузы светят зрителям в глаза.</p>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;wrapRows&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Витрина&quot;},&quot;showNotes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Витрина&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      wrapRows: String(this.props.wrapRows ?? false),
+      showNotes: String(this.props.showNotes ?? true)
+    };
+  }
+}
+</script>
+</body>
+</html>
