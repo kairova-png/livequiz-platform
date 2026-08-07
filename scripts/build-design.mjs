@@ -63,6 +63,7 @@ const bundledCss = [...new Set(imports)].join('\n') + '\n' + body;
 await rm(outDir, { recursive: true, force: true });
 
 const files = await walk(srcDir);
+const index = [];
 let built = 0;
 
 for (const file of files) {
@@ -96,11 +97,75 @@ ${markup}
 </html>
 `;
 
-  const dest = join(outDir, relative(srcDir, file));
+  const rel = relative(srcDir, file);
+  const dest = join(outDir, rel);
   await mkdir(dirname(dest), { recursive: true });
   await writeFile(dest, page, 'utf8');
+  index.push({ ...meta, href: rel.split(/[\\/]/).join('/') });
   built++;
   console.log(`  ${relative(root, dest)}  [${meta.group ?? '—'}] ${meta.name ?? ''}`);
 }
 
+/* Оглавление для локального просмотра. В Claude Design не уходит —
+ * там витрина строит свой список из маркеров @dsCard. */
+const GROUP_ORDER = ['Foundations', 'Components', 'Screens'];
+const GROUP_TITLE = { Foundations: 'Фундамент', Components: 'Компоненты', Screens: 'Экраны' };
+const byGroup = new Map();
+for (const item of index) {
+  const g = item.group ?? 'Прочее';
+  if (!byGroup.has(g)) byGroup.set(g, []);
+  byGroup.get(g).push(item);
+}
+const groups = [...byGroup.keys()].sort(
+  (a, b) => (GROUP_ORDER.indexOf(a) + 1 || 99) - (GROUP_ORDER.indexOf(b) + 1 || 99)
+);
+
+const indexBody = groups
+  .map(
+    (g) => `<section class="pv-section">
+    <h2>${GROUP_TITLE[g] ?? g}</h2>
+    <div class="pv-grid cols-3">
+${byGroup
+  .get(g)
+  .map(
+    (i) => `      <a class="lq-round" href="${i.href}">
+        <span class="lq-round__name">${i.name ?? i.href}</span>
+        <span class="lq-round__desc">${i.subtitle ?? ''}</span>
+      </a>`
+  )
+  .join('\n')}
+    </div>
+  </section>`
+  )
+  .join('\n\n  ');
+
+await writeFile(
+  join(outDir, 'index.html'),
+  `<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>livequiz — дизайн-система</title>
+<style>
+${bundledCss}
+a.lq-round { text-decoration: none; color: inherit; }
+</style>
+</head>
+<body>
+<div class="pv-head">
+  <h1>livequiz — дизайн-система</h1>
+  <p>Платформа живых квизов: телефон участника, консоль ведущего, экран зала.
+     Собрано из design/src — правьте фрагменты и пересоберите.</p>
+</div>
+<div class="pv-wrap">
+  ${indexBody}
+</div>
+</body>
+</html>
+`,
+  'utf8'
+);
+
 console.log(`\nГотово: ${built} страниц в design/dist/`);
+console.log('Оглавление: design/dist/index.html');
