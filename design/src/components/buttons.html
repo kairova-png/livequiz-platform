@@ -1,0 +1,77 @@
+<!-- @dsCard group="Components" name="Кнопки" subtitle="Варианты, размеры, состояния" width="1200" height="1050" -->
+<div class="pv-head">
+  <h1>Кнопки</h1>
+  <p>Кнопка «проваливается» в собственную тень при нажатии — физическая метафора,
+     которая на телефоне заменяет отсутствующий hover. Габариты в потоке при этом
+     не меняются, поэтому ничего не прыгает.</p>
+</div>
+
+<div class="pv-wrap">
+
+  <section class="pv-section">
+    <h2>Варианты</h2>
+    <div class="pv-card">
+      <div class="pv-row">
+        <button class="lq-btn">Основное действие</button>
+        <button class="lq-btn lq-btn--accent">Открыть вопрос</button>
+        <button class="lq-btn lq-btn--success">Засчитать</button>
+        <button class="lq-btn lq-btn--danger">Отклонить</button>
+        <button class="lq-btn lq-btn--ghost">Отмена</button>
+        <button class="lq-btn lq-btn--quiet">Показать таблицу</button>
+      </div>
+      <p class="pv-note" style="margin-top:var(--lq-space-4)">
+        У акцентной кнопки текст тёмный, не белый. Это не стилистический выбор:
+        белое на <code>#F97316</code> даёт 2.80:1 и не проходит AA.
+      </p>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Размеры</h2>
+    <div class="pv-card">
+      <div class="pv-row" style="align-items:flex-end">
+        <div><span class="pv-label">base · 44</span><button class="lq-btn">Дальше</button></div>
+        <div><span class="pv-label">lg · 60</span><button class="lq-btn lq-btn--lg">Дальше</button></div>
+        <div><span class="pv-label">xl · 72 — главное действие на телефоне</span><button class="lq-btn lq-btn--xl">Войти в игру</button></div>
+        <div><span class="pv-label">icon</span>
+          <button class="lq-btn lq-btn--icon lq-btn--ghost" aria-label="Настройки раунда">
+            <svg class="lq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 7 19.4a1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0-1.2-2.9H1a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 2.6 7a1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H7a1.7 1.7 0 0 0 1-1.5V1a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V7a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <p class="pv-note" style="margin-top:var(--lq-space-4)">
+        Кнопка-иконка обязана нести <code>aria-label</code> — сама иконка ничего не говорит
+        ни скринридеру, ни человеку, который видит её впервые.
+      </p>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Состояния</h2>
+    <div class="pv-grid cols-4">
+      <div class="pv-card"><span class="pv-label">обычное</span><button class="lq-btn lq-btn--block">Ответить</button></div>
+      <div class="pv-card"><span class="pv-label">фокус с клавиатуры</span><button class="lq-btn lq-btn--block" style="outline:3px solid var(--lq-ink);outline-offset:3px">Ответить</button></div>
+      <div class="pv-card"><span class="pv-label">ждём сервер</span><button class="lq-btn lq-btn--block" data-busy="true">Отправляем…</button></div>
+      <div class="pv-card"><span class="pv-label">недоступно</span><button class="lq-btn lq-btn--block" disabled>Ответить</button></div>
+    </div>
+    <p class="pv-note" style="margin-top:var(--lq-space-4)">
+      Состояние ожидания меняет подпись, а не только вид: на плохом Wi-Fi
+      человек должен понимать, что ответ ушёл, а не жать повторно.
+    </p>
+  </section>
+
+  <section class="pv-section">
+    <h2>На всю ширину</h2>
+    <p class="pv-note">Единственный допустимый вид главного действия на телефоне.</p>
+    <div style="max-width:360px">
+      <div class="pv-card">
+        <button class="lq-btn lq-btn--xl lq-btn--block">Войти в игру</button>
+        <div style="height:var(--lq-space-3)"></div>
+        <button class="lq-btn lq-btn--ghost lq-btn--block">Ввести другой код</button>
+      </div>
+    </div>
+  </section>
+
+</div>

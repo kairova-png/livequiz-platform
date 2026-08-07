@@ -1,0 +1,125 @@
+<!-- @dsCard group="Components" name="Лидерборд и команды" subtitle="Таблица, своя строка, финал" width="1200" height="1050" -->
+<div class="pv-head">
+  <h1>Лидерборд и команды</h1>
+  <p>Таблица показывается в трёх разных масштабах: строкой на телефоне, полным списком
+     на сцене, рабочим списком на пульте. Формат один, меняется только плотность.</p>
+</div>
+
+<div class="pv-wrap">
+
+  <section class="pv-section">
+    <h2>Таблица</h2>
+    <p class="pv-note">Первое место выделено оранжевым, своя команда — индиговой обводкой.
+       Дельта за раунд справа: без неё непонятно, кто рванул, а кто просто держится.</p>
+    <div class="pv-card">
+      <div class="lq-board">
+        <div class="lq-board__row" data-place="1">
+          <span class="lq-board__rank">1</span>
+          <span class="lq-avatar" style="background:var(--lq-ans-c)">ЖБ</span>
+          <span class="lq-board__name">Жеті батыр</span>
+          <span style="text-align:right">
+            <span class="lq-board__score">1 840</span><br>
+            <span class="lq-board__delta">+320</span>
+          </span>
+        </div>
+        <div class="lq-board__row" data-me="true">
+          <span class="lq-board__rank">2</span>
+          <span class="lq-avatar" style="background:var(--lq-ans-d)">СК</span>
+          <span class="lq-board__name">Сборная кухни <span class="lq-badge" style="margin-left:6px">вы</span></span>
+          <span style="text-align:right">
+            <span class="lq-board__score">1 720</span><br>
+            <span class="lq-board__delta">+480</span>
+          </span>
+        </div>
+        <div class="lq-board__row">
+          <span class="lq-board__rank">3</span>
+          <span class="lq-avatar" style="background:var(--lq-ans-b)">ТМ</span>
+          <span class="lq-board__name">Три медведя</span>
+          <span style="text-align:right">
+            <span class="lq-board__score">1 455</span><br>
+            <span class="lq-board__delta">+100</span>
+          </span>
+        </div>
+        <div class="lq-board__row">
+          <span class="lq-board__rank">4</span>
+          <span class="lq-avatar" style="background:var(--lq-ans-e)">АҚ</span>
+          <span class="lq-board__name">Ақ бөкен</span>
+          <span style="text-align:right">
+            <span class="lq-board__score">1 210</span><br>
+            <span class="lq-board__delta" style="color:var(--lq-ink-3)">+0</span>
+          </span>
+        </div>
+        <div class="lq-board__row">
+          <span class="lq-board__rank">5</span>
+          <span class="lq-avatar" style="background:var(--lq-ans-a)">ПН</span>
+          <span class="lq-board__name">Пятница</span>
+          <span style="text-align:right">
+            <span class="lq-board__score">980</span><br>
+            <span class="lq-board__delta">+240</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Своя позиция на телефоне</h2>
+    <p class="pv-note">Участнику между раундами не нужна вся таблица — нужен ответ
+       на один вопрос: «мы поднялись или упали?».</p>
+    <div style="max-width:360px">
+      <div class="lq-card lq-card--raised" style="text-align:center">
+        <span class="pv-label">после раунда 3</span>
+        <div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-4xl);line-height:1">2</div>
+        <div style="font-weight:700;margin-bottom:var(--lq-space-2)">место из 17</div>
+        <span class="lq-badge lq-badge--success">
+          <svg class="lq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+          поднялись на 3
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Финал</h2>
+    <div class="pv-screen" style="padding:var(--lq-space-10)">
+      <div style="text-align:center;color:var(--lq-stage-ink)">
+        <span class="lq-badge" style="background:var(--lq-accent);color:var(--lq-ink)">Победитель</span>
+        <div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-4xl);margin:var(--lq-space-4) 0 var(--lq-space-2)">
+          Жеті батыр
+        </div>
+        <div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-3xl);color:var(--lq-accent);font-variant-numeric:tabular-nums">
+          1 840
+        </div>
+      </div>
+      <div class="lq-board" style="margin-top:var(--lq-space-8)">
+        <div class="lq-board__row">
+          <span class="lq-board__rank">2</span>
+          <span class="lq-avatar" style="background:var(--lq-ans-d)">СК</span>
+          <span class="lq-board__name">Сборная кухни</span>
+          <span class="lq-board__score">1 720</span>
+        </div>
+        <div class="lq-board__row">
+          <span class="lq-board__rank">3</span>
+          <span class="lq-avatar" style="background:var(--lq-ans-b)">ТМ</span>
+          <span class="lq-board__name">Три медведя</span>
+          <span class="lq-board__score">1 455</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Аватары команд</h2>
+    <p class="pv-note">Две буквы из названия на цветной плашке. Никаких загружаемых картинок:
+       на сборку команды в зале есть полминуты, и любой лишний шаг её ломает.</p>
+    <div class="pv-row">
+      <span class="lq-avatar" style="background:var(--lq-ans-a)">ЖБ</span>
+      <span class="lq-avatar" style="background:var(--lq-ans-b)">СК</span>
+      <span class="lq-avatar" style="background:var(--lq-ans-c)">ТМ</span>
+      <span class="lq-avatar" style="background:var(--lq-ans-d)">АҚ</span>
+      <span class="lq-avatar lq-avatar--lg" style="background:var(--lq-ans-e)">ПН</span>
+      <span class="lq-avatar lq-avatar--lg" style="background:var(--lq-ans-f)">ҚЖ</span>
+    </div>
+  </section>
+
+</div>

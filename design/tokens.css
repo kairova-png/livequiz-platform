@@ -1,0 +1,131 @@
+/* livequiz-platform — design tokens
+ * Единственный источник правды. Всё остальное ссылается сюда.
+ * Контрасты проверены на WCAG AA, см. docs/design-decisions.md.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  /* ---------- Бренд ---------- */
+  --lq-indigo-50:  #EEF2FF;
+  --lq-indigo-100: #E0E7FF;
+  --lq-indigo-200: #C7D2FE;
+  --lq-indigo-300: #A5B4FC;
+  --lq-indigo-400: #818CF8;
+  --lq-indigo-500: #6366F1;
+  --lq-indigo-600: #4F46E5;
+  --lq-indigo-700: #4338CA;
+  --lq-indigo-900: #1E1B4B;
+
+  --lq-primary:      var(--lq-indigo-600); /* 6.29:1 с белым — AA */
+  --lq-primary-hover: var(--lq-indigo-700);
+  --lq-primary-soft: var(--lq-indigo-100);
+
+  /* Энергия: таймер, live-индикатор, счётчики.
+     ВНИМАНИЕ: белый текст на оранжевом даёт 2.80:1 — запрещён.
+     Только тёмный текст (--lq-ink, 5.70:1) или крупная графика. */
+  --lq-accent:      #F97316;
+  --lq-accent-deep: #EA580C;
+  --lq-accent-soft: #FFEDD5;
+
+  /* ---------- Нейтрали ---------- */
+  --lq-ink:      #1E1B4B; /* основной текст, 15.99:1 на белом */
+  --lq-ink-2:    #475569; /* вторичный текст, 7.58:1 */
+  --lq-ink-3:    #64748B; /* подписи, 4.76:1 — нижняя граница AA */
+  --lq-surface:  #FFFFFF;
+  --lq-surface-2:#F8FAFC;
+  --lq-bg:       var(--lq-indigo-50);
+
+  --lq-border:         var(--lq-indigo-200); /* декоративные разделители */
+  --lq-border-control: #64748B;              /* границы полей и кнопок, >3:1 */
+
+  /* ---------- Плитки ответов ----------
+     Четыре разных оттенка, каждый с белым текстом проходит AA.
+     Цвет НИКОГДА не единственный признак — у каждой плитки своя фигура. */
+  --lq-ans-a: #DC2626; --lq-ans-a-deep: #B91C1C; /* треугольник, 4.83:1 */
+  --lq-ans-b: #2563EB; --lq-ans-b-deep: #1D4ED8; /* ромб,        5.17:1 */
+  --lq-ans-c: #B45309; --lq-ans-c-deep: #92400E; /* круг,        5.02:1 */
+  --lq-ans-d: #15803D; --lq-ans-d-deep: #166534; /* квадрат,     5.02:1 */
+  --lq-ans-e: #7C3AED; --lq-ans-e-deep: #6D28D9; /* звезда */
+  --lq-ans-f: #0F766E; --lq-ans-f-deep: #115E59; /* шестиугольник */
+
+  /* ---------- Статусы ---------- */
+  --lq-success: #15803D; --lq-success-soft: #DCFCE7;
+  --lq-danger:  #DC2626; --lq-danger-soft:  #FEE2E2;
+  --lq-warning: #B45309; --lq-warning-soft: #FEF3C7;
+  --lq-live:    #E11D48; /* «в эфире» — только с белым текстом на плашке */
+
+  /* ---------- Тёмная сцена ----------
+     Проектор в затемнённом зале. Не тема оформления, а отдельная поверхность. */
+  --lq-stage-bg:    #16123A;
+  --lq-stage-bg-2:  #221C55;
+  --lq-stage-ink:   #F5F3FF;
+  --lq-stage-ink-2: #C7C2F0;
+
+  /* ---------- Типографика ----------
+     Nunito — заголовки и цифры, Inter — интерфейс.
+     Обе с полным покрытием кириллицы, включая казахские глифы. */
+  --lq-font-display: 'Nunito', ui-rounded, 'Segoe UI', system-ui, sans-serif;
+  --lq-font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --lq-text-xs:   0.75rem;   /* 12px — только служебные подписи */
+  --lq-text-sm:   0.875rem;  /* 14px */
+  --lq-text-base: 1rem;      /* 16px — минимум для body на телефоне */
+  --lq-text-lg:   1.125rem;
+  --lq-text-xl:   1.375rem;
+  --lq-text-2xl:  1.75rem;
+  --lq-text-3xl:  2.25rem;
+  --lq-text-4xl:  3rem;
+  --lq-text-5xl:  4rem;
+  --lq-text-stage:5.5rem;    /* вопрос на проекторе, читается с 15 метров */
+
+  --lq-leading-tight: 1.15;
+  --lq-leading-snug:  1.35;
+  --lq-leading-body:  1.6;
+
+  /* ---------- Ритм ---------- */
+  --lq-space-1: 4px;   --lq-space-2: 8px;   --lq-space-3: 12px;
+  --lq-space-4: 16px;  --lq-space-5: 20px;  --lq-space-6: 24px;
+  --lq-space-8: 32px;  --lq-space-10: 40px; --lq-space-12: 48px;
+  --lq-space-16: 64px; --lq-space-20: 80px;
+
+  --lq-radius-sm:   8px;
+  --lq-radius-md:   12px;
+  --lq-radius-lg:   18px;
+  --lq-radius-xl:   26px;
+  --lq-radius-full: 999px;
+
+  /* ---------- Глубина ----------
+     Мягкие индиговые тени вместо серых — иначе на цветном фоне выглядит грязно. */
+  --lq-shadow-sm: 0 1px 2px rgba(30, 27, 75, .08);
+  --lq-shadow-md: 0 4px 12px rgba(30, 27, 75, .10);
+  --lq-shadow-lg: 0 12px 28px rgba(30, 27, 75, .14);
+  --lq-shadow-xl: 0 24px 56px rgba(30, 27, 75, .20);
+  /* Плитки ответов «нажимаются»: нижняя грань как у физической кнопки */
+  --lq-press: 0 5px 0 0;
+
+  /* ---------- Зоны наложения ---------- */
+  --lq-z-base: 0; --lq-z-sticky: 10; --lq-z-overlay: 20;
+  --lq-z-modal: 30; --lq-z-toast: 50;
+
+  /* ---------- Движение ---------- */
+  --lq-dur-fast: 120ms;
+  --lq-dur-base: 200ms;
+  --lq-dur-slow: 320ms;
+  --lq-ease: cubic-bezier(.2, .8, .2, 1);
+  --lq-ease-out: cubic-bezier(0, 0, .2, 1);
+  --lq-ease-bounce: cubic-bezier(.34, 1.56, .64, 1);
+
+  /* ---------- Касание ---------- */
+  --lq-tap-min: 44px;   /* абсолютный минимум */
+  --lq-tap-tile: 84px;  /* плитка ответа на телефоне */
+  --lq-thumb-zone: 96px;/* нижняя полоса, куда дотягивается большой палец */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --lq-dur-fast: 1ms;
+    --lq-dur-base: 1ms;
+    --lq-dur-slow: 1ms;
+  }
+}

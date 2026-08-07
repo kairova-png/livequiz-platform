@@ -1,0 +1,144 @@
+<!-- @dsCard group="Foundations" name="Цвет" subtitle="Палитра, плитки ответов, проверка контраста" width="1200" height="1500" -->
+<div class="pv-head">
+  <h1>Цвет</h1>
+  <p>Индиго держит интерфейс, оранжевый отвечает за срочность, четыре цвета плиток —
+     за игру. Каждая пара проверена по WCAG; там, где сочетание провалилось,
+     оно закрыто правилом, а не оставлено на усмотрение.</p>
+</div>
+
+<div class="pv-wrap">
+
+  <section class="pv-section">
+    <h2>Бренд</h2>
+    <p class="pv-note">Основное действие — <code>--lq-primary</code>. Оранжевый никогда
+       не несёт белый текст: 2.80:1 не проходит даже с натяжкой.</p>
+    <div class="pv-grid cols-4">
+      <div class="pv-card" style="padding:0;overflow:hidden">
+        <div style="background:var(--lq-primary);color:#fff;padding:var(--lq-space-6);font-weight:700">Основной</div>
+        <div style="padding:var(--lq-space-4)">
+          <span class="pv-mono">#4F46E5</span><br>
+          <span class="pv-ratio">6.29:1 AA</span>
+        </div>
+      </div>
+      <div class="pv-card" style="padding:0;overflow:hidden">
+        <div style="background:var(--lq-primary-hover);color:#fff;padding:var(--lq-space-6);font-weight:700">Нажатие</div>
+        <div style="padding:var(--lq-space-4)">
+          <span class="pv-mono">#4338CA</span><br>
+          <span class="pv-ratio">7.90:1 AAA</span>
+        </div>
+      </div>
+      <div class="pv-card" style="padding:0;overflow:hidden">
+        <div style="background:var(--lq-accent);color:var(--lq-ink);padding:var(--lq-space-6);font-weight:700">Акцент</div>
+        <div style="padding:var(--lq-space-4)">
+          <span class="pv-mono">#F97316</span><br>
+          <span class="pv-ratio">5.70:1 с тёмным</span>
+          <span class="pv-ratio is-fail">2.80:1 с белым</span>
+        </div>
+      </div>
+      <div class="pv-card" style="padding:0;overflow:hidden">
+        <div style="background:var(--lq-indigo-400);color:var(--lq-ink);padding:var(--lq-space-6);font-weight:700">Вторичный</div>
+        <div style="padding:var(--lq-space-4)">
+          <span class="pv-mono">#818CF8</span><br>
+          <span class="pv-ratio is-fail">2.98:1 с белым</span>
+          <span class="pv-note">только заливки и крупная графика</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Плитки ответов</h2>
+    <p class="pv-note">Шесть слотов, из них четыре основных. Все с белым текстом проходят AA.
+       Цвет всегда идёт в паре с фигурой: ведущий говорит «жмите треугольник»,
+       и это работает и на дальтоника, и на человека с последнего ряда.</p>
+    <div class="pv-grid cols-3">
+      <div class="pv-card" style="background:var(--lq-ans-a);color:#fff;border-color:transparent">
+        <svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-triangle"/></svg>
+        <b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">A — треугольник</b>
+        <div class="pv-mono" style="color:rgba(255,255,255,.85)">#DC2626 · 4.83:1</div>
+      </div>
+      <div class="pv-card" style="background:var(--lq-ans-b);color:#fff;border-color:transparent">
+        <svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-diamond"/></svg>
+        <b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">B — ромб</b>
+        <div class="pv-mono" style="color:rgba(255,255,255,.85)">#2563EB · 5.17:1</div>
+      </div>
+      <div class="pv-card" style="background:var(--lq-ans-c);color:#fff;border-color:transparent">
+        <svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-circle"/></svg>
+        <b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">C — круг</b>
+        <div class="pv-mono" style="color:rgba(255,255,255,.85)">#B45309 · 5.02:1</div>
+      </div>
+      <div class="pv-card" style="background:var(--lq-ans-d);color:#fff;border-color:transparent">
+        <svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-square"/></svg>
+        <b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">D — квадрат</b>
+        <div class="pv-mono" style="color:rgba(255,255,255,.85)">#15803D · 5.02:1</div>
+      </div>
+      <div class="pv-card" style="background:var(--lq-ans-e);color:#fff;border-color:transparent">
+        <svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-star"/></svg>
+        <b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">E — звезда</b>
+        <div class="pv-mono" style="color:rgba(255,255,255,.85)">#7C3AED · для шести вариантов</div>
+      </div>
+      <div class="pv-card" style="background:var(--lq-ans-f);color:#fff;border-color:transparent">
+        <svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-hex"/></svg>
+        <b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">F — шестиугольник</b>
+        <div class="pv-mono" style="color:rgba(255,255,255,.85)">#0F766E · для шести вариантов</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Текст и поверхности</h2>
+    <div class="pv-card">
+      <div class="pv-grid cols-4">
+        <div>
+          <span class="pv-label">Основной</span>
+          <div style="color:var(--lq-ink);font-size:var(--lq-text-lg);font-weight:700">Ерлан Қайыржан</div>
+          <span class="pv-mono">#1E1B4B · 15.99:1</span>
+        </div>
+        <div>
+          <span class="pv-label">Вторичный</span>
+          <div style="color:var(--lq-ink-2);font-size:var(--lq-text-lg);font-weight:600">Раунд 3 из 7</div>
+          <span class="pv-mono">#475569 · 7.58:1</span>
+        </div>
+        <div>
+          <span class="pv-label">Подписи</span>
+          <div style="color:var(--lq-ink-3);font-size:var(--lq-text-lg)">обновлено только что</div>
+          <span class="pv-mono">#64748B · 4.76:1</span>
+        </div>
+        <div>
+          <span class="pv-label">Границы полей</span>
+          <div style="height:26px;border:2px solid var(--lq-border-control);border-radius:var(--lq-radius-sm)"></div>
+          <span class="pv-mono">#64748B · выше 3:1</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Тёмная сцена</h2>
+    <p class="pv-note">Не «тёмная тема», а отдельная поверхность: проектор в затемнённом зале
+       и экран телефона, который не должен слепить соседа.</p>
+    <div class="pv-screen" style="padding:var(--lq-space-8);color:var(--lq-stage-ink)">
+      <div style="font-family:var(--lq-font-display);font-size:var(--lq-text-3xl);font-weight:900">
+        Кто написал «Абай жолы»?
+      </div>
+      <p style="color:var(--lq-stage-ink-2);margin:var(--lq-space-2) 0 0">
+        Фон <span class="pv-mono" style="color:inherit">#16123A</span>,
+        карточки <span class="pv-mono" style="color:inherit">#221C55</span>,
+        текст <span class="pv-mono" style="color:inherit">#F5F3FF</span>
+      </p>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Статусы</h2>
+    <div class="pv-row">
+      <span class="lq-badge lq-badge--success">Верно</span>
+      <span class="lq-badge lq-badge--danger">Мимо</span>
+      <span class="lq-badge lq-badge--warning">На судействе</span>
+      <span class="lq-badge lq-badge--neutral">Не ответили</span>
+      <span class="lq-badge">Раунд 3</span>
+      <span class="lq-live"><span class="lq-live__dot"></span>в эфире</span>
+    </div>
+  </section>
+
+</div>

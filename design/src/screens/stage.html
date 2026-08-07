@@ -1,0 +1,142 @@
+<!-- @dsCard group="Screens" name="Экран зала" subtitle="Проектор: код входа, вопрос, голоса, финал" width="1300" height="1300" -->
+<div class="pv-head">
+  <h1>Экран зала</h1>
+  <p>Проектор в затемнённом помещении, дальний зритель в пятнадцати метрах.
+     Отсюда всё: тёмный фон, кегль вопроса под 90px, минимум элементов на экране.
+     Управления здесь нет вообще — только то, на что смотрят.</p>
+</div>
+
+<div class="pv-wrap">
+
+  <section class="pv-section">
+    <h2>Перед игрой — экран входа</h2>
+    <p class="pv-note">Код и QR держатся на экране всё время сбора. Это единственный экран,
+       который люди фотографируют, поэтому код набран самым крупным кеглем во всём продукте.</p>
+    <div class="pv-screen">
+      <div class="lq-stage" style="min-height:auto;align-items:center;text-align:center">
+        <div style="font-size:var(--lq-text-xl);color:var(--lq-stage-ink-2);font-weight:600">Заходите на</div>
+        <div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-4xl)">quiz.kz</div>
+        <div style="font-size:var(--lq-text-xl);color:var(--lq-stage-ink-2);font-weight:600;margin-top:var(--lq-space-4)">Код игры</div>
+        <div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-stage);letter-spacing:.12em;font-variant-numeric:tabular-nums;color:var(--lq-accent);line-height:1">
+          482917
+        </div>
+        <div style="display:flex;gap:var(--lq-space-6);align-items:center;margin-top:var(--lq-space-6)">
+          <div style="width:120px;height:120px;background:var(--lq-stage-ink);border-radius:var(--lq-radius-md);display:grid;place-items:center;color:var(--lq-stage-bg);font-size:var(--lq-text-xs);font-weight:700">QR</div>
+          <div style="text-align:left">
+            <div style="font-family:var(--lq-font-display);font-weight:800;font-size:var(--lq-text-2xl)">17 участников</div>
+            <div style="color:var(--lq-stage-ink-2)">5 команд собрано</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Вопрос открыт</h2>
+    <div class="pv-screen">
+      <div class="lq-stage">
+        <div class="lq-stage__top">
+          <span class="lq-badge" style="background:var(--lq-stage-bg-2);color:var(--lq-stage-ink)">Раунд 3 · музыкальный</span>
+          <span class="lq-live"><span class="lq-live__dot"></span>идёт приём</span>
+          <span style="flex:1"></span>
+          <span class="lq-stage__timer">18</span>
+        </div>
+        <h2 class="lq-stage__q" style="font-size:var(--lq-text-4xl)">Чей это голос?</h2>
+        <div class="lq-tiles" style="max-width:none">
+          <div class="lq-tile lq-tile--a" style="min-height:88px"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-triangle"/></svg><span class="lq-tile__text">Роза Рымбаева</span></div>
+          <div class="lq-tile lq-tile--b" style="min-height:88px"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-diamond"/></svg><span class="lq-tile__text">Макпал Жунусова</span></div>
+          <div class="lq-tile lq-tile--c" style="min-height:88px"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-circle"/></svg><span class="lq-tile__text">Нағима Есқалиева</span></div>
+          <div class="lq-tile lq-tile--d" style="min-height:88px"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-square"/></svg><span class="lq-tile__text">Жанна Орынбасарова</span></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:var(--lq-space-4);color:var(--lq-stage-ink-2);font-weight:700">
+          <span>Ответили 14 из 17</span>
+          <div class="lq-timer-bar" style="flex:1;background:var(--lq-stage-bg-2)">
+            <div class="lq-timer-bar__fill" style="width:82%;background:var(--lq-success)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="pv-note" style="margin-top:var(--lq-space-4)">
+      Голоса в режиме «после закрытия» здесь не показаны совсем — не пустыми столбиками,
+      а отсутствием блока. Пустая шкала на большом экране читается как «никто не ответил»
+      и сбивает зал.
+    </p>
+  </section>
+
+  <section class="pv-section">
+    <h2>Приём закрыт — вскрытие</h2>
+    <div class="pv-screen">
+      <div class="lq-stage">
+        <div class="lq-stage__top">
+          <span class="lq-badge" style="background:var(--lq-stage-bg-2);color:var(--lq-stage-ink)">Раунд 3 · музыкальный</span>
+          <span class="lq-badge lq-badge--neutral">приём закрыт</span>
+        </div>
+        <h2 class="lq-stage__q" style="font-size:var(--lq-text-3xl)">Чей это голос?</h2>
+        <div class="lq-votes">
+          <div class="lq-vote">
+            <svg class="lq-vote__shape" style="fill:var(--lq-ans-a)" aria-hidden="true"><use href="#sh-triangle"/></svg>
+            <div class="lq-vote__track"><div class="lq-vote__fill" style="width:35%;background:var(--lq-ans-a)"></div></div>
+            <span class="lq-vote__count" style="color:var(--lq-stage-ink)">5</span>
+          </div>
+          <div class="lq-vote">
+            <svg class="lq-vote__shape" style="fill:var(--lq-ans-b)" aria-hidden="true"><use href="#sh-diamond"/></svg>
+            <div class="lq-vote__track"><div class="lq-vote__fill" style="width:21%;background:var(--lq-ans-b)"></div></div>
+            <span class="lq-vote__count" style="color:var(--lq-stage-ink)">3</span>
+          </div>
+          <div class="lq-vote">
+            <svg class="lq-vote__shape" style="fill:var(--lq-ans-c)" aria-hidden="true"><use href="#sh-circle"/></svg>
+            <div class="lq-vote__track"><div class="lq-vote__fill" style="width:57%;background:var(--lq-ans-c)"></div></div>
+            <span class="lq-vote__count" style="color:var(--lq-stage-ink)">8</span>
+          </div>
+          <div class="lq-vote">
+            <svg class="lq-vote__shape" style="fill:var(--lq-ans-d)" aria-hidden="true"><use href="#sh-square"/></svg>
+            <div class="lq-vote__track"><div class="lq-vote__fill" style="width:7%;background:var(--lq-ans-d)"></div></div>
+            <span class="lq-vote__count" style="color:var(--lq-stage-ink)">1</span>
+          </div>
+        </div>
+        <div class="lq-tile lq-tile--c" data-state="correct" style="min-height:100px;max-width:640px">
+          <svg class="lq-tile__shape" style="width:38px;height:38px" aria-hidden="true"><use href="#sh-circle"/></svg>
+          <span class="lq-tile__text" style="font-size:var(--lq-text-2xl)">Нағима Есқалиева — верно</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Таблица между раундами</h2>
+    <div class="pv-screen">
+      <div class="lq-stage" style="min-height:auto">
+        <div class="lq-stage__top">
+          <h2 style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-3xl);margin:0">После раунда 3</h2>
+          <span style="flex:1"></span>
+          <span class="lq-badge" style="background:var(--lq-stage-bg-2);color:var(--lq-stage-ink)">осталось 4 раунда</span>
+        </div>
+        <div class="lq-board">
+          <div class="lq-board__row" data-place="1" style="padding:var(--lq-space-4) var(--lq-space-6)">
+            <span class="lq-board__rank">1</span>
+            <span class="lq-avatar lq-avatar--lg" style="background:var(--lq-ans-c)">ЖБ</span>
+            <span class="lq-board__name" style="font-size:var(--lq-text-2xl);font-family:var(--lq-font-display)">Жеті батыр</span>
+            <span style="text-align:right"><span class="lq-board__score" style="font-size:var(--lq-text-3xl)">1 840</span><br><span class="lq-board__delta">+320</span></span>
+          </div>
+          <div class="lq-board__row" style="padding:var(--lq-space-4) var(--lq-space-6)">
+            <span class="lq-board__rank">2</span>
+            <span class="lq-avatar lq-avatar--lg" style="background:var(--lq-ans-d)">СК</span>
+            <span class="lq-board__name" style="font-size:var(--lq-text-2xl);font-family:var(--lq-font-display)">Сборная кухни</span>
+            <span style="text-align:right"><span class="lq-board__score" style="font-size:var(--lq-text-3xl)">1 720</span><br><span class="lq-board__delta">+480</span></span>
+          </div>
+          <div class="lq-board__row" style="padding:var(--lq-space-4) var(--lq-space-6)">
+            <span class="lq-board__rank">3</span>
+            <span class="lq-avatar lq-avatar--lg" style="background:var(--lq-ans-b)">ТМ</span>
+            <span class="lq-board__name" style="font-size:var(--lq-text-2xl);font-family:var(--lq-font-display)">Три медведя</span>
+            <span style="text-align:right"><span class="lq-board__score" style="font-size:var(--lq-text-3xl)">1 455</span><br><span class="lq-board__delta">+100</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="pv-note" style="margin-top:var(--lq-space-4)">
+      На сцене показываются только первые пять строк. Полная таблица уводит внимание
+      в чтение мелкого текста, а зал должен смотреть на ведущего.
+    </p>
+  </section>
+
+</div>

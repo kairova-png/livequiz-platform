@@ -1,0 +1,115 @@
+<!-- @dsCard group="Foundations" name="Ритм и касание" subtitle="Отступы, скругления, тени, зоны пальца, движение" width="1200" height="1250" -->
+<div class="pv-head">
+  <h1>Ритм и касание</h1>
+  <p>Всё кратно четырём. Скругления крупные — интерфейс должен читаться как игра,
+     а не как форма отчётности. Размеры целей взяты из главного ограничения:
+     телефон в одной руке, полутьма, двадцать секунд на ответ.</p>
+</div>
+
+<div class="pv-wrap">
+
+  <section class="pv-section">
+    <h2>Отступы</h2>
+    <div class="pv-card">
+      <div style="display:grid;gap:var(--lq-space-3)">
+        <div class="pv-row"><span class="pv-mono" style="width:80px">4 / 8</span><div style="height:20px;width:4px;background:var(--lq-primary)"></div><div style="height:20px;width:8px;background:var(--lq-primary)"></div><span class="pv-note">внутри мелких элементов</span></div>
+        <div class="pv-row"><span class="pv-mono" style="width:80px">12 / 16</span><div style="height:20px;width:12px;background:var(--lq-primary)"></div><div style="height:20px;width:16px;background:var(--lq-primary)"></div><span class="pv-note">между элементами, паддинг карточек</span></div>
+        <div class="pv-row"><span class="pv-mono" style="width:80px">24 / 32</span><div style="height:20px;width:24px;background:var(--lq-primary)"></div><div style="height:20px;width:32px;background:var(--lq-primary)"></div><span class="pv-note">между блоками</span></div>
+        <div class="pv-row"><span class="pv-mono" style="width:80px">48 / 80</span><div style="height:20px;width:48px;background:var(--lq-primary)"></div><div style="height:20px;width:80px;background:var(--lq-primary)"></div><span class="pv-note">секции, поля сцены</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Скругления и глубина</h2>
+    <div class="pv-grid cols-4">
+      <div class="pv-card" style="text-align:center">
+        <div style="height:72px;background:var(--lq-primary-soft);border-radius:var(--lq-radius-sm);margin-bottom:var(--lq-space-3)"></div>
+        <span class="pv-mono">sm 8px · плашки</span>
+      </div>
+      <div class="pv-card" style="text-align:center">
+        <div style="height:72px;background:var(--lq-primary-soft);border-radius:var(--lq-radius-md);margin-bottom:var(--lq-space-3)"></div>
+        <span class="pv-mono">md 12px · кнопки, поля</span>
+      </div>
+      <div class="pv-card" style="text-align:center">
+        <div style="height:72px;background:var(--lq-primary-soft);border-radius:var(--lq-radius-lg);margin-bottom:var(--lq-space-3)"></div>
+        <span class="pv-mono">lg 18px · карточки, плитки</span>
+      </div>
+      <div class="pv-card" style="text-align:center">
+        <div style="height:72px;background:var(--lq-primary-soft);border-radius:var(--lq-radius-xl);margin-bottom:var(--lq-space-3)"></div>
+        <span class="pv-mono">xl 26px · крупные панели</span>
+      </div>
+    </div>
+    <p class="pv-note" style="margin-top:var(--lq-space-4)">Тени индиговые, а не серые:
+       серая тень на цветном фоне даёт грязный ореол.</p>
+    <div class="pv-grid cols-4" style="margin-top:var(--lq-space-3)">
+      <div style="height:76px;background:#fff;border-radius:var(--lq-radius-md);box-shadow:var(--lq-shadow-sm);display:grid;place-items:center"><span class="pv-mono">sm</span></div>
+      <div style="height:76px;background:#fff;border-radius:var(--lq-radius-md);box-shadow:var(--lq-shadow-md);display:grid;place-items:center"><span class="pv-mono">md</span></div>
+      <div style="height:76px;background:#fff;border-radius:var(--lq-radius-md);box-shadow:var(--lq-shadow-lg);display:grid;place-items:center"><span class="pv-mono">lg</span></div>
+      <div style="height:76px;background:#fff;border-radius:var(--lq-radius-md);box-shadow:var(--lq-shadow-xl);display:grid;place-items:center"><span class="pv-mono">xl</span></div>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Цели касания</h2>
+    <p class="pv-note">44px — абсолютный минимум, но для плиток ответа он не годится:
+       человек жмёт не глядя, в полутьме, иногда стоя. Плитка — 84px и во всю ширину колонки.</p>
+    <div class="pv-row" style="align-items:flex-end">
+      <div style="text-align:center">
+        <div style="width:44px;height:44px;background:var(--lq-ink-3);border-radius:var(--lq-radius-sm)"></div>
+        <div class="pv-mono" style="margin-top:6px">44 · минимум</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:60px;height:60px;background:var(--lq-primary);border-radius:var(--lq-radius-md)"></div>
+        <div class="pv-mono" style="margin-top:6px">60 · главная кнопка</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:150px;height:84px;background:var(--lq-ans-b);border-radius:var(--lq-radius-lg)"></div>
+        <div class="pv-mono" style="margin-top:6px">84 · плитка ответа</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Зона большого пальца</h2>
+    <p class="pv-note">Нижние 96px экрана — единственное, куда палец дотягивается уверенно.
+       Там живут плитки и главное действие. Верх экрана — только для того,
+       что читают, но не нажимают: таймер, номер раунда, счёт.</p>
+    <div class="pv-row" style="align-items:flex-start">
+      <div style="width:220px;height:420px;border:8px solid #14122E;border-radius:32px;position:relative;background:var(--lq-bg);overflow:hidden">
+        <div style="position:absolute;inset:0 0 55% 0;background:repeating-linear-gradient(45deg,var(--lq-danger-soft),var(--lq-danger-soft) 8px,transparent 8px,transparent 16px);display:grid;place-items:center;font-size:var(--lq-text-xs);font-weight:700;color:var(--lq-danger)">не нажимать</div>
+        <div style="position:absolute;inset:45% 0 0 0;background:var(--lq-success-soft);display:grid;place-items:center;font-size:var(--lq-text-xs);font-weight:700;color:var(--lq-success)">зона пальца</div>
+      </div>
+      <div style="max-width:46ch">
+        <p class="pv-note">Отсюда следует раскладка экрана вопроса: текст сверху,
+           плитки прижаты к низу через <code>margin-top:auto</code>. Даже если вопрос
+           короткий и место остаётся, плитки не уезжают вверх.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Движение</h2>
+    <p class="pv-note">120 мс на отклик касания, 200 мс на смену состояния,
+       320 мс на появление результата. Всё, что дольше, в живой игре читается как зависание.
+       При <code>prefers-reduced-motion</code> длительности схлопываются в 1 мс —
+       анимация исчезает, но состояния остаются различимыми.</p>
+    <div class="pv-row">
+      <span class="lq-badge">fast · 120ms · нажатие</span>
+      <span class="lq-badge">base · 200ms · состояние</span>
+      <span class="lq-badge">slow · 320ms · вскрытие ответа</span>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Слои</h2>
+    <div class="pv-row">
+      <span class="lq-badge lq-badge--neutral">0 · контент</span>
+      <span class="lq-badge lq-badge--neutral">10 · липкие панели</span>
+      <span class="lq-badge lq-badge--neutral">20 · оверлеи</span>
+      <span class="lq-badge lq-badge--neutral">30 · модалки</span>
+      <span class="lq-badge lq-badge--neutral">50 · уведомления</span>
+    </div>
+  </section>
+
+</div>

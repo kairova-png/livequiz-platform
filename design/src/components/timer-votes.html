@@ -1,0 +1,150 @@
+<!-- @dsCard group="Components" name="Таймер и живые голоса" subtitle="Окно ответа и три режима показа голосов" width="1200" height="1150" -->
+<div class="pv-head">
+  <h1>Таймер и живые голоса</h1>
+  <p>Два элемента, которые делают квиз живым, — и оба завязаны на честность.
+     Таймер отсчитывает серверный дедлайн, а не локальные секунды.
+     Голоса показываются ровно тогда, когда ведущий это разрешил.</p>
+</div>
+
+<div class="pv-wrap">
+
+  <section class="pv-section">
+    <h2>Таймер</h2>
+    <p class="pv-note">Клиент не считает время сам — он рисует расстояние до дедлайна,
+       который пришёл с сервера. Иначе переведённые часы на телефоне
+       превращаются в жалобу «у меня отобрали пять секунд».</p>
+    <div class="pv-grid cols-3">
+      <div class="pv-card">
+        <span class="pv-label">много времени</span>
+        <div class="lq-timer" style="margin-bottom:var(--lq-space-3)">
+          <span class="lq-timer__num">18</span>
+          <span class="pv-note">секунд</span>
+        </div>
+        <div class="lq-timer-bar"><div class="lq-timer-bar__fill" style="width:90%"></div></div>
+      </div>
+      <div class="pv-card">
+        <span class="pv-label">половина</span>
+        <div class="lq-timer" style="margin-bottom:var(--lq-space-3)">
+          <span class="lq-timer__num">10</span>
+          <span class="pv-note">секунд</span>
+        </div>
+        <div class="lq-timer-bar"><div class="lq-timer-bar__fill" style="width:50%"></div></div>
+      </div>
+      <div class="pv-card">
+        <span class="pv-label">последние секунды</span>
+        <div class="lq-timer" style="margin-bottom:var(--lq-space-3)">
+          <span class="lq-timer__num" data-urgent="true">3</span>
+          <span class="pv-note">секунды</span>
+        </div>
+        <div class="lq-timer-bar"><div class="lq-timer-bar__fill" data-urgent="true" style="width:15%"></div></div>
+      </div>
+    </div>
+    <p class="pv-note" style="margin-top:var(--lq-space-4)">
+      Тревога передаётся и цветом, и цифрой, и длиной полосы — три независимых признака.
+      Одного красного было бы мало.
+    </p>
+  </section>
+
+  <section class="pv-section">
+    <h2>Три режима голосов</h2>
+    <p class="pv-note">Живые столбики — главный источник драмы в зале и одновременно
+       главная дыра в честности: команды подсматривают за большинством.
+       Поэтому режим переключается на каждый раунд отдельно.</p>
+
+    <div class="pv-grid cols-3">
+      <div class="pv-card">
+        <span class="pv-label">live — растут в реальном времени</span>
+        <div class="lq-votes">
+          <div class="lq-vote">
+            <svg class="lq-vote__shape" style="fill:var(--lq-ans-a)" aria-hidden="true"><use href="#sh-triangle"/></svg>
+            <div class="lq-vote__track"><div class="lq-vote__fill" style="width:62%;background:var(--lq-ans-a)"></div></div>
+            <span class="lq-vote__count">8</span>
+          </div>
+          <div class="lq-vote">
+            <svg class="lq-vote__shape" style="fill:var(--lq-ans-b)" aria-hidden="true"><use href="#sh-diamond"/></svg>
+            <div class="lq-vote__track"><div class="lq-vote__fill" style="width:100%;background:var(--lq-ans-b)"></div></div>
+            <span class="lq-vote__count">13</span>
+          </div>
+          <div class="lq-vote">
+            <svg class="lq-vote__shape" style="fill:var(--lq-ans-c)" aria-hidden="true"><use href="#sh-circle"/></svg>
+            <div class="lq-vote__track"><div class="lq-vote__fill" style="width:23%;background:var(--lq-ans-c)"></div></div>
+            <span class="lq-vote__count">3</span>
+          </div>
+          <div class="lq-vote">
+            <svg class="lq-vote__shape" style="fill:var(--lq-ans-d)" aria-hidden="true"><use href="#sh-square"/></svg>
+            <div class="lq-vote__track"><div class="lq-vote__fill" style="width:8%;background:var(--lq-ans-d)"></div></div>
+            <span class="lq-vote__count">1</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pv-card">
+        <span class="pv-label">after-close — копятся молча <b>(дефолт)</b></span>
+        <div class="lq-votes" data-hidden="true">
+          <div class="lq-vote">
+            <svg class="lq-vote__shape" style="fill:var(--lq-ans-a)" aria-hidden="true"><use href="#sh-triangle"/></svg>
+            <div class="lq-vote__track"><div class="lq-vote__fill" style="width:62%;background:var(--lq-ans-a)"></div></div>
+            <span class="lq-vote__count">—</span>
+          </div>
+          <div class="lq-vote">
+            <svg class="lq-vote__shape" style="fill:var(--lq-ans-b)" aria-hidden="true"><use href="#sh-diamond"/></svg>
+            <div class="lq-vote__track"><div class="lq-vote__fill" style="width:100%;background:var(--lq-ans-b)"></div></div>
+            <span class="lq-vote__count">—</span>
+          </div>
+          <div class="lq-vote">
+            <svg class="lq-vote__shape" style="fill:var(--lq-ans-c)" aria-hidden="true"><use href="#sh-circle"/></svg>
+            <div class="lq-vote__track"><div class="lq-vote__fill" style="width:23%;background:var(--lq-ans-c)"></div></div>
+            <span class="lq-vote__count">—</span>
+          </div>
+          <div class="lq-vote">
+            <svg class="lq-vote__shape" style="fill:var(--lq-ans-d)" aria-hidden="true"><use href="#sh-square"/></svg>
+            <div class="lq-vote__track"><div class="lq-vote__fill" style="width:8%;background:var(--lq-ans-d)"></div></div>
+            <span class="lq-vote__count">—</span>
+          </div>
+        </div>
+        <p class="pv-note" style="margin-top:var(--lq-space-3)">
+          Место под столбики занято заранее. Когда голоса вскроются,
+          верстка не прыгнет и внимание зала не собьётся.
+        </p>
+      </div>
+
+      <div class="pv-card">
+        <span class="pv-label">off — не показывать</span>
+        <div style="display:grid;place-items:center;gap:var(--lq-space-3);padding:var(--lq-space-8) 0;text-align:center">
+          <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="var(--lq-ink-3)" stroke-width="2" aria-hidden="true">
+            <path d="M3 3l18 18M10.6 10.6a3 3 0 004.2 4.2"/><path d="M9.4 5.3A9.5 9.5 0 0112 5c5 0 9 4.5 9 7a12 12 0 01-2.4 3.4M6.2 6.7A12.4 12.4 0 003 12c0 2.5 4 7 9 7 1.2 0 2.3-.2 3.3-.6"/>
+          </svg>
+          <span class="pv-note">Для финальных раундов, где голоса ломают интригу</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pv-card" style="margin-top:var(--lq-space-4)">
+      <span class="pv-label">переключатель на пульте ведущего</span>
+      <div class="pv-row">
+        <div class="lq-seg">
+          <button class="lq-seg__item">В эфире</button>
+          <button class="lq-seg__item" aria-pressed="true">После закрытия</button>
+          <button class="lq-seg__item">Скрыть</button>
+        </div>
+        <span class="pv-note">переключается посреди игры, применяется к текущему раунду</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Сколько уже ответили</h2>
+    <p class="pv-note">Счётчик команд показывается всегда, даже при скрытых голосах:
+       он не выдаёт, <i>что</i> выбрали, но говорит ведущему, пора ли закрывать вопрос.</p>
+    <div class="pv-card" style="max-width:420px">
+      <div class="pv-row" style="justify-content:space-between">
+        <span style="font-weight:700">Ответили</span>
+        <span style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl);font-variant-numeric:tabular-nums">14 / 17</span>
+      </div>
+      <div class="lq-timer-bar" style="margin-top:var(--lq-space-3)">
+        <div class="lq-timer-bar__fill" style="width:82%;background:var(--lq-success)"></div>
+      </div>
+    </div>
+  </section>
+
+</div>

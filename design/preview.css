@@ -1,0 +1,147 @@
+/* Оформление страниц-превью. В продукт не идёт — только для витрины дизайн-системы. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: var(--lq-space-8);
+  background: var(--lq-bg);
+  color: var(--lq-ink);
+  font-family: var(--lq-font-ui);
+  font-size: var(--lq-text-base);
+  line-height: var(--lq-leading-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+.pv-head { max-width: 1200px; margin: 0 auto var(--lq-space-8); }
+.pv-head h1 {
+  font-family: var(--lq-font-display);
+  font-weight: 900;
+  font-size: var(--lq-text-3xl);
+  line-height: var(--lq-leading-tight);
+  margin: 0 0 var(--lq-space-2);
+}
+.pv-head p { margin: 0; color: var(--lq-ink-2); max-width: 68ch; }
+
+.pv-wrap { max-width: 1200px; margin: 0 auto; }
+
+.pv-section { margin-bottom: var(--lq-space-12); }
+.pv-section > h2 {
+  font-family: var(--lq-font-display);
+  font-weight: 800;
+  font-size: var(--lq-text-xl);
+  margin: 0 0 var(--lq-space-1);
+}
+.pv-section > .pv-note { margin: 0 0 var(--lq-space-5); }
+
+.pv-note {
+  color: var(--lq-ink-2);
+  font-size: var(--lq-text-sm);
+  max-width: 72ch;
+}
+.pv-note code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: .92em;
+  background: var(--lq-indigo-100);
+  padding: 1px 5px;
+  border-radius: 5px;
+}
+
+.pv-card {
+  background: var(--lq-surface);
+  border: 1px solid var(--lq-border);
+  border-radius: var(--lq-radius-lg);
+  padding: var(--lq-space-6);
+  box-shadow: var(--lq-shadow-sm);
+}
+
+.pv-grid { display: grid; gap: var(--lq-space-4); }
+.pv-grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.pv-grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.pv-grid.cols-4 { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+
+.pv-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--lq-space-3);
+  align-items: center;
+}
+
+/* Подпись под образцом */
+.pv-label {
+  display: block;
+  font-size: var(--lq-text-xs);
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--lq-ink-3);
+  margin-bottom: var(--lq-space-2);
+}
+.pv-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--lq-text-xs);
+  color: var(--lq-ink-3);
+}
+
+/* Плашка результата проверки контраста */
+.pv-ratio {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--lq-text-xs);
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--lq-radius-full);
+  background: var(--lq-success-soft);
+  color: var(--lq-success);
+}
+.pv-ratio.is-fail { background: var(--lq-danger-soft); color: var(--lq-danger); }
+
+/* Рамка телефона для мобильных экранов */
+.pv-phone {
+  width: 390px;
+  height: 780px;
+  border-radius: 44px;
+  border: 11px solid #14122E;
+  background: var(--lq-bg);
+  overflow: hidden;
+  position: relative;
+  box-shadow: var(--lq-shadow-xl);
+  flex: none;
+}
+.pv-phone::after {
+  content: '';
+  position: absolute;
+  top: 9px; left: 50%;
+  transform: translateX(-50%);
+  width: 112px; height: 26px;
+  background: #14122E;
+  border-radius: var(--lq-radius-full);
+}
+.pv-phone-inner {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding-top: 42px;
+}
+
+/* Рамка большого экрана */
+.pv-screen {
+  border-radius: var(--lq-radius-lg);
+  overflow: hidden;
+  border: 8px solid #14122E;
+  box-shadow: var(--lq-shadow-xl);
+  background: var(--lq-stage-bg);
+}
+
+.pv-caption {
+  margin-top: var(--lq-space-3);
+  font-size: var(--lq-text-sm);
+  font-weight: 600;
+  color: var(--lq-ink-2);
+  text-align: center;
+}
+
+.pv-scroll { overflow-x: auto; padding-bottom: var(--lq-space-3); }
+.pv-scroll > .pv-row { flex-wrap: nowrap; align-items: flex-start; }

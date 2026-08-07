@@ -1,0 +1,118 @@
+<!-- @dsCard group="Foundations" name="Типографика" subtitle="Nunito + Inter, три локали, шкала до сцены" width="1200" height="1400" -->
+<div class="pv-head">
+  <h1>Типографика</h1>
+  <p>Nunito на заголовки и цифры, Inter на интерфейс. Обе гарнитуры покрывают кириллицу
+     целиком, включая казахские ә ғ қ ң ө ұ ү һ і — это и было главным критерием отбора.</p>
+</div>
+
+<div class="pv-wrap">
+
+  <section class="pv-section">
+    <h2>Проверка казахских глифов</h2>
+    <p class="pv-note">Самая частая поломка локализации — шрифт без cyrillic-ext:
+       буквы подменяются системным фолбэком и строка «рассыпается».
+       Обе строки ниже должны выглядеть однородно.</p>
+    <div class="pv-grid cols-2">
+      <div class="pv-card">
+        <span class="pv-label">Nunito 800</span>
+        <div style="font-family:var(--lq-font-display);font-weight:800;font-size:var(--lq-text-2xl);line-height:1.3">
+          Әә Ғғ Ққ Ңң Өө Ұұ Үү Һһ Іі
+        </div>
+        <div style="font-family:var(--lq-font-display);font-weight:800;font-size:var(--lq-text-xl)">
+          Бәйге басталды!
+        </div>
+      </div>
+      <div class="pv-card">
+        <span class="pv-label">Inter 500</span>
+        <div style="font-family:var(--lq-font-ui);font-weight:500;font-size:var(--lq-text-2xl);line-height:1.3">
+          Әә Ғғ Ққ Ңң Өө Ұұ Үү Һһ Іі
+        </div>
+        <div style="font-family:var(--lq-font-ui);font-weight:500;font-size:var(--lq-text-xl)">
+          Жауап қабылданды
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Одна строка в трёх локалях</h2>
+    <p class="pv-note">Казахский и русский стабильно длиннее английского на 15–30 %.
+       Кнопки и плитки поэтому тянутся по содержимому и переносят текст,
+       а не обрезают его многоточием.</p>
+    <div class="pv-grid cols-3">
+      <div class="pv-card">
+        <span class="pv-label">ru</span>
+        <button class="lq-btn lq-btn--block">Войти в игру</button>
+      </div>
+      <div class="pv-card">
+        <span class="pv-label">kk</span>
+        <button class="lq-btn lq-btn--block">Ойынға кіру</button>
+      </div>
+      <div class="pv-card">
+        <span class="pv-label">en</span>
+        <button class="lq-btn lq-btn--block">Join the game</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Шкала</h2>
+    <div class="pv-card">
+      <div style="display:grid;gap:var(--lq-space-5)">
+        <div>
+          <span class="pv-label">stage · 88px · Nunito 900 — вопрос на проекторе</span>
+          <div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-4xl);line-height:1.1">Столица Казахстана?</div>
+          <span class="pv-note">на превью показан уменьшенный кегль, в макете сцены — полный</span>
+        </div>
+        <div>
+          <span class="pv-label">3xl · 36px · Nunito 900 — таймер, счёт</span>
+          <div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-3xl);font-variant-numeric:tabular-nums">12 · 1 480</div>
+        </div>
+        <div>
+          <span class="pv-label">2xl · 28px · Nunito 800 — заголовок экрана</span>
+          <div style="font-family:var(--lq-font-display);font-weight:800;font-size:var(--lq-text-2xl)">Приготовьтесь</div>
+        </div>
+        <div>
+          <span class="pv-label">xl · 22px · Nunito 800 — текст плитки</span>
+          <div style="font-family:var(--lq-font-display);font-weight:800;font-size:var(--lq-text-xl)">Мухтар Ауэзов</div>
+        </div>
+        <div>
+          <span class="pv-label">base · 16px · Inter 400 — минимум для body на телефоне</span>
+          <div style="font-size:var(--lq-text-base);line-height:var(--lq-leading-body);max-width:62ch">
+            Вопрос откроется по команде ведущего. Держите телефон под рукой —
+            на ответ будет 20 секунд, и время идёт от сервера, а не от вашего экрана.
+          </div>
+        </div>
+        <div>
+          <span class="pv-label">sm · 14px · Inter 500 — подписи и метки</span>
+          <div style="font-size:var(--lq-text-sm);color:var(--lq-ink-2);font-weight:500">Раунд 3 из 7 · музыкальный</div>
+        </div>
+        <div>
+          <span class="pv-label">xs · 12px · Inter 600 — только служебное</span>
+          <div style="font-size:var(--lq-text-xs);color:var(--lq-ink-3);font-weight:600;text-transform:uppercase;letter-spacing:.04em">обновлено только что</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Цифры</h2>
+    <p class="pv-note">Счёт и таймер всегда <code>tabular-nums</code>. Без этого цифры
+       разной ширины дёргают строку на каждой секунде — на большом экране это очень заметно.</p>
+    <div class="pv-grid cols-2">
+      <div class="pv-card">
+        <span class="pv-label">Правильно · tabular</span>
+        <div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-3xl);font-variant-numeric:tabular-nums">
+          00:11<br>00:10<br>00:09
+        </div>
+      </div>
+      <div class="pv-card">
+        <span class="pv-label">Неправильно · пропорциональные</span>
+        <div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-3xl);font-variant-numeric:proportional-nums">
+          00:11<br>00:10<br>00:09
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>

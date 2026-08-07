@@ -1,0 +1,235 @@
+<!-- @dsCard group="Screens" name="Консоль ведущего" subtitle="Конструктор квиза и пульт живой игры" width="1400" height="1250" -->
+<div class="pv-head">
+  <h1>Консоль ведущего</h1>
+  <p>Две разные программы в одном приложении. До игры — спокойный конструктор,
+     где можно сидеть и думать. Во время игры — пульт, где всё решается за секунду
+     и ошибиться нельзя.</p>
+</div>
+
+<div class="pv-wrap">
+
+  <section class="pv-section">
+    <h2>Конструктор — сборка вечера</h2>
+    <div class="pv-card" style="padding:0;overflow:hidden">
+      <div style="display:grid;grid-template-columns:260px 1fr 300px;min-height:560px">
+
+        <aside style="background:var(--lq-surface-2);border-right:1px solid var(--lq-border);padding:var(--lq-space-4)">
+          <div class="pv-row" style="justify-content:space-between;margin-bottom:var(--lq-space-4)">
+            <b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Раунды</b>
+            <span class="lq-badge">7</span>
+          </div>
+          <div style="display:grid;gap:var(--lq-space-2)">
+            <div class="lq-card" style="padding:var(--lq-space-3)">
+              <div style="font-weight:700;font-size:var(--lq-text-sm)">1 · Разминка</div>
+              <div class="pv-mono">выбор варианта · 8 вопросов</div>
+            </div>
+            <div class="lq-card" style="padding:var(--lq-space-3)">
+              <div style="font-weight:700;font-size:var(--lq-text-sm)">2 · Кино</div>
+              <div class="pv-mono">фото и кадры · 10 вопросов</div>
+            </div>
+            <div class="lq-card" style="padding:var(--lq-space-3);border-color:var(--lq-primary);box-shadow:0 0 0 2px var(--lq-indigo-100)">
+              <div style="font-weight:700;font-size:var(--lq-text-sm)">3 · Музыкальный</div>
+              <div class="pv-mono">музыка · 12 вопросов</div>
+            </div>
+            <div class="lq-card" style="padding:var(--lq-space-3)">
+              <div style="font-weight:700;font-size:var(--lq-text-sm)">4 · Своя игра</div>
+              <div class="pv-mono">открытый ответ · 6 вопросов</div>
+            </div>
+            <div class="lq-card" style="padding:var(--lq-space-3)">
+              <div style="font-weight:700;font-size:var(--lq-text-sm)">7 · Финал</div>
+              <div class="pv-mono">ставка · 1 вопрос · x3</div>
+            </div>
+            <button class="lq-btn lq-btn--ghost lq-btn--block">Добавить раунд</button>
+          </div>
+        </aside>
+
+        <main style="padding:var(--lq-space-5)">
+          <div class="pv-row" style="justify-content:space-between;margin-bottom:var(--lq-space-4)">
+            <b style="font-family:var(--lq-font-display);font-size:var(--lq-text-xl)">Раунд 3 · вопрос 2</b>
+            <span class="lq-badge lq-badge--neutral">черновик сохранён</span>
+          </div>
+
+          <label class="lq-field" style="margin-bottom:var(--lq-space-4)">
+            <span class="lq-field__label">Текст вопроса</span>
+            <input class="lq-input" value="Чей это голос?">
+          </label>
+
+          <span class="pv-label">Медиа — проигрывается только в зале</span>
+          <div class="lq-card" style="display:flex;align-items:center;gap:var(--lq-space-3);margin-bottom:var(--lq-space-4)">
+            <svg class="lq-icon lq-icon--lg" viewBox="0 0 24 24" fill="none" stroke="var(--lq-primary)" stroke-width="2" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            <span style="flex:1">
+              <b style="display:block">nagima-eskalieva.mp3</b>
+              <span class="pv-mono">отрывок 0:42 — 1:02</span>
+            </span>
+            <button class="lq-btn lq-btn--ghost">Заменить</button>
+          </div>
+
+          <span class="pv-label">Варианты — отметьте правильный</span>
+          <p class="pv-note" style="margin:0 0 var(--lq-space-3)">
+            В конструкторе неправильные варианты не приглушаются: ведущий их читает и правит,
+            а приглушение съедает контраст. Верный помечен обводкой и плашкой.
+          </p>
+          <div class="lq-tiles">
+            <div class="lq-tile lq-tile--a" style="min-height:64px"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-triangle"/></svg><span class="lq-tile__text" style="font-size:var(--lq-text-base)">Роза Рымбаева</span></div>
+            <div class="lq-tile lq-tile--b" style="min-height:64px"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-diamond"/></svg><span class="lq-tile__text" style="font-size:var(--lq-text-base)">Макпал Жунусова</span></div>
+            <div class="lq-tile lq-tile--c" style="min-height:64px" data-state="correct">
+              <svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-circle"/></svg>
+              <span class="lq-tile__text" style="font-size:var(--lq-text-base)">Нағима Есқалиева</span>
+              <span class="lq-badge" style="background:rgba(255,255,255,.92);color:var(--lq-ans-c-deep)">верно</span>
+            </div>
+            <div class="lq-tile lq-tile--d" style="min-height:64px"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-square"/></svg><span class="lq-tile__text" style="font-size:var(--lq-text-base)">Жанна Орынбасарова</span></div>
+          </div>
+        </main>
+
+        <aside style="background:var(--lq-surface-2);border-left:1px solid var(--lq-border);padding:var(--lq-space-4)">
+          <b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg);display:block;margin-bottom:var(--lq-space-4)">Правила раунда</b>
+          <div style="display:grid;gap:var(--lq-space-4)">
+            <div>
+              <span class="pv-label">Окно ответа</span>
+              <div class="lq-seg">
+                <button class="lq-seg__item">15</button>
+                <button class="lq-seg__item" aria-pressed="true">20</button>
+                <button class="lq-seg__item">30</button>
+              </div>
+            </div>
+            <div>
+              <span class="pv-label">Живые голоса</span>
+              <div class="lq-seg" style="flex-wrap:wrap">
+                <button class="lq-seg__item">В эфире</button>
+                <button class="lq-seg__item" aria-pressed="true">После</button>
+                <button class="lq-seg__item">Скрыть</button>
+              </div>
+            </div>
+            <div>
+              <span class="pv-label">Множитель</span>
+              <div class="lq-seg">
+                <button class="lq-seg__item" aria-pressed="true">x1</button>
+                <button class="lq-seg__item">x2</button>
+                <button class="lq-seg__item">x3</button>
+              </div>
+            </div>
+            <span class="lq-switch" role="switch" aria-checked="true">
+              <span class="lq-switch__track"><span class="lq-switch__thumb"></span></span>
+              <span class="lq-switch__label">Бонус за скорость</span>
+            </span>
+            <span class="lq-switch" role="switch" aria-checked="true">
+              <span class="lq-switch__track"><span class="lq-switch__thumb"></span></span>
+              <span class="lq-switch__label">Нельзя менять ответ</span>
+            </span>
+            <span class="lq-switch" role="switch" aria-checked="false">
+              <span class="lq-switch__track"><span class="lq-switch__thumb"></span></span>
+              <span class="lq-switch__label">Отвечает капитан</span>
+            </span>
+          </div>
+        </aside>
+
+      </div>
+      <div class="lq-hostbar">
+        <button class="lq-btn lq-btn--lg lq-btn--accent">Начать игру</button>
+        <button class="lq-btn lq-btn--lg lq-btn--ghost">Предпросмотр зала</button>
+        <span class="lq-hostbar__spacer"></span>
+        <span class="lq-hostbar__stat"><b>7</b><span>раундов</span></span>
+        <span class="lq-hostbar__stat"><b>48</b><span>вопросов</span></span>
+        <span class="lq-hostbar__stat"><b>~75</b><span>минут</span></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Пульт живой игры</h2>
+    <p class="pv-note">Ведущий смотрит сюда урывками между репликами. Поэтому слева —
+       ровно то, что сейчас видит зал, справа — команды, снизу — действия.
+       Ни одной вкладки, ни одного скрытого экрана.</p>
+    <div class="pv-card" style="padding:0;overflow:hidden">
+      <div style="display:grid;grid-template-columns:1.4fr 1fr;min-height:520px">
+
+        <main style="padding:var(--lq-space-5);border-right:1px solid var(--lq-border)">
+          <div class="pv-row" style="justify-content:space-between;margin-bottom:var(--lq-space-4)">
+            <span class="lq-badge">Раунд 3 · вопрос 2 из 12</span>
+            <span class="lq-live"><span class="lq-live__dot"></span>идёт приём</span>
+          </div>
+
+          <div class="lq-card lq-card--raised" style="margin-bottom:var(--lq-space-4)">
+            <span class="pv-label">это сейчас на экране в зале</span>
+            <div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl);margin-bottom:var(--lq-space-3)">Чей это голос?</div>
+            <div class="lq-timer" style="margin-bottom:var(--lq-space-2)">
+              <span class="lq-timer__num">08</span><span class="pv-note">секунд до закрытия</span>
+            </div>
+            <div class="lq-timer-bar"><div class="lq-timer-bar__fill" style="width:40%"></div></div>
+          </div>
+
+          <span class="pv-label">голоса — видны только вам, зал их пока не видит</span>
+          <div class="lq-votes">
+            <div class="lq-vote">
+              <svg class="lq-vote__shape" style="fill:var(--lq-ans-a)" aria-hidden="true"><use href="#sh-triangle"/></svg>
+              <div class="lq-vote__track"><div class="lq-vote__fill" style="width:35%;background:var(--lq-ans-a)"></div></div>
+              <span class="lq-vote__count">5</span>
+            </div>
+            <div class="lq-vote">
+              <svg class="lq-vote__shape" style="fill:var(--lq-ans-b)" aria-hidden="true"><use href="#sh-diamond"/></svg>
+              <div class="lq-vote__track"><div class="lq-vote__fill" style="width:21%;background:var(--lq-ans-b)"></div></div>
+              <span class="lq-vote__count">3</span>
+            </div>
+            <div class="lq-vote">
+              <svg class="lq-vote__shape" style="fill:var(--lq-ans-c)" aria-hidden="true"><use href="#sh-circle"/></svg>
+              <div class="lq-vote__track"><div class="lq-vote__fill" style="width:43%;background:var(--lq-ans-c)"></div></div>
+              <span class="lq-vote__count">6</span>
+            </div>
+            <div class="lq-vote">
+              <svg class="lq-vote__shape" style="fill:var(--lq-ans-d)" aria-hidden="true"><use href="#sh-square"/></svg>
+              <div class="lq-vote__track"><div class="lq-vote__fill" style="width:0%;background:var(--lq-ans-d)"></div></div>
+              <span class="lq-vote__count">0</span>
+            </div>
+          </div>
+        </main>
+
+        <aside style="padding:var(--lq-space-5);background:var(--lq-surface-2)">
+          <div class="pv-row" style="justify-content:space-between;margin-bottom:var(--lq-space-3)">
+            <b style="font-family:var(--lq-font-display);font-size:var(--lq-text-lg)">Команды</b>
+            <span class="lq-badge lq-badge--success">14 из 17</span>
+          </div>
+          <div style="display:grid;gap:var(--lq-space-2)">
+            <div class="lq-board__row" style="grid-template-columns:auto 1fr auto;padding:var(--lq-space-2) var(--lq-space-3)">
+              <span class="lq-avatar" style="background:var(--lq-ans-c)">ЖБ</span>
+              <span class="lq-board__name">Жеті батыр</span>
+              <span class="lq-badge lq-badge--success">ответили</span>
+            </div>
+            <div class="lq-board__row" style="grid-template-columns:auto 1fr auto;padding:var(--lq-space-2) var(--lq-space-3)">
+              <span class="lq-avatar" style="background:var(--lq-ans-d)">СК</span>
+              <span class="lq-board__name">Сборная кухни</span>
+              <span class="lq-badge lq-badge--success">ответили</span>
+            </div>
+            <div class="lq-board__row" style="grid-template-columns:auto 1fr auto;padding:var(--lq-space-2) var(--lq-space-3)">
+              <span class="lq-avatar" style="background:var(--lq-ans-a)">ПН</span>
+              <span class="lq-board__name">Пятница</span>
+              <span class="lq-badge lq-badge--warning">уходил из вкладки</span>
+            </div>
+            <div class="lq-board__row" style="grid-template-columns:auto 1fr auto;padding:var(--lq-space-2) var(--lq-space-3)">
+              <span class="lq-avatar" style="background:var(--lq-ans-b)">ТМ</span>
+              <span class="lq-board__name">Три медведя</span>
+              <span class="lq-badge lq-badge--neutral">думают</span>
+            </div>
+            <div class="lq-board__row" style="grid-template-columns:auto 1fr auto;padding:var(--lq-space-2) var(--lq-space-3)">
+              <span class="lq-avatar" style="background:var(--lq-ans-e)">АҚ</span>
+              <span class="lq-board__name">Ақ бөкен</span>
+              <span class="lq-badge lq-badge--danger">нет связи</span>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+      <div class="lq-hostbar">
+        <button class="lq-btn lq-btn--lg lq-btn--danger">Закрыть приём</button>
+        <button class="lq-btn lq-btn--lg lq-btn--ghost">+10 секунд</button>
+        <span class="lq-switch" role="switch" aria-checked="false">
+          <span class="lq-switch__track"><span class="lq-switch__thumb"></span></span>
+          <span class="lq-switch__label">Показать голосá залу</span>
+        </span>
+        <span class="lq-hostbar__spacer"></span>
+        <span class="lq-hostbar__stat"><b>14/17</b><span>ответили</span></span>
+        <span class="lq-hostbar__stat"><b>08</b><span>секунд</span></span>
+      </div>
+    </div>
+  </section>
+
+</div>

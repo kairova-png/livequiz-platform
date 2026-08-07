@@ -1,0 +1,134 @@
+<!-- @dsCard group="Components" name="Типы раундов" subtitle="Восемь форматов для конструктора квиза" width="1200" height="900" -->
+<div class="pv-head">
+  <h1>Типы раундов</h1>
+  <p>Восемь форматов, из которых ведущий собирает вечер. Карточки выбора в конструкторе
+     несут не только название, но и способ проверки — от него зависит,
+     придётся ли ведущему судить вручную посреди игры.</p>
+</div>
+
+<div class="pv-wrap">
+
+  <section class="pv-section">
+    <h2>Выбор формата в конструкторе</h2>
+    <div class="pv-grid cols-4">
+
+      <button class="lq-round" aria-pressed="true">
+        <span class="lq-round__icon">
+          <svg class="lq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="8" height="7" rx="1.5"/><rect x="13" y="4" width="8" height="7" rx="1.5"/><rect x="3" y="13" width="8" height="7" rx="1.5"/><rect x="13" y="13" width="8" height="7" rx="1.5"/></svg>
+        </span>
+        <span class="lq-round__name">Выбор варианта</span>
+        <span class="lq-round__desc">2, 4 или 6 плиток. Проверка автоматическая.</span>
+      </button>
+
+      <button class="lq-round">
+        <span class="lq-round__icon">
+          <svg class="lq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 12l4 4 8-9"/><path d="M15 15l5 5M20 15l-5 5"/></svg>
+        </span>
+        <span class="lq-round__name">Правда или ложь</span>
+        <span class="lq-round__desc">Две крупные плитки. Проверка автоматическая.</span>
+      </button>
+
+      <button class="lq-round">
+        <span class="lq-round__icon">
+          <svg class="lq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        </span>
+        <span class="lq-round__name">Музыкальный</span>
+        <span class="lq-round__desc">Отрывок звучит в зале. Ответ — плитками или текстом.</span>
+      </button>
+
+      <button class="lq-round">
+        <span class="lq-round__icon">
+          <svg class="lq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 16l-5-5-6 6"/></svg>
+        </span>
+        <span class="lq-round__name">Фото и кадры</span>
+        <span class="lq-round__desc">Картинка только на сцене — иначе увеличат и найдут подсказку.</span>
+      </button>
+
+      <button class="lq-round">
+        <span class="lq-round__icon">
+          <svg class="lq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20h16M6 16l10-10 3 3-10 10H6z"/></svg>
+        </span>
+        <span class="lq-round__name">Открытый ответ</span>
+        <span class="lq-round__desc">Сверка по списку синонимов, спорное уходит на судейство.</span>
+      </button>
+
+      <button class="lq-round">
+        <span class="lq-round__icon">
+          <svg class="lq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+        </span>
+        <span class="lq-round__name">Порядок</span>
+        <span class="lq-round__desc">Расставить список. Частичные баллы за частично верный порядок.</span>
+      </button>
+
+      <button class="lq-round">
+        <span class="lq-round__icon">
+          <svg class="lq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 18V8M9 18V4M14 18v-7M19 18v-4"/></svg>
+        </span>
+        <span class="lq-round__name">Число наугад</span>
+        <span class="lq-round__desc">Побеждает ближайший. Баллы по близости к правильному.</span>
+      </button>
+
+      <button class="lq-round">
+        <span class="lq-round__icon">
+          <svg class="lq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5h5M9.5 14.5h5"/></svg>
+        </span>
+        <span class="lq-round__name">Ставка</span>
+        <span class="lq-round__desc">Ставят баллы до показа вопроса. Для финального раунда.</span>
+      </button>
+
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Настройки раунда</h2>
+    <p class="pv-note">Одинаковый набор для всех форматов. Дефолты подобраны так,
+       чтобы ведущий мог не трогать ничего и всё равно провести честную игру.</p>
+    <div class="pv-card">
+      <div class="pv-grid cols-2">
+        <div>
+          <span class="pv-label">Окно ответа</span>
+          <div class="lq-seg">
+            <button class="lq-seg__item">15 с</button>
+            <button class="lq-seg__item" aria-pressed="true">20 с</button>
+            <button class="lq-seg__item">30 с</button>
+            <button class="lq-seg__item">вручную</button>
+          </div>
+        </div>
+        <div>
+          <span class="pv-label">Живые голоса</span>
+          <div class="lq-seg">
+            <button class="lq-seg__item">В эфире</button>
+            <button class="lq-seg__item" aria-pressed="true">После закрытия</button>
+            <button class="lq-seg__item">Скрыть</button>
+          </div>
+        </div>
+        <div>
+          <span class="pv-label">Множитель баллов</span>
+          <div class="lq-seg">
+            <button class="lq-seg__item" aria-pressed="true">x1</button>
+            <button class="lq-seg__item">x2</button>
+            <button class="lq-seg__item">x3</button>
+          </div>
+        </div>
+        <div>
+          <span class="pv-label">Правила</span>
+          <div style="display:grid;gap:var(--lq-space-2)">
+            <span class="lq-switch" role="switch" aria-checked="true">
+              <span class="lq-switch__track"><span class="lq-switch__thumb"></span></span>
+              <span class="lq-switch__label">Бонус за скорость</span>
+            </span>
+            <span class="lq-switch" role="switch" aria-checked="true">
+              <span class="lq-switch__track"><span class="lq-switch__thumb"></span></span>
+              <span class="lq-switch__label">Нельзя менять ответ</span>
+            </span>
+            <span class="lq-switch" role="switch" aria-checked="false">
+              <span class="lq-switch__track"><span class="lq-switch__thumb"></span></span>
+              <span class="lq-switch__label">Отвечает только капитан</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>

@@ -1,0 +1,134 @@
+<!-- @dsCard group="Components" name="Пульт ведущего" subtitle="Панель управления, судейство, флаги, уведомления" width="1200" height="1100" -->
+<div class="pv-head">
+  <h1>Пульт ведущего</h1>
+  <p>Ведущий работает стоя, боком к ноутбуку, под взглядом зала. Отсюда правило:
+     ни одного диалога «вы уверены?» на частых действиях. Вместо подтверждения — отмена.</p>
+</div>
+
+<div class="pv-wrap">
+
+  <section class="pv-section">
+    <h2>Нижняя панель во время раунда</h2>
+    <p class="pv-note">Главное действие всегда в одном и том же месте и меняет только подпись:
+       открыть → закрыть → показать ответ → дальше. Мышечная память ведущего важнее наглядности.</p>
+
+    <div class="pv-card" style="padding:0;overflow:hidden">
+      <span class="pv-label" style="padding:var(--lq-space-4) var(--lq-space-4) 0">вопрос открыт</span>
+      <div class="lq-hostbar">
+        <button class="lq-btn lq-btn--lg lq-btn--danger">Закрыть приём</button>
+        <button class="lq-btn lq-btn--lg lq-btn--ghost">+10 секунд</button>
+        <span class="lq-live"><span class="lq-live__dot"></span>в эфире</span>
+        <span class="lq-hostbar__spacer"></span>
+        <span class="lq-switch" role="switch" aria-checked="false">
+          <span class="lq-switch__track"><span class="lq-switch__thumb"></span></span>
+          <span class="lq-switch__label">Живые голоса</span>
+        </span>
+        <span class="lq-hostbar__stat"><b>14/17</b><span>ответили</span></span>
+        <span class="lq-hostbar__stat"><b>08</b><span>секунд</span></span>
+      </div>
+    </div>
+
+    <div class="pv-card" style="padding:0;overflow:hidden;margin-top:var(--lq-space-4)">
+      <span class="pv-label" style="padding:var(--lq-space-4) var(--lq-space-4) 0">приём закрыт, ответ ещё не вскрыт</span>
+      <div class="lq-hostbar">
+        <button class="lq-btn lq-btn--lg lq-btn--accent">Показать ответ</button>
+        <button class="lq-btn lq-btn--lg lq-btn--ghost">Открыть снова</button>
+        <span class="lq-hostbar__spacer"></span>
+        <span class="lq-hostbar__stat"><b>17/17</b><span>ответили</span></span>
+      </div>
+    </div>
+
+    <div class="pv-card" style="padding:0;overflow:hidden;margin-top:var(--lq-space-4)">
+      <span class="pv-label" style="padding:var(--lq-space-4) var(--lq-space-4) 0">ответ вскрыт</span>
+      <div class="lq-hostbar">
+        <button class="lq-btn lq-btn--lg">Следующий вопрос</button>
+        <button class="lq-btn lq-btn--lg lq-btn--quiet">Показать таблицу</button>
+        <span class="lq-hostbar__spacer"></span>
+        <button class="lq-btn lq-btn--ghost">Отменить раунд</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Судейство открытых ответов</h2>
+    <p class="pv-note">Автопроверка сводит одинаковое, спорное поднимает наверх.
+       Ведущий досуживает вживую, поэтому список отсортирован по спорности,
+       а не по алфавиту — и решается двумя кнопками без подтверждений.</p>
+    <div class="pv-card">
+      <div style="display:grid;gap:var(--lq-space-2)">
+        <div class="lq-board__row" style="grid-template-columns:auto 1fr auto auto;gap:var(--lq-space-4)">
+          <span class="lq-avatar" style="background:var(--lq-ans-b)">ТМ</span>
+          <span><b>Ауезов</b> <span class="pv-note">· эталон: Мухтар Ауэзов</span></span>
+          <span class="lq-badge lq-badge--warning">похоже</span>
+          <span class="pv-row">
+            <button class="lq-btn lq-btn--success">Засчитать</button>
+            <button class="lq-btn lq-btn--ghost">Отклонить</button>
+          </span>
+        </div>
+        <div class="lq-board__row" style="grid-template-columns:auto 1fr auto auto;gap:var(--lq-space-4)">
+          <span class="lq-avatar" style="background:var(--lq-ans-d)">СК</span>
+          <span><b>М. Әуезов</b> <span class="pv-note">· эталон: Мухтар Ауэзов</span></span>
+          <span class="lq-badge lq-badge--warning">другая раскладка</span>
+          <span class="pv-row">
+            <button class="lq-btn lq-btn--success">Засчитать</button>
+            <button class="lq-btn lq-btn--ghost">Отклонить</button>
+          </span>
+        </div>
+        <div class="lq-board__row" style="grid-template-columns:auto 1fr auto auto;gap:var(--lq-space-4)">
+          <span class="lq-avatar" style="background:var(--lq-ans-c)">ЖБ</span>
+          <span><b>Мухтар Ауэзов</b></span>
+          <span class="lq-badge lq-badge--success">зачтено само</span>
+          <span class="pv-row"><button class="lq-btn lq-btn--ghost">Отменить</button></span>
+        </div>
+      </div>
+      <p class="pv-note" style="margin-top:var(--lq-space-4)">
+        Казахская и русская раскладки одного имени — самый частый спор в открытых раундах.
+        Они попадают в «похоже» автоматически, а не теряются в отклонённых.
+      </p>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Флаги честности</h2>
+    <p class="pv-note">Уход из вкладки во время открытого вопроса — подсказка человеку,
+       а не приговор. У людей звонки, уведомления и гаснущий экран.
+       Система показывает флаг, решает ведущий.</p>
+    <div class="pv-card">
+      <div style="display:grid;gap:var(--lq-space-2)">
+        <div class="lq-board__row" style="grid-template-columns:auto 1fr auto auto;gap:var(--lq-space-4)">
+          <span class="lq-avatar" style="background:var(--lq-ans-a)">ПН</span>
+          <span><b>Пятница</b> <span class="pv-note">· ответили за 3.2 с после ухода из вкладки</span></span>
+          <span class="lq-badge lq-badge--warning">уходил из вкладки</span>
+          <button class="lq-btn lq-btn--ghost">Открыть карточку</button>
+        </div>
+        <div class="lq-board__row" style="grid-template-columns:auto 1fr auto auto;gap:var(--lq-space-4)">
+          <span class="lq-avatar" style="background:var(--lq-ans-e)">АҚ</span>
+          <span><b>Ақ бөкен</b> <span class="pv-note">· ответ пришёл через 0.4 с после дедлайна</span></span>
+          <span class="lq-badge lq-badge--danger">не засчитан по времени</span>
+          <button class="lq-btn lq-btn--ghost">Засчитать вручную</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Уведомления</h2>
+    <p class="pv-note">Появляются снизу, живут 4 секунды и никогда не перекрывают
+       главную кнопку панели.</p>
+    <div class="pv-row">
+      <span class="lq-toast lq-toast--success">
+        <svg class="lq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M4 12.5l5 5L20 7"/></svg>
+        Ответ засчитан · Три медведя +200
+      </span>
+      <span class="lq-toast">
+        Раунд открыт · 20 секунд
+        <button class="lq-btn lq-btn--quiet" style="min-height:32px;padding:0 12px">Отменить</button>
+      </span>
+      <span class="lq-toast lq-toast--danger">
+        <svg class="lq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+        Двое участников потеряли связь
+      </span>
+    </div>
+  </section>
+
+</div>

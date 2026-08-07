@@ -1,0 +1,297 @@
+/* Составные блоки, специфичные для квиза. */
+
+/* ============ Плитка ответа ============
+ * Цвет + фигура. Фигура обязательна: на проекторе ведущий называет «треугольник»,
+ * а не «красный», и дальтоники не выпадают из игры. */
+/* minmax(0,1fr), а не 1fr: у 1fr минимум равен min-content, и длинное
+ * неразрывное имя вроде «Орынбасарова» распирает колонку за края экрана. */
+.lq-tiles {
+  display: grid;
+  gap: var(--lq-space-3);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.lq-tiles--single { grid-template-columns: minmax(0, 1fr); }
+.lq-tiles--six { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+.lq-tile {
+  --tile: var(--lq-ans-a);
+  --tile-deep: var(--lq-ans-a-deep);
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--lq-space-3);
+  min-height: var(--lq-tap-tile);
+  padding: var(--lq-space-4);
+  border: 0;
+  border-radius: var(--lq-radius-lg);
+  background: var(--tile);
+  color: #fff;
+  box-shadow: var(--lq-press) var(--tile-deep);
+  font-family: var(--lq-font-display);
+  font-size: var(--lq-text-lg);
+  font-weight: 800;
+  line-height: var(--lq-leading-snug);
+  text-align: left;
+  cursor: pointer;
+  transition: transform var(--lq-dur-fast) var(--lq-ease-out),
+              box-shadow var(--lq-dur-fast) var(--lq-ease-out),
+              opacity var(--lq-dur-base) var(--lq-ease-out);
+}
+.lq-tile:active { transform: translateY(4px); box-shadow: 0 1px 0 0 var(--tile-deep); }
+.lq-tile:focus-visible { outline: 4px solid var(--lq-ink); outline-offset: 3px; }
+
+.lq-tile--a { --tile: var(--lq-ans-a); --tile-deep: var(--lq-ans-a-deep); }
+.lq-tile--b { --tile: var(--lq-ans-b); --tile-deep: var(--lq-ans-b-deep); }
+.lq-tile--c { --tile: var(--lq-ans-c); --tile-deep: var(--lq-ans-c-deep); }
+.lq-tile--d { --tile: var(--lq-ans-d); --tile-deep: var(--lq-ans-d-deep); }
+.lq-tile--e { --tile: var(--lq-ans-e); --tile-deep: var(--lq-ans-e-deep); }
+.lq-tile--f { --tile: var(--lq-ans-f); --tile-deep: var(--lq-ans-f-deep); }
+
+.lq-tile__shape {
+  width: 30px; height: 30px;
+  flex: none;
+  fill: rgba(255, 255, 255, .92);
+}
+.lq-tile__text { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+
+/* Выбран, но раунд ещё идёт — можно передумать, если правило это разрешает */
+.lq-tile[data-state='picked'] {
+  box-shadow: 0 1px 0 0 var(--tile-deep), 0 0 0 4px var(--lq-ink);
+  transform: translateY(4px);
+}
+/* Вопрос закрыт, ответ вскрыт */
+.lq-tile[data-state='correct']::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  border: 4px solid var(--lq-ink);
+}
+.lq-tile[data-state='dimmed'] { opacity: .35; box-shadow: none; transform: translateY(4px); }
+.lq-tile[data-state='locked'] { pointer-events: none; }
+
+/* ============ Таймер ============ */
+.lq-timer { display: flex; align-items: center; gap: var(--lq-space-3); }
+.lq-timer__num {
+  font-family: var(--lq-font-display);
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--lq-text-3xl);
+  line-height: 1;
+  color: var(--lq-ink);
+}
+.lq-timer__num[data-urgent='true'] { color: var(--lq-danger); }
+
+.lq-timer-bar {
+  position: relative;
+  height: 12px;
+  width: 100%;
+  border-radius: var(--lq-radius-full);
+  background: var(--lq-indigo-100);
+  overflow: hidden;
+}
+.lq-timer-bar__fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--lq-accent);
+  /* Ширина задаётся из серверного дедлайна, не из клиентского счётчика */
+  transition: width 1s linear;
+}
+.lq-timer-bar__fill[data-urgent='true'] { background: var(--lq-danger); }
+
+/* ============ Живые голоса ============ */
+.lq-votes { display: grid; gap: var(--lq-space-3); }
+.lq-vote {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  align-items: center;
+  gap: var(--lq-space-3);
+}
+.lq-vote__shape { width: 26px; height: 26px; }
+.lq-vote__track {
+  height: 34px;
+  border-radius: var(--lq-radius-sm);
+  background: var(--lq-indigo-100);
+  overflow: hidden;
+}
+.lq-vote__fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--lq-ans-a);
+  transition: width var(--lq-dur-slow) var(--lq-ease-out);
+}
+.lq-vote__count {
+  font-family: var(--lq-font-display);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  min-width: 3ch;
+  text-align: right;
+}
+/* Голоса скрыты по правилу раунда — место занято, чтобы верстка не прыгала */
+.lq-votes[data-hidden='true'] .lq-vote__fill { width: 0 !important; }
+.lq-votes[data-hidden='true'] .lq-vote__count { color: var(--lq-ink-3); }
+
+/* ============ Лидерборд ============ */
+.lq-board { display: grid; gap: var(--lq-space-2); }
+.lq-board__row {
+  display: grid;
+  grid-template-columns: 44px auto 1fr auto;
+  align-items: center;
+  gap: var(--lq-space-3);
+  padding: var(--lq-space-3) var(--lq-space-4);
+  border-radius: var(--lq-radius-md);
+  background: var(--lq-surface);
+  border: 1px solid var(--lq-border);
+}
+.lq-board__rank {
+  font-family: var(--lq-font-display);
+  font-weight: 900;
+  font-size: var(--lq-text-lg);
+  font-variant-numeric: tabular-nums;
+  color: var(--lq-ink-3);
+  text-align: center;
+}
+.lq-board__name { font-weight: 700; }
+.lq-board__score {
+  font-family: var(--lq-font-display);
+  font-weight: 900;
+  font-size: var(--lq-text-xl);
+  font-variant-numeric: tabular-nums;
+}
+.lq-board__delta { font-size: var(--lq-text-sm); font-weight: 700; color: var(--lq-success); }
+.lq-board__row[data-place='1'] { border-color: var(--lq-accent); background: var(--lq-accent-soft); }
+.lq-board__row[data-place='1'] .lq-board__rank { color: var(--lq-accent-deep); }
+.lq-board__row[data-me='true'] { border-color: var(--lq-primary); box-shadow: 0 0 0 2px var(--lq-indigo-100); }
+
+/* ============ Пульт ведущего ============ */
+.lq-hostbar {
+  display: flex;
+  align-items: center;
+  gap: var(--lq-space-3);
+  padding: var(--lq-space-3) var(--lq-space-4);
+  background: var(--lq-surface);
+  border-top: 1px solid var(--lq-border);
+  box-shadow: 0 -6px 20px rgba(30, 27, 75, .07);
+}
+.lq-hostbar__spacer { flex: 1; }
+.lq-hostbar__stat {
+  display: grid;
+  gap: 2px;
+  padding: 0 var(--lq-space-4);
+  border-left: 1px solid var(--lq-border);
+}
+.lq-hostbar__stat b {
+  font-family: var(--lq-font-display);
+  font-size: var(--lq-text-xl);
+  font-variant-numeric: tabular-nums;
+}
+.lq-hostbar__stat span { font-size: var(--lq-text-xs); color: var(--lq-ink-3); }
+
+/* ============ Карточка типа раунда ============ */
+.lq-round {
+  display: grid;
+  gap: var(--lq-space-2);
+  padding: var(--lq-space-4);
+  border: 2px solid var(--lq-border);
+  border-radius: var(--lq-radius-lg);
+  background: var(--lq-surface);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color var(--lq-dur-fast) var(--lq-ease-out),
+              background var(--lq-dur-fast) var(--lq-ease-out);
+}
+.lq-round:hover { border-color: var(--lq-primary); background: var(--lq-surface-2); }
+.lq-round[aria-pressed='true'] { border-color: var(--lq-primary); background: var(--lq-primary-soft); }
+.lq-round__icon {
+  width: 40px; height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--lq-radius-md);
+  background: var(--lq-primary-soft);
+  color: var(--lq-primary-hover);
+}
+/* display:block обязателен: в карточке выбора команды имя и подпись лежат
+ * в одном контейнере, и без него «Жеті батыр» слипается с «4 участника». */
+.lq-round__name { display: block; font-family: var(--lq-font-display); font-weight: 800; }
+.lq-round__desc { display: block; font-size: var(--lq-text-sm); color: var(--lq-ink-2); line-height: var(--lq-leading-snug); }
+
+/* ============ Экран участника: оболочка ============ */
+.lq-player {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--lq-bg);
+}
+.lq-player__top {
+  display: flex;
+  align-items: center;
+  gap: var(--lq-space-3);
+  padding: var(--lq-space-3) var(--lq-space-4);
+}
+.lq-player__body {
+  flex: 1;
+  padding: var(--lq-space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--lq-space-4);
+  min-height: 0;
+}
+/* Плитки живут в зоне большого пальца — снизу */
+.lq-player__answers { margin-top: auto; }
+.lq-player__wait {
+  flex: 1;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--lq-space-4);
+  text-align: center;
+  padding: var(--lq-space-6);
+}
+.lq-player__wait h2 {
+  font-family: var(--lq-font-display);
+  font-size: var(--lq-text-2xl);
+  font-weight: 800;
+  margin: 0;
+}
+.lq-player__wait p { margin: 0; color: var(--lq-ink-2); max-width: 34ch; }
+
+/* Тёмный зал: экран телефона не должен слепить соседа */
+.lq-player--dim { background: var(--lq-stage-bg); color: var(--lq-stage-ink); }
+.lq-player--dim .lq-player__wait p { color: var(--lq-stage-ink-2); }
+
+/* ============ Сцена (проектор) ============ */
+.lq-stage {
+  background: var(--lq-stage-bg);
+  color: var(--lq-stage-ink);
+  padding: var(--lq-space-12);
+  display: flex;
+  flex-direction: column;
+  gap: var(--lq-space-8);
+  min-height: 640px;
+}
+.lq-stage__top { display: flex; align-items: center; gap: var(--lq-space-4); }
+.lq-stage__q {
+  font-family: var(--lq-font-display);
+  font-weight: 900;
+  font-size: var(--lq-text-stage);
+  line-height: var(--lq-leading-tight);
+  margin: 0;
+  text-wrap: balance;
+}
+.lq-stage__timer {
+  font-family: var(--lq-font-display);
+  font-weight: 900;
+  font-size: var(--lq-text-5xl);
+  font-variant-numeric: tabular-nums;
+  color: var(--lq-accent);
+}
+.lq-stage .lq-vote__track { background: var(--lq-stage-bg-2); }
+.lq-stage .lq-board__row { background: var(--lq-stage-bg-2); border-color: transparent; color: var(--lq-stage-ink); }
+.lq-stage .lq-board__rank { color: var(--lq-stage-ink-2); }
+.lq-stage .lq-tile { font-size: var(--lq-text-2xl); min-height: 110px; }
+/* На тёмной сцене обводка и дельта, рассчитанные на белый фон, пропадают. */
+.lq-stage .lq-tile[data-state='correct']::after { border-color: var(--lq-stage-ink); }
+.lq-stage .lq-tile[data-state='picked'] {
+  box-shadow: 0 1px 0 0 var(--tile-deep), 0 0 0 4px var(--lq-stage-ink);
+}
+.lq-stage .lq-board__delta { color: #4ADE80; }

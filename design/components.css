@@ -1,0 +1,280 @@
+/* Базовые элементы управления. Общие для телефона, пульта и сцены. */
+
+/* ============ Кнопка ============ */
+.lq-btn {
+  --btn-bg: var(--lq-primary);
+  --btn-fg: #fff;
+  --btn-edge: var(--lq-primary-hover);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--lq-space-2);
+  min-height: var(--lq-tap-min);
+  padding: 0 var(--lq-space-6);
+  border: 0;
+  border-radius: var(--lq-radius-md);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  box-shadow: var(--lq-press) var(--btn-edge);
+  font-family: var(--lq-font-ui);
+  font-size: var(--lq-text-base);
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: filter var(--lq-dur-fast) var(--lq-ease-out),
+              box-shadow var(--lq-dur-fast) var(--lq-ease-out),
+              transform var(--lq-dur-fast) var(--lq-ease-out);
+}
+.lq-btn:hover { filter: brightness(.94); }
+/* Нажатие «проваливает» кнопку в её же тень — габариты потока не меняются */
+.lq-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 0 var(--btn-edge); }
+.lq-btn:focus-visible {
+  outline: 3px solid var(--lq-ink);
+  outline-offset: 3px;
+}
+.lq-btn[disabled], .lq-btn[aria-disabled='true'] {
+  opacity: .45;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+  filter: none;
+}
+
+.lq-btn--accent {
+  /* Белый текст на оранжевом даёт 2.80:1 — поэтому текст тёмный. */
+  --btn-bg: var(--lq-accent);
+  --btn-fg: var(--lq-ink);
+  --btn-edge: var(--lq-accent-deep);
+}
+.lq-btn--danger { --btn-bg: var(--lq-danger); --btn-edge: #991B1B; }
+.lq-btn--success { --btn-bg: var(--lq-success); --btn-edge: #14532D; }
+.lq-btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--lq-ink);
+  box-shadow: inset 0 0 0 2px var(--lq-border-control);
+}
+.lq-btn--ghost:active { transform: none; box-shadow: inset 0 0 0 2px var(--lq-ink); }
+.lq-btn--quiet {
+  --btn-bg: var(--lq-primary-soft);
+  --btn-fg: var(--lq-primary-hover);
+  box-shadow: none;
+}
+.lq-btn--quiet:active { transform: none; }
+
+.lq-btn--lg { min-height: 60px; font-size: var(--lq-text-lg); padding: 0 var(--lq-space-8); }
+.lq-btn--xl {
+  min-height: 72px;
+  font-family: var(--lq-font-display);
+  font-size: var(--lq-text-xl);
+  font-weight: 800;
+  border-radius: var(--lq-radius-lg);
+  padding: 0 var(--lq-space-10);
+}
+.lq-btn--block { display: flex; width: 100%; }
+.lq-btn--icon { padding: 0; width: var(--lq-tap-min); }
+
+/* Кнопка в состоянии ожидания сети: подпись меняется, ширина держится */
+.lq-btn[data-busy='true'] { pointer-events: none; opacity: .7; }
+
+/* ============ Поле ввода ============ */
+.lq-field { display: block; }
+.lq-field__label {
+  display: block;
+  font-size: var(--lq-text-sm);
+  font-weight: 600;
+  color: var(--lq-ink-2);
+  margin-bottom: var(--lq-space-2);
+}
+.lq-input {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 var(--lq-space-4);
+  border: 2px solid var(--lq-border-control);
+  border-radius: var(--lq-radius-md);
+  background: var(--lq-surface);
+  color: var(--lq-ink);
+  font-family: var(--lq-font-ui);
+  font-size: var(--lq-text-base); /* 16px — иначе iOS зумит форму */
+  transition: border-color var(--lq-dur-fast) var(--lq-ease-out);
+}
+.lq-input::placeholder { color: var(--lq-ink-3); }
+.lq-input:focus {
+  outline: none;
+  border-color: var(--lq-primary);
+  box-shadow: 0 0 0 4px var(--lq-indigo-100);
+}
+.lq-input[aria-invalid='true'] { border-color: var(--lq-danger); }
+.lq-field__error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--lq-space-2);
+  font-size: var(--lq-text-sm);
+  font-weight: 600;
+  color: var(--lq-danger);
+}
+
+/* Код комнаты: шесть крупных знакомест */
+.lq-code {
+  display: flex;
+  gap: var(--lq-space-2);
+  justify-content: center;
+}
+.lq-code__cell {
+  width: 48px;
+  height: 62px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--lq-border-control);
+  border-radius: var(--lq-radius-md);
+  background: var(--lq-surface);
+  font-family: var(--lq-font-display);
+  font-size: var(--lq-text-2xl);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.lq-code__cell[data-filled='true'] { border-color: var(--lq-primary); }
+.lq-code__cell[data-active='true'] {
+  border-color: var(--lq-primary);
+  box-shadow: 0 0 0 4px var(--lq-indigo-100);
+}
+
+/* ============ Плашки и метки ============ */
+.lq-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--lq-radius-full);
+  background: var(--lq-primary-soft);
+  color: var(--lq-primary-hover);
+  font-size: var(--lq-text-xs);
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+.lq-badge--success { background: var(--lq-success-soft); color: var(--lq-success); }
+.lq-badge--danger  { background: var(--lq-danger-soft);  color: var(--lq-danger); }
+.lq-badge--warning { background: var(--lq-warning-soft); color: var(--lq-warning); }
+.lq-badge--neutral { background: var(--lq-surface-2);    color: var(--lq-ink-2); }
+
+.lq-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  border-radius: var(--lq-radius-full);
+  background: var(--lq-live);
+  color: #fff;
+  font-size: var(--lq-text-xs);
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.lq-live__dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #fff;
+  animation: lq-pulse 1.6s var(--lq-ease) infinite;
+}
+@keyframes lq-pulse { 0%,100% { opacity: 1 } 50% { opacity: .25 } }
+@media (prefers-reduced-motion: reduce) { .lq-live__dot { animation: none } }
+
+/* ============ Тумблер ============ */
+.lq-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--lq-space-3);
+  cursor: pointer;
+  min-height: var(--lq-tap-min);
+}
+.lq-switch__track {
+  width: 52px; height: 30px;
+  flex: none;
+  border-radius: var(--lq-radius-full);
+  background: #94A3B8;
+  padding: 3px;
+  transition: background var(--lq-dur-base) var(--lq-ease-out);
+}
+.lq-switch__thumb {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: var(--lq-shadow-sm);
+  transition: transform var(--lq-dur-base) var(--lq-ease-bounce);
+}
+.lq-switch[aria-checked='true'] .lq-switch__track { background: var(--lq-success); }
+.lq-switch[aria-checked='true'] .lq-switch__thumb { transform: translateX(22px); }
+.lq-switch__label { font-weight: 600; font-size: var(--lq-text-sm); }
+
+/* ============ Сегментированный переключатель ============ */
+.lq-seg {
+  display: inline-flex;
+  padding: 4px;
+  gap: 4px;
+  background: var(--lq-surface-2);
+  border: 1px solid var(--lq-border);
+  border-radius: var(--lq-radius-md);
+}
+.lq-seg__item {
+  border: 0;
+  background: transparent;
+  padding: 9px 15px;
+  min-height: 38px;
+  border-radius: var(--lq-radius-sm);
+  font-family: var(--lq-font-ui);
+  font-size: var(--lq-text-sm);
+  font-weight: 600;
+  color: var(--lq-ink-2);
+  cursor: pointer;
+  transition: background var(--lq-dur-fast) var(--lq-ease-out);
+}
+.lq-seg__item:hover { background: var(--lq-indigo-100); }
+.lq-seg__item[aria-pressed='true'] {
+  background: var(--lq-primary);
+  color: #fff;
+  box-shadow: var(--lq-shadow-sm);
+}
+
+/* ============ Карточка ============ */
+.lq-card {
+  background: var(--lq-surface);
+  border: 1px solid var(--lq-border);
+  border-radius: var(--lq-radius-lg);
+  padding: var(--lq-space-5);
+  box-shadow: var(--lq-shadow-sm);
+}
+.lq-card--raised { box-shadow: var(--lq-shadow-md); border-color: transparent; }
+
+/* ============ Аватар команды ============ */
+.lq-avatar {
+  width: 40px; height: 40px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: var(--lq-radius-md);
+  background: var(--lq-primary);
+  color: #fff;
+  font-family: var(--lq-font-display);
+  font-weight: 800;
+  font-size: var(--lq-text-sm);
+}
+.lq-avatar--lg { width: 56px; height: 56px; font-size: var(--lq-text-lg); border-radius: var(--lq-radius-lg); }
+
+/* ============ Уведомление ============ */
+.lq-toast {
+  display: flex;
+  align-items: center;
+  gap: var(--lq-space-3);
+  padding: var(--lq-space-3) var(--lq-space-4);
+  border-radius: var(--lq-radius-md);
+  background: var(--lq-ink);
+  color: #fff;
+  font-size: var(--lq-text-sm);
+  font-weight: 600;
+  box-shadow: var(--lq-shadow-lg);
+}
+.lq-toast--success { background: var(--lq-success); }
+.lq-toast--danger  { background: var(--lq-danger); }
+
+.lq-icon { width: 20px; height: 20px; flex: none; display: block; }
+.lq-icon--lg { width: 26px; height: 26px; }

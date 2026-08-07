@@ -1,0 +1,129 @@
+<!-- @dsCard group="Components" name="Плитки ответов" subtitle="2 / 4 / 6 вариантов, состояния, правда-ложь" width="1200" height="1250" -->
+<div class="pv-head">
+  <h1>Плитки ответов</h1>
+  <p>Главный элемент всего продукта. Цвет плюс фигура, крупная цель, прижаты к низу экрана.
+     Фигура здесь не украшение: ведущий со сцены говорит «жмите треугольник»,
+     и это работает для тех, кто не различает красный и зелёный.</p>
+</div>
+
+<div class="pv-wrap">
+
+  <section class="pv-section">
+    <h2>Четыре варианта</h2>
+    <p class="pv-note">Основная раскладка. Две колонки — потому что в один столбец
+       четыре плитки по 84px не помещаются над зоной пальца.</p>
+    <div style="max-width:420px">
+      <div class="lq-tiles">
+        <button class="lq-tile lq-tile--a">
+          <svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-triangle"/></svg>
+          <span class="lq-tile__text">Астана</span>
+        </button>
+        <button class="lq-tile lq-tile--b">
+          <svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-diamond"/></svg>
+          <span class="lq-tile__text">Алматы</span>
+        </button>
+        <button class="lq-tile lq-tile--c">
+          <svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-circle"/></svg>
+          <span class="lq-tile__text">Шымкент</span>
+        </button>
+        <button class="lq-tile lq-tile--d">
+          <svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-square"/></svg>
+          <span class="lq-tile__text">Қарағанды</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Правда или ложь</h2>
+    <div style="max-width:420px">
+      <div class="lq-tiles">
+        <button class="lq-tile lq-tile--d" style="min-height:120px;justify-content:center">
+          <svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-circle"/></svg>
+          <span class="lq-tile__text" style="flex:none;font-size:var(--lq-text-2xl)">Правда</span>
+        </button>
+        <button class="lq-tile lq-tile--a" style="min-height:120px;justify-content:center">
+          <svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-triangle"/></svg>
+          <span class="lq-tile__text" style="flex:none;font-size:var(--lq-text-2xl)">Ложь</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Шесть вариантов</h2>
+    <p class="pv-note">Потолок. Больше шести на телефоне не читается за отведённые секунды —
+       если вариантов больше, это повод переделать вопрос, а не верстку.</p>
+    <div style="max-width:420px">
+      <div class="lq-tiles lq-tiles--six">
+        <button class="lq-tile lq-tile--a"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-triangle"/></svg><span class="lq-tile__text">Абай</span></button>
+        <button class="lq-tile lq-tile--b"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-diamond"/></svg><span class="lq-tile__text">Мұқағали</span></button>
+        <button class="lq-tile lq-tile--c"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-circle"/></svg><span class="lq-tile__text">Жамбыл</span></button>
+        <button class="lq-tile lq-tile--d"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-square"/></svg><span class="lq-tile__text">Сәкен</span></button>
+        <button class="lq-tile lq-tile--e"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-star"/></svg><span class="lq-tile__text">Ілияс</span></button>
+        <button class="lq-tile lq-tile--f"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-hex"/></svg><span class="lq-tile__text">Бейімбет</span></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Состояния</h2>
+    <div class="pv-grid cols-2">
+      <div class="pv-card">
+        <span class="pv-label">выбрано, вопрос ещё открыт</span>
+        <div class="lq-tiles">
+          <button class="lq-tile lq-tile--a" data-state="picked"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-triangle"/></svg><span class="lq-tile__text">Астана</span></button>
+          <button class="lq-tile lq-tile--b"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-diamond"/></svg><span class="lq-tile__text">Алматы</span></button>
+        </div>
+        <p class="pv-note" style="margin-top:var(--lq-space-3)">Плитка вдавлена и обведена.
+           Обводка, а не только смещение — смещение на 4px в полутьме почти не видно.</p>
+      </div>
+      <div class="pv-card">
+        <span class="pv-label">вопрос закрыт, ответ вскрыт</span>
+        <div class="lq-tiles">
+          <button class="lq-tile lq-tile--a" data-state="dimmed"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-triangle"/></svg><span class="lq-tile__text">Астана</span></button>
+          <button class="lq-tile lq-tile--b" data-state="correct"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-diamond"/></svg><span class="lq-tile__text">Алматы</span></button>
+        </div>
+        <p class="pv-note" style="margin-top:var(--lq-space-3)">Правильный обведён рамкой,
+           остальные приглушены. Приглушение — не только прозрачность:
+           плитка ещё и «нажата», то есть неактивна на вид.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-section">
+    <h2>Медиа-раунды</h2>
+    <p class="pv-note">Отрывок звучит и картинка показывается <b>только на сцене</b>.
+       Телефон даёт лишь способ ответа — иначе участник отмотает трек назад
+       или увеличит фото и найдёт подсказку.</p>
+    <div class="pv-grid cols-2">
+      <div class="pv-card">
+        <span class="pv-label">музыкальный раунд · экран телефона</span>
+        <div style="display:grid;place-items:center;gap:var(--lq-space-3);padding:var(--lq-space-6) 0">
+          <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="var(--lq-primary)" stroke-width="2" aria-hidden="true">
+            <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+          </svg>
+          <b style="font-family:var(--lq-font-display);font-size:var(--lq-text-xl)">Слушайте отрывок</b>
+          <span class="pv-note" style="text-align:center">Звук идёт из зала.<br>Ответ выберите здесь.</span>
+        </div>
+        <div class="lq-tiles">
+          <button class="lq-tile lq-tile--a" style="min-height:64px"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-triangle"/></svg><span class="lq-tile__text">Дос-Мұқасан</span></button>
+          <button class="lq-tile lq-tile--b" style="min-height:64px"><svg class="lq-tile__shape" aria-hidden="true"><use href="#sh-diamond"/></svg><span class="lq-tile__text">Ялла</span></button>
+        </div>
+      </div>
+      <div class="pv-card">
+        <span class="pv-label">открытый ответ · экран телефона</span>
+        <div style="display:grid;place-items:center;gap:var(--lq-space-3);padding:var(--lq-space-6) 0">
+          <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="var(--lq-primary)" stroke-width="2" aria-hidden="true">
+            <path d="M4 20h16M6 16l10-10 3 3-10 10H6z"/>
+          </svg>
+          <b style="font-family:var(--lq-font-display);font-size:var(--lq-text-xl)">Напишите ответ</b>
+        </div>
+        <input class="lq-input" placeholder="Одним словом" style="min-height:64px;font-size:var(--lq-text-lg)">
+        <div style="height:var(--lq-space-3)"></div>
+        <button class="lq-btn lq-btn--lg lq-btn--block">Отправить</button>
+      </div>
+    </div>
+  </section>
+
+</div>
