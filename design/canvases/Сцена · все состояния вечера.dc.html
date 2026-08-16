@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="lq.css">
+<style>
+[data-notes="false"] .pv-note { display: none; }
+.st { width:1280px; height:720px; }
+.st .lq-stage { height:100%; min-height:0; padding:var(--lq-space-10) var(--lq-space-12); gap:var(--lq-space-6); }
+.st-label { font-size:var(--lq-text-lg); font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--lq-stage-ink-2); }
+.st-q { font-family:var(--lq-font-display); font-weight:900; font-size:3.4rem; line-height:1.1; margin:0; text-wrap:balance; }
+.st-timer { font-family:var(--lq-font-display); font-weight:900; font-variant-numeric:tabular-nums; font-size:4rem; line-height:1; color:var(--lq-accent); }
+.st-tile { display:flex; align-items:center; gap:var(--lq-space-4); min-height:92px; padding:var(--lq-space-4) var(--lq-space-6); border-radius:var(--lq-radius-lg); color:#fff; font-family:var(--lq-font-display); font-weight:800; font-size:2rem; }
+.st-shape { width:38px; height:38px; flex:none; fill:rgba(255,255,255,.92); }
+.st-grid { display:grid; grid-template-columns:1fr 1fr; gap:var(--lq-space-4); }
+a { color: var(--lq-indigo-300); }
+a:hover { color: var(--lq-indigo-200); }
+</style>
+</helmet>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+<symbol id="sh-triangle" viewBox="0 0 24 24"><path d="M12 3 22 21H2z"></path></symbol>
+<symbol id="sh-diamond" viewBox="0 0 24 24"><path d="M12 2 22 12 12 22 2 12z"></path></symbol>
+<symbol id="sh-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"></circle></symbol>
+<symbol id="sh-square" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2.5"></rect></symbol>
+</svg>
+
+<div class="pv-head">
+<h1>Сцена · все состояния вечера</h1>
+<p>Семнадцать состояний проектора в затемнённом зале. Зритель сидит в пятнадцати метрах, управления на этом экране нет вообще: он только показывает, что происходит сейчас. Всё на тёмной поверхности <code>.lq-stage</code>, минимальный кегль — заголовочный, служебных подписей нет.</p>
+</div>
+
+<div class="pv-wrap" style="max-width:none" data-notes="{{ showNotes }}">
+<div style="display:grid;gap:var(--lq-space-10);justify-items:start">
+
+<div>
+<div class="pv-screen st"><div class="lq-stage" style="align-items:center;justify-content:center;text-align:center">
+<div class="st-label">livequiz.kz · войдите с телефона</div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-12)">
+<div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:7.5rem;line-height:1;letter-spacing:.06em;font-variant-numeric:tabular-nums">481203</div><div class="st-label" style="margin-top:var(--lq-space-2)">код игры</div></div>
+<div style="width:200px;height:200px;border-radius:var(--lq-radius-lg);background:repeating-conic-gradient(#fff 0 25%, var(--lq-stage-bg-2) 0 50%) 0 0/24px 24px"></div>
+</div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-4)"><span class="lq-live"><span class="lq-live__dot"></span>сбор</span><span style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-3xl)">9 команд · 26 человек</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:var(--lq-space-3);justify-content:center;max-width:1000px">
+<span style="display:flex;align-items:center;gap:10px;background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-full);padding:10px 20px;font-size:var(--lq-text-xl);font-weight:700"><svg width="20" height="20" fill="var(--lq-ans-b)" aria-hidden="true"><use href="#sh-diamond"></use></svg>Жеті батыр</span>
+<span style="display:flex;align-items:center;gap:10px;background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-full);padding:10px 20px;font-size:var(--lq-text-xl);font-weight:700"><svg width="20" height="20" fill="var(--lq-ans-c)" aria-hidden="true"><use href="#sh-circle"></use></svg>Көк сұңқар</span>
+<span style="display:flex;align-items:center;gap:10px;background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-full);padding:10px 20px;font-size:var(--lq-text-xl);font-weight:700"><svg width="20" height="20" fill="var(--lq-ans-d)" aria-hidden="true"><use href="#sh-square"></use></svg>Тобылғы</span>
+<span style="display:flex;align-items:center;gap:10px;background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-full);padding:10px 20px;font-size:var(--lq-text-xl);font-weight:700"><svg width="20" height="20" fill="var(--lq-ans-a)" aria-hidden="true"><use href="#sh-triangle"></use></svg>Алтын тобы</span>
+<span style="display:flex;align-items:center;gap:10px;background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-full);padding:10px 20px;font-size:var(--lq-text-xl);font-weight:700"><svg width="20" height="20" fill="var(--lq-ans-e)" aria-hidden="true"><use href="#sh-diamond"></use></svg>Сарыарқа</span>
+<span style="display:flex;align-items:center;gap:10px;background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-full);padding:10px 20px;font-size:var(--lq-text-xl);font-weight:700;opacity:.55"><svg width="20" height="20" fill="var(--lq-ans-f)" aria-hidden="true"><use href="#sh-circle"></use></svg>Дала сазы</span>
+</div>
+</div></div>
+<div class="pv-caption">1 · До игры</div>
+</div>
+
+<div>
+<div class="pv-screen st"><div class="lq-stage" style="justify-content:center;gap:var(--lq-space-8)">
+<div class="st-label">раунд 2 из 6</div>
+<div style="font-family:var(--lq-font-display);font-weight:900;font-size:5.5rem;line-height:1">Города</div>
+<div style="display:flex;gap:var(--lq-space-4)"><span class="lq-badge" style="font-size:var(--lq-text-lg);padding:8px 18px;background:var(--lq-stage-bg-2);color:var(--lq-stage-ink)">8 вопросов</span><span class="lq-badge" style="font-size:var(--lq-text-lg);padding:8px 18px;background:var(--lq-stage-bg-2);color:var(--lq-stage-ink)">выбор из четырёх</span></div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--lq-space-6);margin-top:var(--lq-space-4)">
+<div style="background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-6)"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:3rem;line-height:1">20 сек</div><div class="st-label" style="font-size:var(--lq-text-base)">на ответ</div></div>
+<div style="background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-6)"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:3rem;line-height:1;color:var(--lq-accent)">×2</div><div class="st-label" style="font-size:var(--lq-text-base)">множитель раунда</div></div>
+<div style="background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-6)"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:3rem;line-height:1">можно</div><div class="st-label" style="font-size:var(--lq-text-base)">менять ответ до конца</div></div>
+</div>
+</div></div>
+<div class="pv-caption">2 · Заставка раунда</div>
+</div>
+
+<div>
+<div class="pv-screen st"><div class="lq-stage">
+<div style="display:flex;align-items:center;gap:var(--lq-space-4)"><span class="lq-live" style="font-size:var(--lq-text-base);padding:7px 16px"><span class="lq-live__dot"></span>раунд 2 · вопрос 3</span><span style="flex:1"></span><span style="font-size:var(--lq-text-xl);color:var(--lq-stage-ink-2)">ответили 9 из 12</span><span class="st-timer">14</span></div>
+<h2 class="st-q">В каком году Астана стала столицей Казахстана?</h2>
+<div class="st-grid" style="margin-top:auto">
+<div class="st-tile" style="background:var(--lq-ans-a);box-shadow:var(--lq-press) var(--lq-ans-a-deep)"><svg class="st-shape" aria-hidden="true"><use href="#sh-triangle"></use></svg>1994</div>
+<div class="st-tile" style="background:var(--lq-ans-b);box-shadow:var(--lq-press) var(--lq-ans-b-deep)"><svg class="st-shape" aria-hidden="true"><use href="#sh-diamond"></use></svg>1997</div>
+<div class="st-tile" style="background:var(--lq-ans-c);box-shadow:var(--lq-press) var(--lq-ans-c-deep)"><svg class="st-shape" aria-hidden="true"><use href="#sh-circle"></use></svg>1998</div>
+<div class="st-tile" style="background:var(--lq-ans-d);box-shadow:var(--lq-press) var(--lq-ans-d-deep)"><svg class="st-shape" aria-hidden="true"><use href="#sh-square"></use></svg>2001</div>
+</div>
+<div class="lq-timer-bar" style="height:16px;background:var(--lq-stage-bg-2)"><div class="lq-timer-bar__fill" style="width:70%"></div></div>
+</div></div>
+<div class="pv-caption">3 · choice открыт</div>
+</div>
+
+<div>
+<div class="pv-screen st"><div class="lq-stage">
+<div style="display:flex;align-items:center;gap:var(--lq-space-4)"><span class="lq-live" style="font-size:var(--lq-text-base);padding:7px 16px"><span class="lq-live__dot"></span>раунд 4 · музыкальный</span><span style="flex:1"></span><span style="font-size:var(--lq-text-xl);color:var(--lq-stage-ink-2)">варианты появятся после отрывка</span></div>
+<h2 class="st-q">Чей это голос?</h2>
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:var(--lq-space-6)">
+<div style="display:flex;align-items:flex-end;gap:6px;height:200px">
+<span style="flex:1;height:24%;background:var(--lq-stage-bg-2);border-radius:4px"></span><span style="flex:1;height:52%;background:var(--lq-stage-bg-2);border-radius:4px"></span><span style="flex:1;height:36%;background:var(--lq-stage-bg-2);border-radius:4px"></span><span style="flex:1;height:70%;background:var(--lq-stage-bg-2);border-radius:4px"></span><span style="flex:1;height:44%;background:var(--lq-stage-bg-2);border-radius:4px"></span><span style="flex:1;height:88%;background:var(--lq-accent);border-radius:4px"></span><span style="flex:1;height:62%;background:var(--lq-accent);border-radius:4px"></span><span style="flex:1;height:96%;background:var(--lq-accent);border-radius:4px"></span><span style="flex:1;height:74%;background:var(--lq-accent);border-radius:4px"></span><span style="flex:1;height:56%;background:var(--lq-accent);border-radius:4px"></span><span style="flex:1;height:82%;background:var(--lq-accent);border-radius:4px"></span><span style="flex:1;height:40%;background:var(--lq-stage-bg-2);border-radius:4px"></span><span style="flex:1;height:66%;background:var(--lq-stage-bg-2);border-radius:4px"></span><span style="flex:1;height:30%;background:var(--lq-stage-bg-2);border-radius:4px"></span><span style="flex:1;height:58%;background:var(--lq-stage-bg-2);border-radius:4px"></span><span style="flex:1;height:22%;background:var(--lq-stage-bg-2);border-radius:4px"></span><span style="flex:1;height:46%;background:var(--lq-stage-bg-2);border-radius:4px"></span><span style="flex:1;height:34%;background:var(--lq-stage-bg-2);border-radius:4px"></span>
+</div>
+<div style="display:flex;align-items:baseline;gap:var(--lq-space-6)"><span class="st-label">звучит отрывок</span><span style="flex:1"></span><span style="font-family:var(--lq-font-display);font-weight:900;font-size:2.4rem;font-variant-numeric:tabular-nums;color:var(--lq-accent)">0:31 / 0:55</span></div>
+</div>
+</div></div>
+<div class="pv-caption">4 · audio открыт</div>
+</div>
+
+<div>
+<div class="pv-screen st"><div class="lq-stage" style="gap:var(--lq-space-5)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-4)"><span class="lq-live" style="font-size:var(--lq-text-base);padding:7px 16px"><span class="lq-live__dot"></span>раунд 5 · вопрос 1</span><h2 class="st-q" style="font-size:2.2rem;flex:1">Что за здание на снимке?</h2><span class="st-timer">16</span></div>
+<div style="flex:1;border-radius:var(--lq-radius-lg);background:linear-gradient(150deg,var(--lq-stage-bg-2),#2E2770);display:grid;place-items:center;color:var(--lq-stage-ink-2);font-size:var(--lq-text-xl)">фотография здания · 16:9</div>
+<div class="st-grid" style="grid-template-columns:repeat(4,1fr);gap:var(--lq-space-3)">
+<div class="st-tile" style="background:var(--lq-ans-a);box-shadow:var(--lq-press) var(--lq-ans-a-deep);min-height:70px;font-size:1.4rem;padding:var(--lq-space-3) var(--lq-space-4)"><svg class="st-shape" style="width:26px;height:26px" aria-hidden="true"><use href="#sh-triangle"></use></svg>Байтерек</div>
+<div class="st-tile" style="background:var(--lq-ans-b);box-shadow:var(--lq-press) var(--lq-ans-b-deep);min-height:70px;font-size:1.4rem;padding:var(--lq-space-3) var(--lq-space-4)"><svg class="st-shape" style="width:26px;height:26px" aria-hidden="true"><use href="#sh-diamond"></use></svg>Хан Шатыр</div>
+<div class="st-tile" style="background:var(--lq-ans-c);box-shadow:var(--lq-press) var(--lq-ans-c-deep);min-height:70px;font-size:1.4rem;padding:var(--lq-space-3) var(--lq-space-4)"><svg class="st-shape" style="width:26px;height:26px" aria-hidden="true"><use href="#sh-circle"></use></svg>Дворец мира</div>
+<div class="st-tile" style="background:var(--lq-ans-d);box-shadow:var(--lq-press) var(--lq-ans-d-deep);min-height:70px;font-size:1.4rem;padding:var(--lq-space-3) var(--lq-space-4)"><svg class="st-shape" style="width:26px;height:26px" aria-hidden="true"><use href="#sh-square"></use></svg>Астана Опера</div>
+</div>
+</div></div>
+<div class="pv-caption">5 · image открыт</div>
+</div>
+
+<div>
+<div class="pv-screen st"><div class="lq-stage" style="gap:var(--lq-space-5)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-4)"><span class="lq-live" style="font-size:var(--lq-text-base);padding:7px 16px"><span class="lq-live__dot"></span>раунд 5 · вопрос 2</span><h2 class="st-q" style="font-size:2.2rem;flex:1">Что за здание на снимке?</h2><span class="st-timer">22</span></div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 300px;gap:var(--lq-space-6)">
+<div style="position:relative;border-radius:var(--lq-radius-lg);overflow:hidden;background:linear-gradient(150deg,var(--lq-stage-bg-2),#2E2770)">
+<div style="position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr">
+<div style="display:grid;place-items:center;color:var(--lq-stage-ink-2);border-right:2px solid var(--lq-stage-bg);border-bottom:2px solid var(--lq-stage-bg)">открыто</div>
+<div style="background:var(--lq-stage-bg);border-bottom:2px solid var(--lq-stage-bg)"></div>
+<div style="display:grid;place-items:center;color:var(--lq-stage-ink-2);border-right:2px solid var(--lq-stage-bg)">открыто</div>
+<div style="background:var(--lq-stage-bg)"></div>
+</div>
+</div>
+<div style="display:grid;gap:var(--lq-space-3);align-content:start">
+<div style="background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-4);opacity:.5"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">1 · четверть</div><div style="color:var(--lq-stage-ink-2)">1 000 очков</div></div>
+<div style="background:var(--lq-accent);color:var(--lq-ink);border-radius:var(--lq-radius-lg);padding:var(--lq-space-4)"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">2 · половина</div><div style="font-weight:700">сейчас · 700 очков</div></div>
+<div style="background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-4)"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">3 · весь кадр</div><div style="color:var(--lq-stage-ink-2)">через 7 с · 400 очков</div></div>
+</div>
+</div>
+</div></div>
+<div class="pv-caption">6 · image с раскрытием по частям</div>
+</div>
+
+<div>
+<div class="pv-screen st"><div class="lq-stage" style="justify-content:center;text-align:center;gap:var(--lq-space-10)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-4);justify-content:center"><span class="lq-live" style="font-size:var(--lq-text-base);padding:7px 16px"><span class="lq-live__dot"></span>раунд 5 · вопрос 3</span><span class="st-label">открытый ответ · пишите на телефоне</span></div>
+<h2 class="st-q" style="font-size:4.4rem">Как называется самое большое озеро Казахстана?</h2>
+<div class="st-timer" style="font-size:6rem">25</div>
+<div class="lq-timer-bar" style="height:16px;background:var(--lq-stage-bg-2)"><div class="lq-timer-bar__fill" style="width:83%"></div></div>
+</div></div>
+<div class="pv-caption">7 · text открыт</div>
+</div>
+
+<div>
+<div class="pv-screen st"><div class="lq-stage">
+<div style="display:flex;align-items:center;gap:var(--lq-space-4)"><span class="lq-live" style="font-size:var(--lq-text-base);padding:7px 16px"><span class="lq-live__dot"></span>раунд 6 · вопрос 1</span><span style="flex:1"></span><span style="font-size:var(--lq-text-xl);color:var(--lq-stage-ink-2)">расставьте у себя на телефоне</span><span class="st-timer">33</span></div>
+<h2 class="st-q" style="font-size:2.6rem">Расставьте города с запада на восток</h2>
+<div style="display:grid;gap:var(--lq-space-4);margin-top:auto">
+<div style="display:flex;align-items:center;gap:var(--lq-space-5);background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-4) var(--lq-space-6);font-family:var(--lq-font-display);font-weight:800;font-size:2.2rem"><span style="color:var(--lq-stage-ink-2);font-size:var(--lq-text-xl)">А</span>Караганда</div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-5);background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-4) var(--lq-space-6);font-family:var(--lq-font-display);font-weight:800;font-size:2.2rem"><span style="color:var(--lq-stage-ink-2);font-size:var(--lq-text-xl)">Б</span>Өскемен</div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-5);background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-4) var(--lq-space-6);font-family:var(--lq-font-display);font-weight:800;font-size:2.2rem"><span style="color:var(--lq-stage-ink-2);font-size:var(--lq-text-xl)">В</span>Атырау</div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-5);background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-4) var(--lq-space-6);font-family:var(--lq-font-display);font-weight:800;font-size:2.2rem"><span style="color:var(--lq-stage-ink-2);font-size:var(--lq-text-xl)">Г</span>Кызылорда</div>
+</div>
+</div></div>
+<div class="pv-caption">8 · order открыт</div>
+</div>
+
+<div>
+<div class="pv-screen st"><div class="lq-stage">
+<div style="display:flex;align-items:center;gap:var(--lq-space-4)"><span class="lq-live" style="font-size:var(--lq-text-base);padding:7px 16px;background:var(--lq-danger)"><span class="lq-live__dot"></span>последние секунды</span><span style="flex:1"></span><span style="font-size:var(--lq-text-xl);color:var(--lq-stage-ink-2)">ответили 10 из 12</span></div>
+<div style="flex:1;display:grid;place-items:center"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:14rem;line-height:1;color:var(--lq-danger);font-variant-numeric:tabular-nums">5</div></div>
+<div class="st-grid" style="opacity:.45">
+<div class="st-tile" style="background:var(--lq-ans-a);min-height:62px;font-size:1.3rem"><svg class="st-shape" style="width:22px;height:22px" aria-hidden="true"><use href="#sh-triangle"></use></svg>1994</div>
+<div class="st-tile" style="background:var(--lq-ans-b);min-height:62px;font-size:1.3rem"><svg class="st-shape" style="width:22px;height:22px" aria-hidden="true"><use href="#sh-diamond"></use></svg>1997</div>
+<div class="st-tile" style="background:var(--lq-ans-c);min-height:62px;font-size:1.3rem"><svg class="st-shape" style="width:22px;height:22px" aria-hidden="true"><use href="#sh-circle"></use></svg>1998</div>
+<div class="st-tile" style="background:var(--lq-ans-d);min-height:62px;font-size:1.3rem"><svg class="st-shape" style="width:22px;height:22px" aria-hidden="true"><use href="#sh-square"></use></svg>2001</div>
+</div>
+<div class="lq-timer-bar" style="height:16px;background:var(--lq-stage-bg-2)"><div class="lq-timer-bar__fill" data-urgent="true" style="width:20%"></div></div>
+</div></div>
+<div class="pv-caption">9 · Последние 5 секунд</div>
+</div>
+
+<div>
+<div class="pv-screen st"><div class="lq-stage" style="justify-content:center;text-align:center;gap:var(--lq-space-8)">
+<div style="font-family:var(--lq-font-display);font-weight:900;font-size:5rem;line-height:1">Время вышло</div>
+<div style="font-size:var(--lq-text-3xl);color:var(--lq-stage-ink-2)">ответили 12 из 12</div>
+<h2 class="st-q" style="font-size:2.4rem;color:var(--lq-stage-ink-2);max-width:26ch;margin:0 auto">В каком году Астана стала столицей Казахстана?</h2>
+</div></div>
+<div class="pv-caption">10 · Приём закрыт, голоса не вскрыты</div>
+</div>
+
+<div>
+<div class="pv-screen st"><div class="lq-stage" style="gap:var(--lq-space-5)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-4)"><span class="st-label">правильный ответ</span><span style="flex:1"></span><span style="font-size:var(--lq-text-xl);color:var(--lq-stage-ink-2)">верно ответили 7 из 12</span></div>
+<h2 class="st-q" style="font-size:2.2rem;color:var(--lq-stage-ink-2)">В каком году Астана стала столицей Казахстана?</h2>
+<div style="flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:var(--lq-space-5);align-items:end">
+<div style="display:grid;gap:var(--lq-space-3);justify-items:center"><span style="font-family:var(--lq-font-display);font-weight:900;font-size:2.4rem">2</span><div style="width:100%;height:70px;border-radius:var(--lq-radius-md) var(--lq-radius-md) 0 0;background:var(--lq-ans-a);opacity:.5"></div><div class="st-tile" style="width:100%;background:var(--lq-ans-a);min-height:70px;font-size:1.5rem;justify-content:center;opacity:.5"><svg class="st-shape" style="width:24px;height:24px" aria-hidden="true"><use href="#sh-triangle"></use></svg>1994</div></div>
+<div style="display:grid;gap:var(--lq-space-3);justify-items:center"><span style="font-family:var(--lq-font-display);font-weight:900;font-size:3.4rem;color:var(--lq-accent)">7</span><div style="width:100%;height:220px;border-radius:var(--lq-radius-md) var(--lq-radius-md) 0 0;background:var(--lq-ans-b)"></div><div class="st-tile" style="position:relative;width:100%;background:var(--lq-ans-b);min-height:70px;font-size:1.5rem;justify-content:center;box-shadow:0 0 0 5px var(--lq-stage-ink)"><svg class="st-shape" style="width:24px;height:24px" aria-hidden="true"><use href="#sh-diamond"></use></svg>1997</div></div>
+<div style="display:grid;gap:var(--lq-space-3);justify-items:center"><span style="font-family:var(--lq-font-display);font-weight:900;font-size:2.4rem">3</span><div style="width:100%;height:100px;border-radius:var(--lq-radius-md) var(--lq-radius-md) 0 0;background:var(--lq-ans-c);opacity:.5"></div><div class="st-tile" style="width:100%;background:var(--lq-ans-c);min-height:70px;font-size:1.5rem;justify-content:center;opacity:.5"><svg class="st-shape" style="width:24px;height:24px" aria-hidden="true"><use href="#sh-circle"></use></svg>1998</div></div>
+<div style="display:grid;gap:var(--lq-space-3);justify-items:center"><span style="font-family:var(--lq-font-display);font-weight:900;font-size:2.4rem;color:var(--lq-stage-ink-2)">0</span><div style="width:100%;height:6px;border-radius:var(--lq-radius-md) var(--lq-radius-md) 0 0;background:var(--lq-ans-d);opacity:.5"></div><div class="st-tile" style="width:100%;background:var(--lq-ans-d);min-height:70px;font-size:1.5rem;justify-content:center;opacity:.5"><svg class="st-shape" style="width:24px;height:24px" aria-hidden="true"><use href="#sh-square"></use></svg>2001</div></div>
+</div>
+<div style="background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-5) var(--lq-space-6);font-size:var(--lq-text-2xl);line-height:var(--lq-leading-snug)">Столицу перенесли из Алматы 10 декабря 1997 года, статус закрепили в 1998-м.</div>
+</div></div>
+<div class="pv-caption">11 · Вскрытие choice</div>
+</div>
+
+<div>
+<div class="pv-screen st"><div class="lq-stage" style="gap:var(--lq-space-5)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-4)"><span class="st-label">правильный ответ</span><span style="flex:1"></span><span style="font-size:var(--lq-text-xl);color:var(--lq-stage-ink-2)">верно ответили 5 из 12</span></div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-6);background:var(--lq-success);border-radius:var(--lq-radius-lg);padding:var(--lq-space-6) var(--lq-space-8)">
+<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"></path></svg>
+<div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:4rem;line-height:1;color:#fff">Балхаш</div><div style="color:rgba(255,255,255,.85);font-size:var(--lq-text-xl)">принимались также: Балқаш, Balqash, озеро Балхаш</div></div>
+</div>
+<div class="st-label">а ещё команды писали</div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:var(--lq-space-4);align-content:start">
+<div style="display:flex;align-items:center;gap:var(--lq-space-4);background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-4) var(--lq-space-5)"><span style="font-family:var(--lq-font-display);font-weight:900;font-size:2rem;flex:1">Балатон</span><span style="color:var(--lq-stage-ink-2);font-size:var(--lq-text-lg)">Алтын тобы</span></div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-4);background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-4) var(--lq-space-5)"><span style="font-family:var(--lq-font-display);font-weight:900;font-size:2rem;flex:1">Каспий, он же море</span><span style="color:var(--lq-stage-ink-2);font-size:var(--lq-text-lg)">Арқа</span></div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-4);background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-4) var(--lq-space-5)"><span style="font-family:var(--lq-font-display);font-weight:900;font-size:2rem;flex:1">то, что высыхает</span><span style="color:var(--lq-stage-ink-2);font-size:var(--lq-text-lg)">Дала сазы</span></div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-4);background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-4) var(--lq-space-5)"><span style="font-family:var(--lq-font-display);font-weight:900;font-size:2rem;flex:1">Иссык-Куль (не наш)</span><span style="color:var(--lq-stage-ink-2);font-size:var(--lq-text-lg)">Жас ұрпақ</span></div>
+</div>
+</div></div>
+<div class="pv-caption">12 · Вскрытие text</div>
+</div>
+
+<div>
+<div class="pv-screen st"><div class="lq-stage" style="gap:var(--lq-space-6)">
+<div style="display:flex;align-items:baseline;gap:var(--lq-space-4)"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:3rem;line-height:1">После раунда 2</div><span style="flex:1"></span><span class="st-label">показаны первые пять из двенадцати</span></div>
+<div class="lq-board" style="flex:1;gap:var(--lq-space-3)">
+<div class="lq-board__row" data-place="1" style="padding:var(--lq-space-4) var(--lq-space-6)"><span class="lq-board__rank" style="font-size:2.4rem">1</span><span class="lq-avatar lq-avatar--lg" style="background:var(--lq-ans-b)"><svg width="24" height="24" fill="#fff" aria-hidden="true"><use href="#sh-diamond"></use></svg></span><span class="lq-board__name" style="font-size:2rem">Жеті батыр</span><span style="display:grid;justify-items:end"><span class="lq-board__score" style="font-size:2.2rem">9 480</span><span class="lq-board__delta" style="font-size:var(--lq-text-lg)">+2 480</span></span></div>
+<div class="lq-board__row" style="padding:var(--lq-space-4) var(--lq-space-6)"><span class="lq-board__rank" style="font-size:2.4rem">2</span><span class="lq-avatar lq-avatar--lg" style="background:var(--lq-ans-d)"><svg width="24" height="24" fill="#fff" aria-hidden="true"><use href="#sh-square"></use></svg></span><span class="lq-board__name" style="font-size:2rem">Тобылғы</span><span style="display:grid;justify-items:end"><span class="lq-board__score" style="font-size:2.2rem">8 640</span><span class="lq-board__delta" style="font-size:var(--lq-text-lg)">+2 240 · ▲ 3</span></span></div>
+<div class="lq-board__row" style="padding:var(--lq-space-4) var(--lq-space-6)"><span class="lq-board__rank" style="font-size:2.4rem">3</span><span class="lq-avatar lq-avatar--lg" style="background:var(--lq-ans-e)"><svg width="24" height="24" fill="#fff" aria-hidden="true"><use href="#sh-circle"></use></svg></span><span class="lq-board__name" style="font-size:2rem">Сарыарқа</span><span style="display:grid;justify-items:end"><span class="lq-board__score" style="font-size:2.2rem">8 100</span><span class="lq-board__delta" style="font-size:var(--lq-text-lg)">+1 050</span></span></div>
+<div class="lq-board__row" style="padding:var(--lq-space-4) var(--lq-space-6)"><span class="lq-board__rank" style="font-size:2.4rem">4</span><span class="lq-avatar lq-avatar--lg" style="background:var(--lq-ans-c)"><svg width="24" height="24" fill="#fff" aria-hidden="true"><use href="#sh-circle"></use></svg></span><span class="lq-board__name" style="font-size:2rem">Көк сұңқар</span><span style="display:grid;justify-items:end"><span class="lq-board__score" style="font-size:2.2rem">7 900</span><span class="lq-board__delta" style="font-size:var(--lq-text-lg);color:#FCA5A5">+0 · ▼ 2</span></span></div>
+<div class="lq-board__row" style="padding:var(--lq-space-4) var(--lq-space-6)"><span class="lq-board__rank" style="font-size:2.4rem">5</span><span class="lq-avatar lq-avatar--lg" style="background:var(--lq-ans-a)"><svg width="24" height="24" fill="#fff" aria-hidden="true"><use href="#sh-triangle"></use></svg></span><span class="lq-board__name" style="font-size:2rem">Алтын тобы</span><span style="display:grid;justify-items:end"><span class="lq-board__score" style="font-size:2.2rem">7 400</span><span class="lq-board__delta" style="font-size:var(--lq-text-lg);color:#FCA5A5">+0 · ▼ 1</span></span></div>
+</div>
+</div></div>
+<div class="pv-caption">13 · Таблица после раунда</div>
+</div>
+
+<div>
+<div class="pv-screen st"><div class="lq-stage" style="justify-content:center;align-items:center;text-align:center;gap:var(--lq-space-6)">
+<div class="st-label" style="color:var(--lq-accent)">рывок вечера</div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-6)"><span class="lq-avatar" style="width:110px;height:110px;border-radius:var(--lq-radius-xl);background:var(--lq-ans-d)"><svg width="52" height="52" fill="#fff" aria-hidden="true"><use href="#sh-square"></use></svg></span><div style="text-align:left"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:5rem;line-height:1">Тобылғы</div><div style="font-size:var(--lq-text-3xl);color:var(--lq-stage-ink-2)">+2 240 за раунд</div></div></div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-6);font-family:var(--lq-font-display);font-weight:900;font-size:4rem"><span style="color:var(--lq-stage-ink-2)">7 место</span><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--lq-accent)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg><span style="color:var(--lq-accent)">2 место</span></div>
+<div style="font-size:var(--lq-text-2xl);color:var(--lq-stage-ink-2)">пять мест за один раунд</div>
+</div></div>
+<div class="pv-caption">14 · Рывок</div>
+</div>
+
+<div>
+<div class="pv-screen st"><div class="lq-stage" style="gap:var(--lq-space-5)">
+<div style="display:flex;align-items:baseline;gap:var(--lq-space-4)"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:3rem;line-height:1">Финальный раунд · ставки сделаны</div><span style="flex:1"></span><span class="st-label">тема: кино</span></div>
+<div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:var(--lq-space-4);align-content:start">
+<div style="background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-5);display:grid;gap:var(--lq-space-2)"><div style="display:flex;align-items:center;gap:var(--lq-space-3)"><svg width="22" height="22" fill="var(--lq-ans-b)" aria-hidden="true"><use href="#sh-diamond"></use></svg><b style="font-size:var(--lq-text-xl)">Жеті батыр</b></div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:2.6rem;font-variant-numeric:tabular-nums">500</div><div style="color:var(--lq-stage-ink-2)">из 18 400</div></div>
+<div style="background:var(--lq-accent);color:var(--lq-ink);border-radius:var(--lq-radius-lg);padding:var(--lq-space-5);display:grid;gap:var(--lq-space-2)"><div style="display:flex;align-items:center;gap:var(--lq-space-3)"><svg width="22" height="22" fill="var(--lq-ans-d)" aria-hidden="true"><use href="#sh-square"></use></svg><b style="font-size:var(--lq-text-xl)">Тобылғы</b></div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:2.6rem;font-variant-numeric:tabular-nums">ва-банк · 15 900</div><div style="font-weight:700">всё, что есть</div></div>
+<div style="background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-5);display:grid;gap:var(--lq-space-2)"><div style="display:flex;align-items:center;gap:var(--lq-space-3)"><svg width="22" height="22" fill="var(--lq-ans-c)" aria-hidden="true"><use href="#sh-circle"></use></svg><b style="font-size:var(--lq-text-xl)">Көк сұңқар</b></div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:2.6rem;font-variant-numeric:tabular-nums">3 000</div><div style="color:var(--lq-stage-ink-2)">из 17 100</div></div>
+<div style="background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-5);display:grid;gap:var(--lq-space-2)"><div style="display:flex;align-items:center;gap:var(--lq-space-3)"><svg width="22" height="22" fill="var(--lq-ans-e)" aria-hidden="true"><use href="#sh-circle"></use></svg><b style="font-size:var(--lq-text-xl)">Сарыарқа</b></div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:2.6rem;font-variant-numeric:tabular-nums">1 000</div><div style="color:var(--lq-stage-ink-2)">из 14 200</div></div>
+<div style="background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-5);display:grid;gap:var(--lq-space-2)"><div style="display:flex;align-items:center;gap:var(--lq-space-3)"><svg width="22" height="22" fill="var(--lq-ans-a)" aria-hidden="true"><use href="#sh-triangle"></use></svg><b style="font-size:var(--lq-text-xl)">Алтын тобы</b></div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:2.6rem;font-variant-numeric:tabular-nums">500</div><div style="color:var(--lq-stage-ink-2)">из 12 750</div></div>
+<div style="background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-5);display:grid;gap:var(--lq-space-2);opacity:.6"><div style="color:var(--lq-stage-ink-2);font-size:var(--lq-text-xl)">ещё 7 команд</div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:2.6rem">100 — 2 000</div></div>
+</div>
+</div></div>
+<div class="pv-caption">15 · Перед финальным раундом</div>
+</div>
+
+<div>
+<div class="pv-screen st"><div class="lq-stage" style="justify-content:center;align-items:center;text-align:center;gap:var(--lq-space-6)">
+<div class="st-label" style="color:var(--lq-accent)">победитель вечера</div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-6)"><span class="lq-avatar" style="width:120px;height:120px;border-radius:var(--lq-radius-xl);background:var(--lq-ans-d)"><svg width="58" height="58" fill="#fff" aria-hidden="true"><use href="#sh-square"></use></svg></span><div style="text-align:left"><div style="font-family:var(--lq-font-display);font-weight:900;font-size:6rem;line-height:1">Тобылғы</div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:3rem;color:var(--lq-accent);font-variant-numeric:tabular-nums">31 800</div></div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--lq-space-4);width:840px;margin-top:var(--lq-space-4)">
+<div style="display:flex;align-items:center;gap:var(--lq-space-4);background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-4) var(--lq-space-6)"><span style="font-family:var(--lq-font-display);font-weight:900;font-size:2.4rem;color:var(--lq-stage-ink-2)">2</span><svg width="24" height="24" fill="var(--lq-ans-b)" aria-hidden="true"><use href="#sh-diamond"></use></svg><b style="flex:1;font-size:var(--lq-text-2xl);text-align:left">Жеті батыр</b><span style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">18 900</span></div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-4);background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-lg);padding:var(--lq-space-4) var(--lq-space-6)"><span style="font-family:var(--lq-font-display);font-weight:900;font-size:2.4rem;color:var(--lq-stage-ink-2)">3</span><svg width="24" height="24" fill="var(--lq-ans-c)" aria-hidden="true"><use href="#sh-circle"></use></svg><b style="flex:1;font-size:var(--lq-text-2xl);text-align:left">Көк сұңқар</b><span style="font-family:var(--lq-font-display);font-weight:900;font-size:var(--lq-text-2xl)">17 100</span></div>
+</div>
+</div></div>
+<div class="pv-caption">16 · Финал</div>
+</div>
+
+<div>
+<div class="pv-screen st"><div class="lq-stage" style="justify-content:center;align-items:center;text-align:center;gap:var(--lq-space-8)">
+<div style="font-family:var(--lq-font-display);font-weight:900;font-size:5rem;line-height:1">Спасибо за игру</div>
+<div style="font-size:var(--lq-text-3xl);color:var(--lq-stage-ink-2)">12 команд · 34 вопроса · два часа</div>
+<div style="display:flex;align-items:center;gap:var(--lq-space-10);background:var(--lq-stage-bg-2);border-radius:var(--lq-radius-xl);padding:var(--lq-space-6) var(--lq-space-10)">
+<div style="text-align:left"><div class="st-label">следующая игра</div><div style="font-family:var(--lq-font-display);font-weight:900;font-size:3rem;line-height:1.1">суббота, 26 апреля</div><div style="font-size:var(--lq-text-2xl);color:var(--lq-stage-ink-2)">Дом 36 · 20:00 · музыкальный вечер</div></div>
+<div style="width:150px;height:150px;border-radius:var(--lq-radius-lg);background:repeating-conic-gradient(#fff 0 25%, var(--lq-stage-bg) 0 50%) 0 0/20px 20px"></div>
+</div>
+<div style="font-size:var(--lq-text-xl);color:var(--lq-stage-ink-2)">наведите камеру — бронь стола в «Доме 36»</div>
+</div></div>
+<div class="pv-caption">17 · Прощание</div>
+</div>
+
+<p class="pv-note">На сцене показываются только пять строк таблицы, потому что двенадцать строк на экране 16:9 читаются с пятнадцати метров лишь при кегле вдвое меньше нужного, и зал перестаёт видеть собственную строку — а команда на девятом месте всё равно узнаёт свой результат с телефона, где строка одна и она её. Пять — верхняя часть, за которой идёт борьба, и она умещается кеглем, читаемым от дальней стены.</p>
+<p class="pv-note">В состоянии «приём закрыт» (10) блок голосов отсутствует целиком, а не стоит пустым: пустые столбики на месте будущего распределения зал читает как «все ответили неверно» и начинает реагировать до вскрытия. Пустая рамка на проекторе — это утверждение, а не заглушка, поэтому экран показывает только факт закрытия и вопрос, а распределение появляется вместе с ответом на экране 11.</p>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showNotes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Витрина&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return { showNotes: String(this.props.showNotes ?? true) };
+  }
+}
+</script>
+</body>
+</html>

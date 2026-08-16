@@ -196,6 +196,9 @@
   transition: background var(--lq-dur-base) var(--lq-ease-out);
 }
 .lq-switch__thumb {
+  /* display обязателен: это <span>, а инлайновый элемент игнорирует
+     width/height — без него бегунок не виден и тумблер выглядит заливкой. */
+  display: block;
   width: 24px; height: 24px;
   border-radius: 50%;
   background: #fff;

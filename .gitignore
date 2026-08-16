@@ -9,3 +9,5 @@ dist/
 coverage/
 .claude-flow/
 .swarm/
+var/
+public/media/

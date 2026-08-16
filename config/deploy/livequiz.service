@@ -1,0 +1,45 @@
+[Unit]
+Description=livequiz — живые квизы
+Documentation=https://github.com/
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=livequiz
+Group=livequiz
+WorkingDirectory=/opt/livequiz
+
+# PIN и порт держатся в отдельном файле с правами 600: в юните они были бы
+# видны всем через systemctl show.
+EnvironmentFile=/etc/livequiz.env
+
+ExecStart=/usr/bin/node src/server/index.ts
+
+# Вечер идёт два часа и состояние игры живёт в памяти процесса. Перезапуск
+# на ходу — это потерянный счёт, поэтому только при падении и с паузой.
+Restart=on-failure
+RestartSec=3
+
+# Останавливать вежливо: снимок игры пишется на диск при каждом изменении,
+# но дать процессу закрыть сокеты всё же нужно.
+KillSignal=SIGTERM
+TimeoutStopSec=20
+
+# Приложению нужно писать только в свою папку: var/ (снимок игр),
+# public/media/ (загруженное медиа) и src/content/ (сценарии из конструктора).
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/livequiz/var /opt/livequiz/public/media /opt/livequiz/src/content
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=livequiz
+
+[Install]
+WantedBy=multi-user.target
