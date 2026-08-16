@@ -99,6 +99,9 @@ export function stageView(game: Game): StageView {
     secondsLeft: game.secondsLeft(),
     totalSeconds: game.totalSeconds(),
     answeredTeams: question ? answersFor(game, question.id).length : 0,
+    answeredTeamIds: question
+      ? answersFor(game, question.id).map((answer) => answer.teamId)
+      : [],
     reveal: game.phase === 'reveal' ? revealView(game) : null,
     standings: standingsOf(game),
     standingsLimit: STANDINGS_ON_STAGE,

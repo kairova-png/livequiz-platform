@@ -118,8 +118,14 @@ export function Timer({ seconds, total }: { seconds: number | null; total: numbe
 }
 
 export function Board(
-  { rows, meId, limit, showDelta }:
-  { rows: Standing[]; meId?: string | null; limit?: number; showDelta?: number },
+  { rows, meId, limit, showDelta, badgeSize = 36 }:
+  {
+    rows: Standing[]; meId?: string | null; limit?: number;
+    showDelta?: number;
+    /** На проекторе значок вдвое крупнее: с дальнего стола команду узнают
+     *  по силуэту раньше, чем прочитают название. */
+    badgeSize?: number;
+  },
 ): ReactNode {
   const shown = limit ? rows.slice(0, limit) : rows;
   return (
@@ -132,7 +138,7 @@ export function Board(
           data-me={row.teamId === meId}
         >
           <span className="lq-board__rank">{row.place}{row.shared ? '=' : ''}</span>
-          <TeamBadge badge={row.badge} size={36} />
+          <TeamBadge badge={row.badge} size={badgeSize} />
           <span className="lq-board__name">{row.name}</span>
           <span style={{ display: 'grid', justifyItems: 'end' }}>
             <span className="lq-board__score">{row.total}</span>

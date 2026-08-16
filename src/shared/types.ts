@@ -188,6 +188,12 @@ export interface StageView {
   secondsLeft: number | null;
   totalSeconds: number;
   answeredTeams: number;
+  /**
+   * Кто из команд уже сдал ответ на текущий вопрос — только факт, без
+   * значения. Само содержание сюда не идёт намеренно: экран висит перед
+   * залом, и чужой выбор, показанный до вскрытия, отменяет смысл вопроса.
+   */
+  answeredTeamIds: string[];
   /** Вскрытие: вопрос вместе с правильным ответом. */
   reveal: RevealView | null;
   standings: Standing[];

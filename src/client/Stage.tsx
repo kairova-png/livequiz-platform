@@ -67,10 +67,10 @@ export function Stage(): ReactNode {
  * 16:9, и то, что не поместилось, зал просто не увидит.
  */
 function questionSize(text: string): string {
-  if (text.length <= 60) return 'clamp(2rem, 4vw, 3.6rem)';
-  if (text.length <= 120) return 'clamp(1.6rem, 2.9vw, 2.7rem)';
-  if (text.length <= 220) return 'clamp(1.3rem, 2.2vw, 2.1rem)';
-  return 'clamp(1.1rem, 1.8vw, 1.7rem)';
+  if (text.length <= 60) return 'clamp(2.4rem, 5vw, 4.6rem)';
+  if (text.length <= 120) return 'clamp(2rem, 3.6vw, 3.4rem)';
+  if (text.length <= 220) return 'clamp(1.5rem, 2.6vw, 2.5rem)';
+  return 'clamp(1.2rem, 2vw, 2rem)';
 }
 
 function Body({ view, seconds }: { view: StageView; seconds: number | null }): ReactNode {
@@ -111,12 +111,14 @@ function Lobby({ view }: { view: StageView }): ReactNode {
       <div style={{ fontFamily: 'var(--lq-font-display)', fontWeight: 900, fontSize: '3.5rem', lineHeight: 1 }}>
         {view.title}
       </div>
-      <div className="app-row" style={{ gap: 'var(--lq-space-10)', alignItems: 'center' }}>
+      {/* Между кодом и QR нужен зазор шире обычного: у кода огромный кегль
+          и разрядка, и последняя цифра иначе почти касается рамки. */}
+      <div className="app-row" style={{ gap: 'var(--lq-space-12)', alignItems: 'center' }}>
         <div style={{ display: 'grid', justifyItems: 'center' }}>
           <div className="app-stage-code">{view.code}</div>
           <div className="app-stage-label">ойын коды</div>
         </div>
-        <JoinQr code={view.code} size={200} />
+        <JoinQr code={view.code} size={220} />
       </div>
       <div className="app-stage-label">
         телефоннан кіріңіз · {joinUrl(view.code).replace(/^https?:\/\//, '')}
@@ -181,7 +183,7 @@ function Asking({ view, seconds }: { view: StageView; seconds: number | null }):
           {view.round?.no} тур · {question.no} сұрақ
         </span>
         <span className="app-grow" />
-        <span style={{ fontSize: 'var(--lq-text-xl)', color: 'var(--lq-stage-ink-2)' }}>
+        <span className="app-stage-count">
           {view.answeredTeams} / {view.teams.length} жауап берді
         </span>
         {!closed && seconds !== null && (
@@ -191,13 +193,16 @@ function Asking({ view, seconds }: { view: StageView; seconds: number | null }):
         )}
       </div>
 
-      <h1 className="lq-stage__q" style={{ fontSize: questionSize(question.text) }}>
-        {question.text}
-      </h1>
-      <QuestionMedia question={question} />
+      {/* Вопрос и медиа — в оптическом центре кадра, плитки остаются внизу. */}
+      <div className="app-stage-main">
+        <h1 className="lq-stage__q" style={{ fontSize: questionSize(question.text) }}>
+          {question.text}
+        </h1>
+        <QuestionMedia question={question} />
+      </div>
 
       {question.kind === 'choice' && (
-        <div className="lq-tiles" style={{ marginTop: 'auto' }}>
+        <div className="lq-tiles">
           {(question.options ?? []).map((option, i) => (
             <div className={`lq-tile ${tileClass(i)}`} key={option.key} data-state="locked">
               <span className="lq-tile__shape"><Shape index={i} /></span>
@@ -208,7 +213,7 @@ function Asking({ view, seconds }: { view: StageView; seconds: number | null }):
       )}
 
       {question.kind === 'match' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--lq-space-6)', marginTop: 'auto' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--lq-space-6)' }}>
           <ol style={{ margin: 0, paddingInlineStart: '1.5em', fontSize: 'var(--lq-text-2xl)', display: 'grid', gap: 'var(--lq-space-3)' }}>
             {(question.items ?? []).map((item) => <li key={item}>{item}</li>)}
           </ol>
@@ -223,6 +228,8 @@ function Asking({ view, seconds }: { view: StageView; seconds: number | null }):
         </div>
       )}
 
+      <Answered view={view} />
+
       {closed
         ? <div className="app-stage-label" style={{ textAlign: 'center' }}>қабылдау жабылды</div>
         : (
@@ -231,6 +238,41 @@ function Asking({ view, seconds }: { view: StageView; seconds: number | null }):
           </div>
         )}
     </>
+  );
+}
+
+/**
+ * Кто уже сдал ответ.
+ *
+ * Только значок и название команды: что именно она выбрала, зал увидеть не
+ * должен — экран висит у всех перед глазами, и чужой ответ, показанный до
+ * вскрытия, отменяет смысл вопроса. Правильность здесь тоже не место: она
+ * известна серверу с первой секунды, но объявляет её ведущий.
+ *
+ * Не ответившие остаются в строю приглушёнными — так видно, кого ещё ждут.
+ */
+function Answered({ view }: { view: StageView }): ReactNode {
+  if (view.teams.length === 0) return null;
+  const answered = new Set(view.answeredTeamIds);
+  return (
+    <div className="app-stage-answered">
+      {view.teams.map((team) => {
+        const done = answered.has(team.id);
+        return (
+          <span className="app-stage-answered__team" key={team.id} data-answered={done}>
+            <span style={{ color: badgeColor(team.badge), display: 'flex' }}>
+              <Emblem badge={team.badge} size={28} />
+            </span>
+            {team.name}
+            {done && (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4ADE80" strokeWidth="3.2" strokeLinecap="round" aria-hidden="true">
+                <path d="m5 12.5 4.5 4.5L19 7" />
+              </svg>
+            )}
+          </span>
+        );
+      })}
+    </div>
   );
 }
 
@@ -306,11 +348,14 @@ function Reveal({ reveal }: { reveal: RevealView }): ReactNode {
       <div className="lq-stage__top">
         <span className="app-stage-label">дұрыс жауап</span>
         <span className="app-grow" />
-        <span style={{ fontSize: 'var(--lq-text-xl)', color: 'var(--lq-stage-ink-2)' }}>
+        <span className="app-stage-count">
           {reveal.correctCount} / {reveal.teamCount} топ дұрыс жауап берді
         </span>
       </div>
 
+      {/* Вопрос и сам ответ — по центру кадра; что написали команды, идёт
+          ниже отдельным блоком и на положение ответа больше не влияет. */}
+      <div className="app-stage-main">
       <h2
         className="lq-stage__q"
         style={{ fontSize: questionSize(question.text), color: 'var(--lq-stage-ink-2)' }}
@@ -369,6 +414,7 @@ function Reveal({ reveal }: { reveal: RevealView }): ReactNode {
             : reveal.images?.map((src) => <img key={src} src={src} alt="" />)}
         </div>
       )}
+      </div>
 
       {reveal.answers.length > 0 && (
         <>
@@ -428,11 +474,14 @@ function Scores({ view }: { view: StageView }): ReactNode {
           <span className="app-stage-label">алғашқы {view.standingsLimit} топ көрсетілген</span>
         )}
       </div>
-      <Board
-        rows={view.standings}
-        limit={view.standingsLimit}
-        showDelta={(view.round?.no ?? 1) - 1}
-      />
+      <div className="app-stage-main">
+        <Board
+          rows={view.standings}
+          limit={view.standingsLimit}
+          showDelta={(view.round?.no ?? 1) - 1}
+          badgeSize={64}
+        />
+      </div>
     </>
   );
 }
