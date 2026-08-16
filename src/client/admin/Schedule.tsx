@@ -9,6 +9,7 @@ import {
   Empty, MONTH_NAMES, SectionTitle, WEEKDAY_SHORT, dayMonthTime, toLocalInput,
 } from './shared.tsx';
 import { TeamBadge } from '../ui.tsx';
+import { GameLinks } from './GameLinks.tsx';
 import type { AdminView, ScheduledGame } from '../../shared/types.ts';
 import type { Send } from './shared.tsx';
 
@@ -105,9 +106,10 @@ export function Schedule({ view, send }: { view: AdminView; send: Send }): React
           </p>
           <div className="app-stack">
             {undated.map((game) => (
-              <div className="lq-card app-row" key={game.code}>
+              <div className="lq-card app-row" key={game.code} style={{ flexWrap: 'wrap' }}>
                 <span className="app-grow"><b>{game.title}</b></span>
                 <span className="lq-badge lq-badge--neutral">{game.code}</span>
+                <GameLinks code={game.code} />
                 <button className="lq-btn lq-btn--quiet" onClick={() => setEditing(game.code)}>
                   Күнін қою
                 </button>
@@ -241,6 +243,9 @@ function EditGame(
         <b style={{ fontFamily: 'var(--lq-font-display)', fontSize: 'var(--lq-text-lg)' }}>
           Кеш · {game.code}
         </b>
+        {/* Вечер открывают из календаря чаще всего затем, чтобы его запустить,
+            а не переименовать: три входа стоят выше полей. */}
+        <GameLinks code={game.code} />
         <label className="lq-field">
           <span className="lq-field__label">Атауы</span>
           <input className="lq-input" value={title} onChange={(e) => setTitle(e.target.value)} />

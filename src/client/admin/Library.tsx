@@ -2,6 +2,8 @@
  * по ним планируются вечера. */
 
 import { useState, type ReactNode } from 'react';
+import { joinUrl } from '../ui.tsx';
+import { GameLinks } from './GameLinks.tsx';
 import { SectionTitle, Stat, toLocalInput } from './shared.tsx';
 import type { AdminView, QuizInfo } from '../../shared/types.ts';
 import type { Send } from './shared.tsx';
@@ -136,6 +138,56 @@ function PlanGame(
   const [venueId, setVenueId] = useState(view.venues[0]?.id ?? '');
   const [at, setAt] = useState(toLocalInput(view.now));
   const [code, setCode] = useState('');
+  const [created, setCreated] = useState(false);
+
+  /* Код созданного вечера. Введённый руками известен сразу, но вечер с ним
+   * мог и не появиться: занятый код сервер отвергает. Автоматический код
+   * присваивает сервер, и до пульта он доходит единственным путём — как
+   * последняя незавершённая игра, то есть только что созданная. */
+  const createdCode = !created ? null
+    : code.length === 6
+      ? (view.games.some((game) => game.code === code) ? code : null)
+      : view.currentCode;
+
+  /* Сразу после создания вечер нужен не в списке, а в трёх окнах: пульт
+   * ведущему, экран проектору, ссылка залу. Показываем их здесь же. */
+  if (created) {
+    return (
+      <div className="app-modal" onClick={onClose}>
+        <div className="lq-card app-stack" style={{ minWidth: 420 }} onClick={(e) => e.stopPropagation()}>
+          {createdCode ? (
+            <>
+              <b style={{ fontFamily: 'var(--lq-font-display)', fontSize: 'var(--lq-text-lg)' }}>
+                Кеш құрылды · {title}
+              </b>
+              <div className="app-row" style={{ gap: 'var(--lq-space-6)' }}>
+                <Stat value={createdCode} label="ойын коды" />
+                <Stat value={quiz.questions} label="сұрақ" />
+              </div>
+              <GameLinks code={createdCode} size="lg" />
+              <span className="app-muted" style={{ fontSize: 'var(--lq-text-sm)' }}>
+                {joinUrl(createdCode).replace(/^https?:\/\//, '')}
+              </span>
+            </>
+          ) : (
+            <>
+              <b style={{ fontFamily: 'var(--lq-font-display)', fontSize: 'var(--lq-text-lg)' }}>
+                Кеш құрылмады
+              </b>
+              <span className="app-muted">
+                {code.length === 6
+                  ? `${code} коды бос емес болуы мүмкін. Басқа код қойып көріңіз.`
+                  : 'Қайта көріңіз.'}
+              </span>
+            </>
+          )}
+          <div className="app-row">
+            <button className="lq-btn lq-btn--ghost" onClick={onClose}>Жабу</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="app-modal" onClick={onClose}>
@@ -192,7 +244,7 @@ function PlanGame(
                 venueId: venueId || null,
                 plannedAt: at ? new Date(at).getTime() : null,
               });
-              onClose();
+              setCreated(true);
             }}
           >
             Құру

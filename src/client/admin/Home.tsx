@@ -2,6 +2,7 @@
 
 import type { ReactNode } from 'react';
 import { Board, JoinQr, joinUrl } from '../ui.tsx';
+import { GameLinks } from './GameLinks.tsx';
 import { Empty, PHASE_LABEL, Stat, daysUntil, dayMonthTime, fullDate } from './shared.tsx';
 import type { AdminView, ScheduledGame } from '../../shared/types.ts';
 import type { Section, Send } from './shared.tsx';
@@ -49,7 +50,7 @@ export function Home(
           </p>
           <div className="app-stack">
             {upcoming.slice(1).map((game) => (
-              <div className="lq-card app-row" key={game.code}>
+              <div className="lq-card app-row" key={game.code} style={{ flexWrap: 'wrap' }}>
                 <span className="app-grow">
                   <b>{game.title}</b>
                   <div className="app-muted" style={{ fontSize: 'var(--lq-text-sm)' }}>
@@ -58,6 +59,7 @@ export function Home(
                   </div>
                 </span>
                 <span className="lq-badge lq-badge--neutral">{game.code}</span>
+                <GameLinks code={game.code} />
                 <button className="lq-btn lq-btn--quiet" onClick={() => go('schedule')}>
                   Ашу
                 </button>
@@ -164,15 +166,7 @@ function NextGame(
       </div>
 
       <div className="app-row" style={{ flexWrap: 'wrap' }}>
-        <a className="lq-btn lq-btn--lg" href={`/host?code=${game.code}`}>Пультті ашу</a>
-        <a
-          className="lq-btn lq-btn--ghost lq-btn--lg"
-          href={`/screen?code=${game.code}`}
-          target="_blank"
-          rel="noreferrer"
-        >
-          Зал экраны
-        </a>
+        <GameLinks code={game.code} size="lg" />
         <span className="app-grow" />
         <button
           className="lq-btn lq-btn--quiet"
