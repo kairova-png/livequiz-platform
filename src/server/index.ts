@@ -6,7 +6,9 @@
  */
 
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import {
+  existsSync, mkdirSync, readFileSync, renameSync, writeFileSync,
+} from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { WebSocketServer, type WebSocket } from 'ws';
@@ -21,10 +23,25 @@ import { MIME, sendFile, upload } from './http.ts';
 import { quizInfos, regularTeams, scheduledGames, venueInfos } from './cabinet.ts';
 import { hostView, playerView, report as reportOf, stageView } from './views.ts';
 import { addTeam, join as joinGame, setOnline, setRules } from './participants.ts';
+import {
+  Guard, clientIp, pinMatches, sleep, type ConnectionGuard,
+} from './guard.ts';
 
 const ROOT = resolve(fileURLToPath(import.meta.url), '../../..');
 const PORT = Number(process.env.PORT ?? 8787);
-const HOST_PIN = process.env.HOST_PIN ?? '1111';
+/* Пустой PIN — это открытый настежь кабинет, а не «PIN не задан».
+ *
+ * В livequiz.env.example поле `HOST_PIN=` пустое с пометкой «обязательно
+ * сменить», и это ловушка: `?? '1111'` подставляет запасной вариант только
+ * для undefined, а пустая строка проходит как значение. Тогда PIN становится
+ * пустым, предупреждение ниже (оно смотрит на '1111') молчит, и войти может
+ * кто угодно, отправив пустую строку. Поэтому — отказ стартовать. */
+const HOST_PIN = (process.env.HOST_PIN ?? '1111').trim();
+if (!HOST_PIN) {
+  console.error('\n  HOST_PIN бос. Пустой PIN открывает кабинет, пульт и загрузку файлов кому угодно.');
+  console.error('  Задайте HOST_PIN в /etc/livequiz.env и перезапустите службу.\n');
+  process.exit(1);
+}
 
 /* Снимок игр на диске. Путь вынесен в переменную окружения не для гибкости,
  * а чтобы репетиция не подняла состояние настоящего вечера: два процесса
@@ -57,13 +74,57 @@ if (registry.all().length === 0) {
   });
 }
 
-function persist(): void {
+/* Снимок пишется НЕ на каждое изменение, а пачкой раз в секунду.
+ *
+ * persist() зовётся из broadcast, то есть на каждое сообщение любого из
+ * телефонов: в момент, когда шестьдесят человек одновременно жмут ответ,
+ * это шестьдесят полных сериализаций всех игр и шестьдесят записей на диск
+ * подряд — ровно тогда, когда процесс занят вечером. Секунда задержки
+ * ничего не стоит: при штатной остановке снимок дописывается принудительно
+ * (см. flushState ниже), а потерять можно только последнюю секунду и только
+ * при жёстком падении.
+ */
+const PERSIST_DEBOUNCE_MS = 1000;
+let persistTimer: NodeJS.Timeout | null = null;
+
+/** Запись снимка. Сначала во временный файл, потом переименование —
+ *  падение посреди записи иначе оставит обрезанный JSON, а восстановление
+ *  молча начнёт вечер с нуля. Переименование внутри одной ФС атомарно. */
+function writeState(): void {
   try {
     mkdirSync(join(ROOT, 'var'), { recursive: true });
-    writeFileSync(STATE_FILE, JSON.stringify(registry.snapshot()), 'utf8');
+    const tmp = `${STATE_FILE}.tmp`;
+    writeFileSync(tmp, JSON.stringify(registry.snapshot()), 'utf8');
+    renameSync(tmp, STATE_FILE);
   } catch (error) {
     console.warn('Не удалось сохранить состояние:', error);
   }
+}
+
+function persist(): void {
+  if (persistTimer) return;
+  persistTimer = setTimeout(() => {
+    persistTimer = null;
+    writeState();
+  }, PERSIST_DEBOUNCE_MS);
+}
+
+/** Дописать снимок немедленно — при остановке службы. */
+function flushState(): void {
+  if (persistTimer) {
+    clearTimeout(persistTimer);
+    persistTimer = null;
+  }
+  writeState();
+}
+
+/* systemd шлёт SIGTERM и ждёт до 20 секунд. Без этого перезапуск ради
+ * выкладки терял бы последнюю секунду вечера. */
+for (const signal of ['SIGTERM', 'SIGINT'] as const) {
+  process.on(signal, () => {
+    flushState();
+    process.exit(0);
+  });
 }
 
 const DIST = join(ROOT, 'dist');
@@ -105,6 +166,8 @@ interface Client {
   reportCode: string | null;
   /** Кабинет: какой квиз открыт в конструкторе. */
   editingQuiz: string | null;
+  /** Лимиты этого соединения: адрес, ведро токенов, свои sessionId. */
+  guard: ConnectionGuard;
 }
 
 /** Отказ во входе объясняется участнику по-человечески, а не кодом. */
@@ -117,6 +180,44 @@ const JOIN_BLOCK: Record<JoinBlock, string> = {
 };
 
 const clients = new Set<Client>();
+const guard = new Guard();
+
+/**
+ * Проверка PIN ведущего.
+ *
+ * PIN проверялся обычным !== и без задержки — по вебсокету это тысячи
+ * попыток в секунду, а открывает он кабинет, пульт и загрузку файлов.
+ * Здесь три вещи разом:
+ *
+ *   — сравнение за постоянное время (обычное !== выдаёт длину совпавшего
+ *     префикса разницей во времени ответа);
+ *   — растущая задержка на неудачу, из-за которой перебор упирается в
+ *     месяцы даже с сотен соединений сразу;
+ *   — закрытие соединения после пяти промахов, чтобы каждая следующая
+ *     попытка стоила ещё и рукопожатия.
+ *
+ * ВЕРНЫЙ PIN ПРИНИМАЕТСЯ ВСЕГДА И МГНОВЕННО. Глухой блокировки адреса
+ * здесь нет намеренно: зал и ведущий сидят за одним Wi-Fi, и запертый
+ * адрес означал бы, что любой шутник из зала лишает ведущего пульта
+ * посреди вечера.
+ *
+ * Возвращает true, если PIN верный и можно продолжать.
+ */
+async function checkPin(client: Client, pin: unknown): Promise<boolean> {
+  if (pinMatches(pin, HOST_PIN)) {
+    guard.notePinSuccess(client.guard);
+    // Это соединение ведёт вечер, а не смотрит его: пульт шлёт сотню с
+    // лишним команд за вечер и залпами. Мерка телефона ему не годится.
+    guard.promote(client.guard);
+    return true;
+  }
+
+  const { delayMs, closeConnection } = guard.notePinFailure(client.guard);
+  await sleep(delayMs);
+  send(client, { t: 'denied', reason: 'PIN дұрыс емес' });
+  if (closeConnection) client.socket.close(1008, 'too many attempts');
+  return false;
+}
 const wss = new WebSocketServer({ server, path: '/ws' });
 
 function send(client: Client, message: ServerMessage): void {
@@ -242,18 +343,46 @@ function broadcast(code?: string): void {
   persist();
 }
 
-wss.on('connection', (socket: WebSocket) => {
+wss.on('connection', (socket: WebSocket, req: IncomingMessage) => {
+  const ip = clientIp(req);
+  const conn = guard.openConnection(ip);
+  if (!conn) {
+    // Столько одновременных соединений с одного адреса не бывает у зала —
+    // это машина. Закрываем молча: объяснять нападающему нечего.
+    socket.close(1013, 'too many connections');
+    return;
+  }
+
   const client: Client = {
-    socket, surface: null, sessionId: null, code: null, reportCode: null, editingQuiz: null,
+    socket, surface: null, sessionId: null, code: null, reportCode: null,
+    editingQuiz: null, guard: conn,
   };
   clients.add(client);
 
-  socket.on('message', (raw) => {
+  socket.on('message', async (raw) => {
+    /* Ведро токенов. Каждое сообщение стоит рассылки всего среза всем
+     * клиентам и записи снимка на диск — без предела это усилитель, а не
+     * общение. Об исчерпании говорим один раз за эпизод: отвечать на поток
+     * таким же потоком — это тот же усилитель, только наизнанку. */
+    const rate = guard.allowMessage(conn);
+    if (rate === 'drop') return;
+    if (rate === 'tell') {
+      return send(client, { t: 'error', message: 'Тым жиі — сәл күтіңіз' });
+    }
+
     let message: ClientMessage;
     try {
       message = JSON.parse(String(raw)) as ClientMessage;
     } catch {
       return send(client, { t: 'error', message: 'Дұрыс емес сұраныс' });
+    }
+
+    /* Один браузер — один sessionId. Соединение, которое пробует
+     * представляться десятком разных участников, набивает лобби
+     * фиктивными командами: каждый новый sessionId заводит команду
+     * и запись в game.players, а предела на игроков нет. */
+    if (message.t === 'player/hello' && !guard.allowSession(conn, message.sessionId)) {
+      return send(client, { t: 'denied', reason: 'Тым көп қатысушы' });
     }
 
     switch (message.t) {
@@ -303,9 +432,7 @@ wss.on('connection', (socket: WebSocket) => {
       }
 
       case 'host/hello': {
-        if (message.pin !== HOST_PIN) {
-          return send(client, { t: 'denied', reason: 'PIN дұрыс емес' });
-        }
+        if (!await checkPin(client, message.pin)) return;
         const game = message.code ? registry.game(message.code) : registry.current();
         if (!game) return send(client, { t: 'denied', reason: 'Ойын табылмады' });
         client.surface = 'host';
@@ -325,9 +452,7 @@ wss.on('connection', (socket: WebSocket) => {
       }
 
       case 'admin/hello':
-        if (message.pin !== HOST_PIN) {
-          return send(client, { t: 'denied', reason: 'PIN дұрыс емес' });
-        }
+        if (!await checkPin(client, message.pin)) return;
         client.surface = 'admin';
         send(client, { t: 'admin/state', view: adminView(client) });
         break;
@@ -411,6 +536,7 @@ wss.on('connection', (socket: WebSocket) => {
       setOnline(game, client.sessionId, false);
     }
     clients.delete(client);
+    guard.closeConnection(conn);
     if (client.surface === 'player' && game) broadcast(game.code);
   });
 });
