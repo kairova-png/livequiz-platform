@@ -83,33 +83,58 @@ rsync -a --delete \
   --exclude 'node_modules/' \
   --exclude 'var/' \
   --exclude 'public/media/' \
+  --exclude 'src/content/' \
   --exclude 'design/dist/' \
   ./ "$APP_DIR/"
 
 say "зависимости (только прод)"
 ( cd "$APP_DIR" && npm ci --omit=dev 2>&1 | tail -3 )
 
-# ── 3б. Медиа сценариев, которое лежит в репозитории ───────────────────────
-# public/media/ исключён из синхронизации: там то, что загрузили через
-# кабинет, и деплой не имеет права это трогать. Но у сценария, приехавшего
-# файлом, медиа тоже файл — и без этого шага вопрос ссылается на картинку,
-# которой на сервере нет. Копируем только недостающее: загруженное поверх
-# демонстрационного всегда главнее.
-say "медиа сценариев"
-copied=0
-for dir in "$APP_DIR"/src/content/*/media; do
-  [[ -d "$dir" ]] || continue
-  quiz="$(basename "$(dirname "$dir")")"
+# ── 3б. Сценарии и их медиа ───────────────────────────────────────────────
+# src/content/ и public/media/ исключены из синхронизации: это не код, а
+# данные вечера. Конструктор кабинета пишет сценарии туда же — правка
+# вопроса, сделанная ведущим за час до игры, живёт только на сервере, и
+# `rsync --delete` снёс бы её вместе с каталогом (в первый раз это спасли
+# только права: файлы принадлежат службе, а не деплою).
+#
+# Поэтому правило простое: чего на сервере нет — кладём, что есть — не
+# трогаем. Исключение только для служебных квизов (demo): их никто не
+# редактирует, а исправления в них должны доезжать.
+say "сценарии и медиа"
+added_quiz=0
+added_media=0
+for dir in "$ROOT"/src/content/*/; do
+  [[ -f "$dir/scenario.json" ]] || continue
+  quiz="$(basename "$dir")"
+  target="$APP_DIR/src/content/$quiz"
+  demo="$(python3 -c '
+import json, sys
+try:
+    print("1" if json.load(open(sys.argv[1])).get("demo") else "0")
+except Exception:
+    print("0")
+' "$dir/scenario.json")"
+
+  if [[ ! -d "$target" ]]; then
+    mkdir -p "$target"
+    cp "$dir/scenario.json" "$target/"
+    added_quiz=$((added_quiz + 1))
+  elif [[ "$demo" == "1" ]]; then
+    cp "$dir/scenario.json" "$target/scenario.json"
+  fi
+
+  [[ -d "$dir/media" ]] || continue
   mkdir -p "$APP_DIR/public/media/$quiz"
-  for file in "$dir"/*; do
+  for file in "$dir"media/*; do
     [[ -f "$file" ]] || continue
-    target="$APP_DIR/public/media/$quiz/$(basename "$file")"
-    [[ -e "$target" ]] && continue
-    cp "$file" "$target"
-    copied=$((copied + 1))
+    dest="$APP_DIR/public/media/$quiz/$(basename "$file")"
+    # Загруженное через кабинет всегда главнее демонстрационного.
+    [[ -e "$dest" ]] && continue
+    cp "$file" "$dest"
+    added_media=$((added_media + 1))
   done
 done
-echo "  новых файлов: $copied"
+echo "  новых сценариев: $added_quiz · новых медиафайлов: $added_media"
 
 say "права"
 # Группа livequiz — чтобы служба читала код; три каталога, куда приложение
