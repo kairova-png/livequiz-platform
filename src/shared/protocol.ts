@@ -94,6 +94,8 @@ export type HostCommand =
   /** Ведущий заводит команду сам: делегации бывают известны заранее. */
   | { c: 'createTeam'; name: string }
   | { c: 'movePlayer'; sessionId: string; teamId: string | null }
+  /** Кто за столом отправляет ответ. У капитана сел телефон — обычное дело. */
+  | { c: 'setCaptain'; teamId: string; sessionId: string }
   | { c: 'admitPlayer'; sessionId: string }
   | { c: 'rejectPlayer'; sessionId: string }
   | { c: 'setRules'; patch: Record<string, number | boolean> }

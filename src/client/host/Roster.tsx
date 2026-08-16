@@ -143,6 +143,22 @@ export function Roster({ view, send }: { view: HostView; send: Send }): ReactNod
                   {player.name}
                   {!player.online && <span className="app-muted"> · желіде емес</span>}
                 </span>
+                {/* Ответ за стол сдаёт капитан. Право переходит само, когда
+                    он пропал из сети, но за столом виднее: у кого телефон
+                    жив, ведущий назначает руками. */}
+                {team.captain === player.sessionId
+                  ? <span className="lq-badge">капитан</span>
+                  : (
+                    <button
+                      className="lq-btn lq-btn--quiet"
+                      style={{ minHeight: 34 }}
+                      onClick={() => send({
+                        c: 'setCaptain', teamId: team.id, sessionId: player.sessionId,
+                      })}
+                    >
+                      капитан ету
+                    </button>
+                  )}
                 <select
                   className="lq-input"
                   style={{ maxWidth: 180, minHeight: 34 }}

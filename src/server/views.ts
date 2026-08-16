@@ -148,6 +148,11 @@ export function playerView(game: Game, sessionId: string): PlayerView {
     secondsLeft: game.secondsLeft(),
     totalSeconds: game.totalSeconds(),
     teamAnswer: mine ? { value: mine.value, risk: mine.risk, by: mine.by } : null,
+    captain: (() => {
+      const team = game.teams.find((t) => t.id === player?.teamId);
+      if (!team) return null;
+      return { name: team.captainName, isMe: team.captain === sessionId };
+    })(),
     myStanding: table.find((s) => s.teamId === player?.teamId) ?? null,
     standings: table,
     lastRoundResult,

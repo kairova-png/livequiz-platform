@@ -13,7 +13,7 @@ import type {
 import type { HostCommand } from '../shared/protocol.ts';
 import { checkAnswer, pointsFor, rescoreRound, type Adjustment } from './scoring.ts';
 import { standingsOf } from './views.ts';
-import { addTeam, admit, movePlayer, reject, setRules, syncTeamMembers } from './participants.ts';
+import { addTeam, admit, movePlayer, reject, setCaptain, setRules, syncTeamMembers } from './participants.ts';
 
 export interface Player {
   sessionId: string;
@@ -86,14 +86,24 @@ export class Game {
   /* --- Ответ команды -------------------------------------------------- */
 
   /**
-   * Ответ у команды один: любой её участник может его поставить или
-   * переписать, пока приём открыт, и все видят текущий. Это ровно тот же
-   * лист бумаги, что лежит на столе, — просто он теперь у всех в руках.
+   * Ответ у команды один, и сдаёт его капитан.
+   *
+   * Это тот же лист бумаги, что лежал на столе: писал на нём один, а
+   * совещался стол целиком. Когда отправить мог любой, шестеро за столом
+   * молча перебивали друг друга, и последний клик за секунду до гонга
+   * решал за всю команду — включая случайный.
+   *
+   * Свой ответ капитан переписывает сколько угодно, пока приём открыт:
+   * стол на то и совещается.
    */
   answer(sessionId: string, questionId: string, value: Answer['value'], risk: boolean): string | null {
     if (this.phase !== 'asking') return 'Қабылдау жабық';
     const player = this.players.get(sessionId);
     if (!player?.teamId) return 'Топ таңдалмаған';
+    const team = this.teams.find((t) => t.id === player.teamId);
+    if (team && team.captain && team.captain !== sessionId) {
+      return `Жауапты капитан жібереді · ${team.captainName}`;
+    }
     const question = this.currentQuestion();
     if (!question || question.id !== questionId) return 'Басқа сұрақ';
     if (this.deadline !== null && Date.now() > this.deadline) return 'Уақыт бітті';
@@ -310,6 +320,10 @@ export class Game {
 
       case 'createTeam':
         addTeam(this, command.name);
+        break;
+
+      case 'setCaptain':
+        setCaptain(this, command.teamId, command.sessionId);
         break;
 
       case 'movePlayer':

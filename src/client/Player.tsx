@@ -205,6 +205,9 @@ function Answering(
   },
 ): ReactNode {
   const current = view.teamAnswer;
+  // Отправляет капитан; если капитана почему-то нет, право у всех — стол
+  // не должен остаться без ответа из-за пустого поля в состоянии.
+  const mine = view.captain?.isMe ?? true;
   const [text, setText] = useState('');
   const [match, setMatch] = useState<(OptionKey | null)[]>([]);
   const [risk, setRisk] = useState(false);
@@ -249,6 +252,7 @@ function Answering(
               key={option.key}
               className={`lq-tile ${tileClass(i)}`}
               data-state={current?.value === option.key ? 'picked' : undefined}
+              disabled={!mine}
               onClick={() => answer(option.key)}
             >
               <span className="lq-tile__shape"><Shape index={i} /></span>
@@ -279,6 +283,7 @@ function Answering(
             <input
               className="lq-input"
               value={text}
+              disabled={!mine}
               onChange={(e) => setText(e.target.value)}
               style={{ minHeight: 60, fontSize: 'var(--lq-text-lg)', fontWeight: 600 }}
             />
@@ -287,6 +292,7 @@ function Answering(
             <button
               className="app-risk"
               data-on={risk}
+              disabled={!mine}
               onClick={() => {
                 const next = !risk;
                 setRisk(next);
@@ -305,7 +311,7 @@ function Answering(
           )}
           <button
             className="lq-btn lq-btn--xl lq-btn--block"
-            disabled={!text.trim()}
+            disabled={!mine || !text.trim()}
             onClick={() => answer(text.trim())}
           >
             {current ? 'Жауапты өзгерту' : 'Жауапты жіберу'}
@@ -313,6 +319,13 @@ function Answering(
         </div>
       )}
 
+      {/* Кто сдаёт лист за стол. Остальные видят выбор капитана и спорят
+          с ним голосом, а не наперегонки нажимая свои телефоны. */}
+      {!mine && view.captain && (
+        <div className="lq-card app-muted" style={{ margin: 0 }}>
+          Жауапты капитан жібереді · <b>{view.captain.name}</b>
+        </div>
+      )}
       {current && (
         <p className="app-muted" style={{ margin: 0, fontSize: 'var(--lq-text-sm)' }}>
           Топ жауабы қабылданды · {current.by}

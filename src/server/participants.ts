@@ -61,9 +61,42 @@ function makeTeam(game: Game, name: string, createdBy: string, badge?: number): 
     members: [],
     online: 0,
     createdBy,
+    // Кто завёл стол, тот за него и отвечает. У команд ведущего капитана
+    // пока нет — им станет первый вошедший.
+    captain: createdBy,
+    captainName: '',
   };
   game.teams.push(team);
   return team;
+}
+
+/**
+ * Кто отвечает за стол.
+ *
+ * Капитанство не прибито гвоздями к создателю команды: телефон садится,
+ * человек выходит покурить, связь рвётся. Пока капитан на связи — он
+ * капитан; пропал, а за столом есть кто-то в сети — право переходит к
+ * нему. Обратно само не возвращается: посреди приёма это выглядело бы
+ * как отобранная кнопка.
+ */
+function ensureCaptain(game: Game, team: Team): void {
+  const members = [...game.players.values()]
+    .filter((p) => p.teamId === team.id && !p.pending);
+  const current = members.find((p) => p.sessionId === team.captain);
+  const online = members.filter((p) => p.online);
+  const keep = current && (current.online || online.length === 0);
+  const next = keep ? current : (online[0] ?? members[0]);
+  team.captain = next?.sessionId ?? '';
+  team.captainName = next?.name ?? '';
+}
+
+/** Ведущий назначает капитана сам: за столом виднее, у кого телефон живой. */
+export function setCaptain(game: Game, teamId: string, sessionId: string): void {
+  const team = game.teams.find((t) => t.id === teamId);
+  const player = game.players.get(sessionId);
+  if (!team || !player || player.teamId !== teamId || player.pending) return;
+  team.captain = sessionId;
+  team.captainName = player.name;
 }
 
 /** Команда, заведённая ведущим заранее. */
@@ -145,6 +178,7 @@ export function syncTeamMembers(game: Game): void {
       .filter((p) => p.teamId === team.id && !p.pending);
     team.members = members.map((p) => p.name);
     team.online = members.filter((p) => p.online).length;
+    ensureCaptain(game, team);
   }
 }
 

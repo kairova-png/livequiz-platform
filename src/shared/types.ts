@@ -97,6 +97,15 @@ export interface Team {
   online: number;
   /** Кто завёл команду. Пустое — команду создал ведущий заранее. */
   createdBy: string;
+  /**
+   * Чей телефон отвечает за стол. Обычно это тот, кто завёл команду; у
+   * команд, заведённых ведущим, — первый вошедший. Если капитан пропал
+   * из сети, право переходит к тому, кто на связи: стол не должен
+   * остаться без ответа из-за севшего телефона.
+   */
+  captain: string;
+  /** Имя капитана — телефонам и пульту нужно показать, кого ждать. */
+  captainName: string;
 }
 
 /**
@@ -250,6 +259,8 @@ export interface PlayerView {
   totalSeconds: number;
   /** Текущий ответ команды — его видят все её участники. */
   teamAnswer: { value: OptionKey | OptionKey[] | string; risk: boolean; by: string } | null;
+  /** Кто за столом отправляет ответ и я ли это. null — команда не выбрана. */
+  captain: { name: string; isMe: boolean } | null;
   myStanding: Standing | null;
   standings: Standing[];
   /** Итог по последнему вскрытому туру: что команда взяла. */
