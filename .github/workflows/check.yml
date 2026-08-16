@@ -1,0 +1,30 @@
+name: Проверки
+
+# Сборка и типы на бесплатных раннерах GitHub. Здесь pull_request безопасен:
+# раннер одноразовый и чужой, до прода из него хода нет.
+on:
+  pull_request:
+  push:
+    branches-ignore: [main]   # main проверяется внутри деплоя, дважды не нужно
+
+jobs:
+  check:
+    name: Типы и сборка
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Проверка типов
+        run: npx tsc --noEmit
+
+      - name: Сборка клиента
+        run: npm run build

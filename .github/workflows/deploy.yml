@@ -1,0 +1,82 @@
+name: Деплой на прод
+
+# ТОЛЬКО push в main и ручной запуск.
+#
+# Здесь СОЗНАТЕЛЬНО нет pull_request: раннер self-hosted и стоит на живом
+# сервере, а репозиторий публичный. Событие push в этом репозитории может
+# породить только тот, у кого есть право записи, — форк его не вызовет.
+# Добавите сюда pull_request — и любой желающий выполнит свой код на проде.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Деплоить даже если идёт живой вечер (оборвёт телефоны зала)'
+        type: boolean
+        default: false
+
+# Два деплоя одновременно перезапускали бы службу навстречу друг другу.
+# cancel-in-progress НЕ ставим: прерванный на середине rsync хуже, чем очередь.
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Собрать и выложить
+    runs-on: [self-hosted, quiz-prod]
+    timeout-minutes: 15
+
+    steps:
+      - name: Забрать код
+        uses: actions/checkout@v4
+
+      - name: Версия Node
+        # Сервер стартует как `node src/server/index.ts` — TypeScript исполняется
+        # нативно, а это умеет только Node ≥ 22.18. Падать здесь дешевле, чем
+        # после перезапуска службы.
+        run: |
+          node -v
+          node -e 'const [maj,min]=process.versions.node.split(".").map(Number);
+            if (maj < 22 || (maj === 22 && min < 18)) {
+              console.error("Нужен Node >= 22.18 для нативного TypeScript"); process.exit(1);
+            }'
+
+      - name: Зависимости
+        run: npm ci
+
+      - name: Проверка типов
+        run: npx tsc --noEmit
+
+      - name: Сборка клиента
+        run: npm run build
+
+      - name: Выложить
+        env:
+          FORCE: ${{ inputs.force && '1' || '0' }}
+        run: |
+          chmod +x scripts/ci-deploy.sh
+          scripts/ci-deploy.sh
+
+      - name: Проверить снаружи
+        # Изнутри сети публичный адрес не открывается (hairpin NAT на роутере),
+        # поэтому идём в Caddy на LMS-VM напрямую, но с публичными Host и SNI —
+        # это ровно тот маршрут, по которому придёт зал.
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 \
+            --resolve 'quiz.188-0-128-155.sslip.io:443:192.168.0.147' \
+            https://quiz.188-0-128-155.sslip.io/api/health)
+          echo "HTTPS через Caddy: $code"
+          test "$code" = "200"
+
+      - name: Итог
+        if: always()
+        run: |
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "### ✅ Выложено на https://quiz.188-0-128-155.sslip.io" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### ❌ Деплой не прошёл — прод остался на предыдущей версии" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Коммит: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
