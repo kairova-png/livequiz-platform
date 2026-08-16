@@ -543,6 +543,13 @@ button.lq-switch {
 .app-issue[data-level='warn'] { border-color: var(--lq-warning); }
 
 /* ============ Модальное окно кабинета ============ */
+/* Диалог вместо системного окна: узкая колонка по центру экрана. Шире
+ * не нужно — в нём один вопрос и одна строка ввода. */
+.app-dialog {
+  min-width: min(420px, 92vw);
+  max-width: min(560px, 92vw);
+}
+
 .app-modal {
   position: fixed;
   inset: 0;

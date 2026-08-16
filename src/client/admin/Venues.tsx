@@ -7,10 +7,12 @@
 
 import { useState, type ReactNode } from 'react';
 import { Empty, SectionTitle, Stat, dayMonthTime } from './shared.tsx';
+import { useAsk, type Ask } from './dialog.tsx';
 import type { AdminView, VenueInfo } from '../../shared/types.ts';
 import type { Send } from './shared.tsx';
 
 export function Venues({ view, send }: { view: AdminView; send: Send }): ReactNode {
+  const { ask, dialog } = useAsk();
   const [adding, setAdding] = useState(false);
   const [name, setName] = useState('');
   const [cadence, setCadence] = useState('');
@@ -72,13 +74,18 @@ export function Venues({ view, send }: { view: AdminView; send: Send }): ReactNo
       )}
 
       <div className="app-stack">
-        {view.venues.map((venue) => <VenueCard key={venue.id} venue={venue} send={send} />)}
+        {view.venues.map((venue) => (
+          <VenueCard key={venue.id} venue={venue} send={send} ask={ask} />
+        ))}
       </div>
+      {dialog}
     </>
   );
 }
 
-function VenueCard({ venue, send }: { venue: VenueInfo; send: Send }): ReactNode {
+function VenueCard(
+  { venue, send, ask }: { venue: VenueInfo; send: Send; ask: Ask },
+): ReactNode {
   const [note, setNote] = useState(venue.note);
   const dirty = note !== venue.note;
 
@@ -93,8 +100,14 @@ function VenueCard({ venue, send }: { venue: VenueInfo; send: Send }): ReactNode
         <button
           className="lq-btn lq-btn--quiet"
           onClick={() => {
-            const next = prompt('Алаңның атауы', venue.name);
-            if (next) send({ c: 'updateVenue', id: venue.id, name: next });
+            void ask.prompt({
+              title: 'Алаңның атауы',
+              label: 'Атауы',
+              value: venue.name,
+              confirmLabel: 'Сақтау',
+            }).then((next: string | null) => {
+              if (next) send({ c: 'updateVenue', id: venue.id, name: next });
+            });
           }}
         >
           Атын өзгерту
@@ -102,9 +115,11 @@ function VenueCard({ venue, send }: { venue: VenueInfo; send: Send }): ReactNode
         <button
           className="lq-btn lq-btn--ghost"
           onClick={() => {
-            if (confirm(`${venue.name} алаңын жою керек пе? Кештер сақталады.`)) {
-              send({ c: 'deleteVenue', id: venue.id });
-            }
+            void ask.confirm({
+              title: `${venue.name} алаңын жою керек пе?`,
+              note: 'Осы алаңда өткен кештер сақталады.',
+              danger: true,
+            }).then((ok: boolean) => { if (ok) send({ c: 'deleteVenue', id: venue.id }); });
           }}
         >
           Жою

@@ -6,6 +6,7 @@
 
 import type { ReactNode } from 'react';
 import { TeamBadge } from '../ui.tsx';
+import { useAsk } from '../admin/dialog.tsx';
 import type { HostView } from '../../shared/types.ts';
 import type { Send } from './types.ts';
 
@@ -74,6 +75,7 @@ export function Rules({ view, send }: { view: HostView; send: Send }): ReactNode
  * перевести человека — сесть не за тот стол обычное дело.
  */
 export function Roster({ view, send }: { view: HostView; send: Send }): ReactNode {
+  const { ask, dialog } = useAsk();
   const free = view.roster.filter((player) => !player.teamId);
   return (
     <>
@@ -116,8 +118,14 @@ export function Roster({ view, send }: { view: HostView; send: Send }): ReactNod
         <button
           className="lq-btn lq-btn--quiet"
           onClick={() => {
-            const name = prompt('Топтың атауы');
-            if (name?.trim()) send({ c: 'createTeam', name: name.trim() });
+            void ask.prompt({
+              title: 'Топ құру',
+              note: 'Стол келді, ал телефоннан кіре алмай жатыр — топты өзіңіз құрыңыз.',
+              label: 'Топтың атауы',
+              confirmLabel: 'Құру',
+            }).then((name: string | null) => {
+              if (name) send({ c: 'createTeam', name });
+            });
           }}
         >
           + Топ құру
@@ -203,6 +211,7 @@ export function Roster({ view, send }: { view: HostView; send: Send }): ReactNod
           </div>
         </>
       )}
+      {dialog}
     </>
   );
 }

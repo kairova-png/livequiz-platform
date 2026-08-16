@@ -15,6 +15,8 @@ import { emptyQuiz, quizId, saveQuiz } from './editor.ts';
 
 export interface QuizSummary {
   id: string;
+  /** Служебный квиз для проверки зала — см. Scenario.demo. */
+  demo?: boolean;
   title: string;
   subtitle: string;
   place: string;
@@ -77,6 +79,7 @@ export class Registry {
   quizList(): QuizSummary[] {
     return [...this.quizzes.values()].map((scenario) => ({
       id: scenario.id,
+      demo: scenario.demo,
       title: scenario.title,
       subtitle: scenario.subtitle,
       place: scenario.place,

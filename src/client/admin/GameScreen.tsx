@@ -12,6 +12,7 @@
 import { useState, type ReactNode } from 'react';
 import { Board, JoinQr, TeamBadge, joinUrl } from '../ui.tsx';
 import { GameLinks } from './GameLinks.tsx';
+import { useAsk } from './dialog.tsx';
 import { PHASE_LABEL, Stat, dayMonthTime, toLocalInput } from './shared.tsx';
 import type { AdminView, ScheduledGame } from '../../shared/types.ts';
 import type { Section, Send } from './shared.tsx';
@@ -176,6 +177,7 @@ function Details(
  * участник только выбирает свою строку, а не придумывает название за столом.
  */
 function Entry({ game, send }: { game: ScheduledGame; send: Send }): ReactNode {
+  const { ask, dialog } = useAsk();
   const rules = game.rules;
   const set = (patch: Record<string, number | boolean>): void =>
     send({ c: 'updateGameRules', code: game.code, patch });
@@ -233,8 +235,15 @@ function Entry({ game, send }: { game: ScheduledGame; send: Send }): ReactNode {
         <button
           className="lq-btn lq-btn--quiet"
           onClick={() => {
-            const name = prompt('Топтың атауы');
-            if (name?.trim()) send({ c: 'addGameTeam', code: game.code, name: name.trim() });
+            void ask.prompt({
+              title: 'Топты алдын ала қосу',
+              note: 'Делегациялар белгілі болса, топты алдын ала жазып қоюға болады.',
+              label: 'Топтың атауы',
+              placeholder: 'Мысалы: Мақат ауданы',
+              confirmLabel: 'Қосу',
+            }).then((name: string | null) => {
+              if (name) send({ c: 'addGameTeam', code: game.code, name });
+            });
           }}
         >
           + Топ
@@ -258,6 +267,7 @@ function Entry({ game, send }: { game: ScheduledGame; send: Send }): ReactNode {
           Бос қалдырсаңыз, топтарды қатысушылар өздері құрады.
         </span>
       )}
+      {dialog}
     </div>
   );
 }
@@ -267,14 +277,18 @@ function Danger(
   { game, send, go }:
   { game: ScheduledGame; send: Send; go: (section: Section, code?: string) => void },
 ): ReactNode {
+  const { ask, dialog } = useAsk();
   return (
     <div className="lq-card app-row" style={{ marginTop: 'var(--lq-space-4)', flexWrap: 'wrap' }}>
       <button
         className="lq-btn lq-btn--quiet"
         onClick={() => {
-          if (confirm(`${game.code}: ұпайлар мен топтар өшеді. Код сол күйінде қалады.`)) {
-            send({ c: 'resetGame', code: game.code });
-          }
+          void ask.confirm({
+            title: 'Кешті нөлден бастау керек пе?',
+            note: `${game.code}: ұпайлар мен топтар өшеді, код сол күйінде қалады.`,
+            confirmLabel: 'Нөлден бастау',
+            danger: true,
+          }).then((ok: boolean) => { if (ok) send({ c: 'resetGame', code: game.code }); });
         }}
       >
         Нөлден бастау
@@ -291,14 +305,20 @@ function Danger(
       <button
         className="lq-btn lq-btn--ghost"
         onClick={() => {
-          if (confirm(`${game.code} кешін жою керек пе?`)) {
+          void ask.confirm({
+            title: `${game.code} кешін жою керек пе?`,
+            note: 'Кеш пен оның нәтижелері қалпына келмейді.',
+            danger: true,
+          }).then((ok: boolean) => {
+            if (!ok) return;
             send({ c: 'deleteGame', code: game.code });
             go('schedule');
-          }
+          });
         }}
       >
         Жою
       </button>
+      {dialog}
     </div>
   );
 }

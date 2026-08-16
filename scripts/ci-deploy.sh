@@ -89,6 +89,28 @@ rsync -a --delete \
 say "зависимости (только прод)"
 ( cd "$APP_DIR" && npm ci --omit=dev 2>&1 | tail -3 )
 
+# ── 3б. Медиа сценариев, которое лежит в репозитории ───────────────────────
+# public/media/ исключён из синхронизации: там то, что загрузили через
+# кабинет, и деплой не имеет права это трогать. Но у сценария, приехавшего
+# файлом, медиа тоже файл — и без этого шага вопрос ссылается на картинку,
+# которой на сервере нет. Копируем только недостающее: загруженное поверх
+# демонстрационного всегда главнее.
+say "медиа сценариев"
+copied=0
+for dir in "$APP_DIR"/src/content/*/media; do
+  [[ -d "$dir" ]] || continue
+  quiz="$(basename "$(dirname "$dir")")"
+  mkdir -p "$APP_DIR/public/media/$quiz"
+  for file in "$dir"/*; do
+    [[ -f "$file" ]] || continue
+    target="$APP_DIR/public/media/$quiz/$(basename "$file")"
+    [[ -e "$target" ]] && continue
+    cp "$file" "$target"
+    copied=$((copied + 1))
+  done
+done
+echo "  новых файлов: $copied"
+
 say "права"
 # Группа livequiz — чтобы служба читала код; три каталога, куда приложение
 # пишет, отдаются группе на запись (setgid, чтобы новые файлы её наследовали).

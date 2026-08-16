@@ -4,6 +4,7 @@
 import { useState, type ReactNode } from 'react';
 import { joinUrl } from '../ui.tsx';
 import { GameLinks } from './GameLinks.tsx';
+import { useAsk } from './dialog.tsx';
 import { SectionTitle, Stat, toLocalInput } from './shared.tsx';
 import type { AdminView, QuizInfo } from '../../shared/types.ts';
 import type { Section, Send } from './shared.tsx';
@@ -12,6 +13,7 @@ export function Library(
   { view, send, go }:
   { view: AdminView; send: Send; go: (section: Section, code?: string) => void },
 ): ReactNode {
+  const { ask, dialog } = useAsk();
   const [planning, setPlanning] = useState<QuizInfo | null>(null);
   return (
     <>
@@ -22,8 +24,14 @@ export function Library(
           <button
             className="lq-btn"
             onClick={() => {
-              const title = prompt('Жаңа квиздің атауы');
-              if (title?.trim()) send({ c: 'createQuiz', title: title.trim() });
+              void ask.prompt({
+                title: 'Жаңа квиз',
+                label: 'Квиздің атауы',
+                placeholder: 'Мысалы: Көктем кубогы',
+                confirmLabel: 'Құру',
+              }).then((name: string | null) => {
+                if (name) send({ c: 'createQuiz', title: name });
+              });
             }}
           >
             Жаңа квиз
@@ -86,9 +94,11 @@ export function Library(
               <button
                 className="lq-btn lq-btn--quiet"
                 onClick={() => {
-                  if (confirm(`«${quiz.title}» квизін жою керек пе? Өткен кештер сақталады.`)) {
-                    send({ c: 'deleteQuiz', id: quiz.id });
-                  }
+                  void ask.confirm({
+                    title: `«${quiz.title}» квизін жою керек пе?`,
+                    note: 'Осы сценарий бойынша өткен кештер сақталады.',
+                    danger: true,
+                  }).then((ok: boolean) => { if (ok) send({ c: 'deleteQuiz', id: quiz.id }); });
                 }}
               >
                 Жою
@@ -101,6 +111,8 @@ export function Library(
       <p className="app-muted" style={{ marginTop: 'var(--lq-space-5)' }}>
         Сценарийлер <code>src/content/</code> ішінде файлмен беріледі. Конструктор әзірге жоқ.
       </p>
+
+      {dialog}
 
       {planning && (
         <PlanGame

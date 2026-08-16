@@ -11,6 +11,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { QuestionEditor } from './QuestionEditor.tsx';
 import { Empty, SectionTitle } from './shared.tsx';
+import { useAsk } from './dialog.tsx';
 import type { AdminView, Question, QuizIssue, Round } from '../../shared/types.ts';
 import type { Send } from './shared.tsx';
 
@@ -139,6 +140,7 @@ function RoundCard(
     adding: boolean; onAdd: () => void; onAdded: () => void;
   },
 ): ReactNode {
+  const { ask, dialog } = useAsk();
   return (
     <div className="lq-card app-stack">
       <div className="app-row">
@@ -169,9 +171,13 @@ function RoundCard(
         <button
           className="lq-btn lq-btn--ghost"
           onClick={() => {
-            if (confirm(`«${round.name}» турын сұрақтарымен бірге жою керек пе?`)) {
-              send({ c: 'deleteRound', quizId, roundId: round.id });
-            }
+            void ask.confirm({
+              title: `«${round.name}» турын жою керек пе?`,
+              note: 'Тур ішіндегі сұрақтар да жойылады.',
+              danger: true,
+            }).then((ok: boolean) => {
+              if (ok) send({ c: 'deleteRound', quizId, roundId: round.id });
+            });
           }}
         >
           Жою
@@ -245,9 +251,13 @@ function RoundCard(
             <button
               className="lq-btn lq-btn--quiet"
               onClick={() => {
-                if (confirm('Сұрақты жою керек пе?')) {
-                  send({ c: 'deleteQuestion', quizId, questionId: question.id });
-                }
+                void ask.confirm({
+                  title: 'Сұрақты жою керек пе?',
+                  note: question.text.slice(0, 90) || 'Мәтіні жоқ сұрақ.',
+                  danger: true,
+                }).then((ok: boolean) => {
+                  if (ok) send({ c: 'deleteQuestion', quizId, questionId: question.id });
+                });
               }}
             >
               ✕
@@ -280,6 +290,7 @@ function RoundCard(
           + Сұрақ
         </button>
       )}
+      {dialog}
     </div>
   );
 }

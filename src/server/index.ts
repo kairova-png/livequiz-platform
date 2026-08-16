@@ -63,7 +63,10 @@ if (existsSync(STATE_FILE)) {
  * а не пустой экран с предложением что-нибудь создать. Площадка заводится
  * из подписи сценария — переименовать её ведущий может в кабинете. */
 if (registry.all().length === 0) {
-  const quiz = registry.quizList()[0];
+  // Служебный квиз пропускаем: он существует, чтобы проверить проектор,
+  // а не чтобы стать вечером, который ведущий увидит первым.
+  const list = registry.quizList();
+  const quiz = list.find((item) => !item.demo) ?? list[0];
   const venue = registry.cabinet.venues[0]
     ?? registry.cabinet.addVenue(quiz.place || quiz.title, '');
   registry.create(quiz.id, {

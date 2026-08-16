@@ -19,6 +19,10 @@ const STANDINGS_ON_STAGE = 5;
 function publicQuestion(game: Game, question: Question | null): PublicQuestion | null {
   if (!question) return null;
   const round = game.roundOf(question.id);
+  /* Картинки и звук идут при любом типе вопроса. Раньше они попадали в срез
+   * только у текстовых — и вопрос с вариантами, к которому приложена
+   * фотография, выходил на проектор без неё: экран показывал плитки, а
+   * зал не понимал, о чём его спрашивают. */
   const base = {
     id: question.id,
     no: question.no,
@@ -26,6 +30,10 @@ function publicQuestion(game: Game, question: Question | null): PublicQuestion |
     text: question.text,
     risk: Boolean(round?.risk),
     points: round?.points ?? 1,
+    images: question.images,
+    audio: question.audio,
+    audioStart: question.audioStart,
+    audioEnd: question.audioEnd,
   };
   if (question.kind === 'choice') {
     return { ...base, options: question.options.map((o) => ({ key: o.key, text: o.text })) };
@@ -37,13 +45,7 @@ function publicQuestion(game: Game, question: Question | null): PublicQuestion |
       options: question.options.map((o) => ({ key: o.key, image: o.image })),
     };
   }
-  return {
-    ...base,
-    images: question.images,
-    audio: question.audio,
-    audioStart: question.audioStart,
-    audioEnd: question.audioEnd,
-  };
+  return base;
 }
 
 /** Таблица на текущий момент вечера. */

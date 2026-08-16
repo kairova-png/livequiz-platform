@@ -12,9 +12,11 @@ import { Board, Offline, TeamBadge, Timer, joinUrl } from './ui.tsx';
 import type { HostCommand } from '../shared/protocol.ts';
 import type { Answer, HostView, Question } from '../shared/types.ts';
 import { Rules, Roster } from './host/Roster.tsx';
+import { useAsk } from './admin/dialog.tsx';
 import type { Send } from './host/types.ts';
 
 export function Host(): ReactNode {
+  const { ask, dialog } = useAsk();
   const [pin, setPin] = useState('');
   const [entered, setEntered] = useState(false);
   // Кабинет открывает пульт конкретного вечера ссылкой /host?code=…
@@ -128,8 +130,14 @@ export function Host(): ReactNode {
                 <button
                   className="lq-btn lq-btn--quiet"
                   onClick={() => {
-                    const name = prompt('Топтың жаңа атауы', team.name);
-                    if (name) send({ c: 'renameTeam', teamId: team.id, name });
+                    void ask.prompt({
+                      title: 'Топтың атауын өзгерту',
+                      label: 'Жаңа атауы',
+                      value: team.name,
+                      confirmLabel: 'Сақтау',
+                    }).then((name: string | null) => {
+                      if (name) send({ c: 'renameTeam', teamId: team.id, name });
+                    });
                   }}
                 >
                   Атын өзгерту
@@ -141,6 +149,7 @@ export function Host(): ReactNode {
       </div>
 
       <Bar view={view} send={send} />
+      {dialog}
     </div>
   );
 }
@@ -166,6 +175,7 @@ function LocalOnlyWarning(): ReactNode {
 function Main(
   { view, seconds, send }: { view: HostView; seconds: number | null; send: Send },
 ): ReactNode {
+  const { ask, dialog } = useAsk();
   const round = view.round;
   const revealed = round?.questions[view.revealIndex];
 
@@ -274,6 +284,7 @@ function Main(
       <>
         <p className="app-host-h">{view.phase === 'final' ? 'Қорытынды' : 'Тур қорытындысы'}</p>
         <Board rows={view.standings} showDelta={view.roundIndex} />
+        {dialog}
         <p className="app-host-h" style={{ marginTop: 'var(--lq-space-5)' }}>Ұпайды қолмен түзету</p>
         <div className="app-stack">
           {view.teams.map((team) => (
@@ -284,8 +295,15 @@ function Main(
                   key={delta}
                   className="lq-btn lq-btn--quiet"
                   onClick={() => {
-                    const note = prompt('Себебі (журналға жазылады)');
-                    if (note) send({ c: 'adjust', teamId: team.id, delta, note });
+                    void ask.prompt({
+                      title: delta > 0 ? 'Ұпай қосу' : 'Ұпай алу',
+                      note: `${team.name}: ${delta > 0 ? '+1' : '−1'} ұпай.`,
+                      label: 'Себебі (журналға жазылады)',
+                      placeholder: 'Мысалы: дұрыс жауап, қолмен тексерілді',
+                      confirmLabel: 'Жазу',
+                    }).then((note: string | null) => {
+                      if (note) send({ c: 'adjust', teamId: team.id, delta, note });
+                    });
                   }}
                 >
                   {delta > 0 ? '+1' : '−1'}

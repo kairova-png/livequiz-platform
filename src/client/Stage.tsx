@@ -312,6 +312,43 @@ function QuestionMedia({ question }: { question: PublicQuestion }): ReactNode {
 }
 
 /**
+ * Запуск со звуком, который браузер разрешает не всегда.
+ *
+ * Автозапуск с громкостью блокируется, пока со страницей никто не
+ * взаимодействовал, — а экран зала как раз открывают и оставляют. Тихо
+ * молчащий проектор посреди аудио-тура выглядит как поломка, поэтому
+ * отказ мы ловим и показываем крупную кнопку: одно нажатие на ноутбуке
+ * ведущего снимает запрет до конца вечера.
+ */
+function useAutoPlay(
+  ref: { current: HTMLMediaElement | null }, src: string,
+): { blocked: boolean; start: () => void } {
+  const [blocked, setBlocked] = useState(false);
+  const start = (): void => {
+    void ref.current?.play().then(() => setBlocked(false)).catch(() => setBlocked(true));
+  };
+  useEffect(() => {
+    setBlocked(false);
+    const media = ref.current;
+    if (!media) return undefined;
+    void media.play().catch(() => setBlocked(true));
+    return undefined;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [src]);
+  return { blocked, start };
+}
+
+/** Кнопка, которая появляется, только если браузер не дал запустить сам. */
+function PlayGate({ blocked, start }: { blocked: boolean; start: () => void }): ReactNode {
+  if (!blocked) return null;
+  return (
+    <button className="lq-btn lq-btn--lg" onClick={start}>
+      ▶ Ойнату
+    </button>
+  );
+}
+
+/**
  * Играет заданный отрывок трека, а не файл целиком: вопрос задан по припеву,
  * и вступление в четыре такта зал слушать не должен.
  */
@@ -319,6 +356,7 @@ function Excerpt(
   { src, start, end }: { src: string; start?: number; end?: number },
 ): ReactNode {
   const ref = useRef<HTMLAudioElement>(null);
+  const auto = useAutoPlay(ref, src);
   useEffect(() => {
     const audio = ref.current;
     if (!audio) return undefined;
@@ -336,7 +374,24 @@ function Excerpt(
     };
   }, [src, start, end]);
 
-  return <audio ref={ref} src={src} autoPlay controls style={{ width: '60%' }} />;
+  return (
+    <>
+      <audio ref={ref} src={src} autoPlay controls style={{ width: '60%' }} />
+      <PlayGate blocked={auto.blocked} start={auto.start} />
+    </>
+  );
+}
+
+/** Видео разбора: на проекторе оно должно пойти само, а не ждать мышку. */
+function RevealVideo({ src }: { src: string }): ReactNode {
+  const ref = useRef<HTMLVideoElement>(null);
+  const auto = useAutoPlay(ref, src);
+  return (
+    <>
+      <video ref={ref} src={src} autoPlay controls playsInline />
+      <PlayGate blocked={auto.blocked} start={auto.start} />
+    </>
+  );
 }
 
 function Reveal({ reveal }: { reveal: RevealView }): ReactNode {
@@ -410,7 +465,7 @@ function Reveal({ reveal }: { reveal: RevealView }): ReactNode {
       {(reveal.images?.length || reveal.video) && (
         <div className="app-stage-media app-stage-media--reveal">
           {reveal.video
-            ? <video src={reveal.video} autoPlay controls />
+            ? <RevealVideo src={reveal.video} />
             : reveal.images?.map((src) => <img key={src} src={src} alt="" />)}
         </div>
       )}

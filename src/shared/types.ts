@@ -3,9 +3,21 @@
 /** Буквы вариантов в казахской раскладке: А, Ә, Б, В — не А, Б, В, Г. */
 export type OptionKey = 'А' | 'Ә' | 'Б' | 'В';
 
-/** Пояснение, которое выходит на сцену вместе с ответом. */
+/**
+ * Общее для всех типов вопроса: пояснение к ответу и медиа.
+ *
+ * Медиа живёт здесь, а не только у текстового вопроса: фотография и
+ * звуковой отрывок — это часть самого вопроса, а не его формы ответа.
+ * Пока `images` были только у текстового, вопрос с вариантами выходил
+ * на проектор без картинки, к которой и был задан.
+ */
 interface Explained {
   note?: string;
+  images?: string[];
+  audio?: string;
+  /** Отрывок трека для зала, в секундах. Целиком играть незачем. */
+  audioStart?: number;
+  audioEnd?: number;
 }
 
 export interface ChoiceQuestion extends Explained {
@@ -46,11 +58,6 @@ export interface TextQuestion extends Explained {
    * этого «Балқаш» уходит в очередь судейства при эталоне «Балхаш».
    */
   loose?: boolean;
-  images?: string[];
-  audio?: string;
-  /** Отрывок трека для зала, в секундах. Целиком играть незачем. */
-  audioStart?: number;
-  audioEnd?: number;
   answerImages?: string[];
   answerVideo?: string;
 }
@@ -71,6 +78,12 @@ export interface Round {
 
 export interface Scenario {
   id: string;
+  /**
+   * Служебный квиз: проверка звука, картинок и видео перед вечером.
+   * Он не должен подставляться сам — ведущий, открывший кабинет впервые,
+   * ждёт свой сценарий, а не репетиционный.
+   */
+  demo?: boolean;
   title: string;
   subtitle: string;
   place: string;
