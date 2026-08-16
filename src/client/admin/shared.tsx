@@ -6,8 +6,10 @@ import type { Phase } from '../../shared/types.ts';
 
 export type Send = (command: AdminCommand) => void;
 
+/* `game` — экран одного вечера. В меню его нет: туда приходят из главной,
+ * календаря или сразу после создания, а не выбирают из списка разделов. */
 export type Section =
-  | 'home' | 'library' | 'schedule' | 'venues' | 'teams' | 'reports' | 'settings';
+  | 'home' | 'library' | 'schedule' | 'venues' | 'teams' | 'reports' | 'settings' | 'game';
 
 export const PHASE_LABEL: Record<Phase, string> = {
   lobby: 'жиналу',

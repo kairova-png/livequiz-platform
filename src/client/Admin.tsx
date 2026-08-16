@@ -12,6 +12,7 @@ import { useState, type ReactNode } from 'react';
 import { useGame } from './net.ts';
 import { Offline } from './ui.tsx';
 import { Home } from './admin/Home.tsx';
+import { GameScreen } from './admin/GameScreen.tsx';
 import { Library } from './admin/Library.tsx';
 import { Schedule } from './admin/Schedule.tsx';
 import { Venues } from './admin/Venues.tsx';
@@ -20,6 +21,7 @@ import { Reports } from './admin/Reports.tsx';
 import { Settings } from './admin/Settings.tsx';
 import { Editor } from './admin/Editor.tsx';
 import { setUploadPin } from './admin/upload.ts';
+import { Empty } from './admin/shared.tsx';
 import type { Section, Send } from './admin/shared.tsx';
 import type { AdminView } from '../shared/types.ts';
 
@@ -37,13 +39,19 @@ export function Admin(): ReactNode {
   const [pin, setPin] = useState('');
   const [entered, setEntered] = useState(false);
   const [section, setSection] = useState<Section>('home');
+  const [gameCode, setGameCode] = useState<string | null>(null);
 
   const hello = entered && pin ? { t: 'admin/hello' as const, pin } : null;
   const admin = useGame<AdminView>(hello, 'admin/state');
   const send: Send = (command) => admin.send({ t: 'admin/command', command });
 
   const go = (next: Section, code?: string): void => {
-    if (code) send({ c: 'openReport', code });
+    // Код значит разное: для разбора это вечер, отчёт по которому собирает
+    // сервер, для экрана вечера — какой вечер показать.
+    if (next === 'game') {
+      if (code) setGameCode(code);
+      send({ c: 'openReport', code: null });
+    } else if (code) send({ c: 'openReport', code });
     else if (next !== 'reports') send({ c: 'openReport', code: null });
     // Конструктор держит открытый квиз на сервере: уходя из него, закрываем.
     if (next !== 'library') send({ c: 'openQuiz', id: null });
@@ -84,6 +92,7 @@ export function Admin(): ReactNode {
   if (!admin.view) return <div className="app-admin" />;
   const view = admin.view;
   const live = view.games.find((game) => game.code === view.currentCode);
+  const openGame = view.games.find((game) => game.code === gameCode);
 
   return (
     <div className="app-cabinet">
@@ -104,7 +113,9 @@ export function Admin(): ReactNode {
           <button
             className="app-nav-item"
             key={item.id}
-            aria-pressed={section === item.id}
+            // Экран вечера в меню не значится: подсвечиваем календарь, откуда
+            // вечера и берутся, — иначе меню выглядит погасшим целиком.
+            aria-pressed={section === item.id || (section === 'game' && item.id === 'schedule')}
             onClick={() => go(item.id)}
           >
             {item.label}
@@ -135,11 +146,20 @@ export function Admin(): ReactNode {
 
       <main className="app-cabinet-main">
         {admin.error && <div className="lq-toast lq-toast--danger">{admin.error}</div>}
-        {section === 'home' && <Home view={view} send={send} go={go} />}
+        {section === 'home' && <Home view={view} go={go} />}
         {section === 'library' && (view.editing
           ? <Editor view={view} send={send} onClose={() => send({ c: 'openQuiz', id: null })} />
-          : <Library view={view} send={send} onPlanned={() => go('schedule')} />)}
-        {section === 'schedule' && <Schedule view={view} send={send} />}
+          : <Library view={view} send={send} go={go} />)}
+        {section === 'schedule' && <Schedule view={view} go={go} />}
+        {section === 'game' && (openGame
+          ? <GameScreen game={openGame} view={view} send={send} go={go} />
+          : (
+            <Empty
+              title="Кеш табылмады"
+              hint="Ол жойылған болуы мүмкін."
+              action={<button className="lq-btn" onClick={() => go('schedule')}>Күнтізбе</button>}
+            />
+          ))}
         {section === 'venues' && <Venues view={view} send={send} />}
         {section === 'teams' && <Teams view={view} />}
         {section === 'reports' && <Reports view={view} send={send} />}

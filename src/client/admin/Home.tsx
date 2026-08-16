@@ -5,11 +5,11 @@ import { Board, JoinQr, joinUrl } from '../ui.tsx';
 import { GameLinks } from './GameLinks.tsx';
 import { Empty, PHASE_LABEL, Stat, daysUntil, dayMonthTime, fullDate } from './shared.tsx';
 import type { AdminView, ScheduledGame } from '../../shared/types.ts';
-import type { Section, Send } from './shared.tsx';
+import type { Section } from './shared.tsx';
 
 export function Home(
-  { view, send, go }:
-  { view: AdminView; send: Send; go: (section: Section, code?: string) => void },
+  { view, go }:
+  { view: AdminView; go: (section: Section, code?: string) => void },
 ): ReactNode {
   const upcoming = view.games
     .filter((game) => game.phase !== 'final')
@@ -35,7 +35,7 @@ export function Home(
         )}
       </div>
 
-      {next ? <NextGame game={next} send={send} go={go} /> : (
+      {next ? <NextGame game={next} go={go} /> : (
         <Empty
           title="Жоспарланған кеш жоқ"
           hint="Кітапханадан квиз таңдап, жаңа кеш құрыңыз."
@@ -60,7 +60,7 @@ export function Home(
                 </span>
                 <span className="lq-badge lq-badge--neutral">{game.code}</span>
                 <GameLinks code={game.code} />
-                <button className="lq-btn lq-btn--quiet" onClick={() => go('schedule')}>
+                <button className="lq-btn lq-btn--quiet" onClick={() => go('game', game.code)}>
                   Ашу
                 </button>
               </div>
@@ -102,8 +102,8 @@ function countdown(days: number): string {
 }
 
 function NextGame(
-  { game, send, go }:
-  { game: ScheduledGame; send: Send; go: (section: Section, code?: string) => void },
+  { game, go }:
+  { game: ScheduledGame; go: (section: Section, code?: string) => void },
 ): ReactNode {
   const live = game.phase !== 'lobby';
   return (
@@ -168,15 +168,10 @@ function NextGame(
       <div className="app-row" style={{ flexWrap: 'wrap' }}>
         <GameLinks code={game.code} size="lg" />
         <span className="app-grow" />
-        <button
-          className="lq-btn lq-btn--quiet"
-          onClick={() => {
-            if (confirm(`${game.code}: ұпайлар мен топтар өшеді. Код сол күйінде қалады.`)) {
-              send({ c: 'resetGame', code: game.code });
-            }
-          }}
-        >
-          Нөлден бастау
+        {/* Сброс уехал на экран вечера, к остальному необратимому: на главной
+            он стоял вплотную к «Пультті ашу» и промахнуться было дёшево. */}
+        <button className="lq-btn lq-btn--quiet" onClick={() => go('game', game.code)}>
+          Кешті ашу
         </button>
       </div>
     </div>

@@ -5,20 +5,18 @@
  */
 
 import { useState, type ReactNode } from 'react';
-import {
-  Empty, MONTH_NAMES, SectionTitle, WEEKDAY_SHORT, dayMonthTime, toLocalInput,
-} from './shared.tsx';
-import { TeamBadge } from '../ui.tsx';
+import { Empty, MONTH_NAMES, SectionTitle, WEEKDAY_SHORT } from './shared.tsx';
 import { GameLinks } from './GameLinks.tsx';
-import type { AdminView, ScheduledGame } from '../../shared/types.ts';
-import type { Send } from './shared.tsx';
+import type { AdminView } from '../../shared/types.ts';
+import type { Section } from './shared.tsx';
 
-export function Schedule({ view, send }: { view: AdminView; send: Send }): ReactNode {
+export function Schedule(
+  { view, go }: { view: AdminView; go: (section: Section, code?: string) => void },
+): ReactNode {
   const [cursor, setCursor] = useState(() => {
     const date = new Date(view.now);
     return new Date(date.getFullYear(), date.getMonth(), 1).getTime();
   });
-  const [editing, setEditing] = useState<string | null>(null);
 
   const month = new Date(cursor);
   const year = month.getFullYear();
@@ -80,7 +78,7 @@ export function Schedule({ view, send }: { view: AdminView; send: Send }): React
                   className="app-cal-game"
                   key={game.code}
                   data-done={game.phase === 'final'}
-                  onClick={() => setEditing(game.code)}
+                  onClick={() => go('game', game.code)}
                 >
                   <b>{new Date(game.plannedAt!).getHours()}:00</b> {game.venueName || game.title}
                   {game.repeats.length > 0 && (
@@ -110,7 +108,7 @@ export function Schedule({ view, send }: { view: AdminView; send: Send }): React
                 <span className="app-grow"><b>{game.title}</b></span>
                 <span className="lq-badge lq-badge--neutral">{game.code}</span>
                 <GameLinks code={game.code} />
-                <button className="lq-btn lq-btn--quiet" onClick={() => setEditing(game.code)}>
+                <button className="lq-btn lq-btn--quiet" onClick={() => go('game', game.code)}>
                   Күнін қою
                 </button>
               </div>
@@ -123,193 +121,6 @@ export function Schedule({ view, send }: { view: AdminView; send: Send }): React
         <Empty title="Кеш жоқ" hint="Кітапханадан квиз таңдап, кеш құрыңыз." />
       )}
 
-      {editing && (
-        <EditGame
-          game={view.games.find((game) => game.code === editing)!}
-          view={view}
-          send={send}
-          onClose={() => setEditing(null)}
-        />
-      )}
     </>
-  );
-}
-
-/**
- * Вход участников в этот вечер: пределы и команды, заведённые заранее.
- *
- * Заранее команды нужны, когда зал — это делегации, а не случайные компании:
- * в NARYN CUP играют мечети и районы, их состав известен за неделю. Тогда
- * участник только выбирает свою строку, а не придумывает название за столом.
- */
-function Entry({ game, send }: { game: ScheduledGame; send: Send }): ReactNode {
-  const rules = game.rules;
-  const set = (patch: Record<string, number | boolean>): void =>
-    send({ c: 'updateGameRules', code: game.code, patch });
-
-  return (
-    <div className="app-stack" style={{ borderTop: '1px solid var(--lq-border)', paddingTop: 'var(--lq-space-4)' }}>
-      <b>Қатысушылардың кіруі</b>
-      <div className="app-row" style={{ flexWrap: 'wrap' }}>
-        <label className="lq-field" style={{ maxWidth: 140 }}>
-          <span className="lq-field__label">Топ, ең көбі</span>
-          <input
-            className="lq-input"
-            type="number"
-            min={1}
-            max={200}
-            defaultValue={rules.maxTeams}
-            onBlur={(e) => set({ maxTeams: Number(e.target.value) })}
-          />
-        </label>
-        <label className="lq-field" style={{ maxWidth: 160 }}>
-          <span className="lq-field__label">Топта адам</span>
-          <input
-            className="lq-input"
-            type="number"
-            min={1}
-            max={50}
-            defaultValue={rules.maxTeamSize}
-            onBlur={(e) => set({ maxTeamSize: Number(e.target.value) })}
-          />
-        </label>
-      </div>
-      <button
-        className="lq-switch"
-        type="button"
-        aria-checked={rules.allowTeamCreate}
-        onClick={() => set({ allowTeamCreate: !rules.allowTeamCreate })}
-      >
-        <span className="lq-switch__track"><span className="lq-switch__thumb" /></span>
-        <span className="lq-switch__label">Қатысушы өз тобын құра алады</span>
-      </button>
-      <button
-        className="lq-switch"
-        type="button"
-        aria-checked={rules.allowLateJoin}
-        onClick={() => set({ allowLateJoin: !rules.allowLateJoin })}
-      >
-        <span className="lq-switch__track"><span className="lq-switch__thumb" /></span>
-        <span className="lq-switch__label">Кеш басталған соң да кіргізу</span>
-      </button>
-
-      <div className="app-row">
-        <span className="lq-field__label app-grow">
-          Алдын ала құрылған топтар · {game.teamList.length}
-        </span>
-        <button
-          className="lq-btn lq-btn--quiet"
-          onClick={() => {
-            const name = prompt('Топтың атауы');
-            if (name?.trim()) send({ c: 'addGameTeam', code: game.code, name: name.trim() });
-          }}
-        >
-          + Топ
-        </button>
-      </div>
-      {game.teamList.map((team) => (
-        <div className="app-row" key={team.id} style={{ fontSize: 'var(--lq-text-sm)' }}>
-          <TeamBadge badge={team.badge} size={40} />
-          <span className="app-grow">{team.name}</span>
-          <span className="app-muted">{team.members.length} / {rules.maxTeamSize}</span>
-          <button
-            className="lq-btn lq-btn--quiet"
-            onClick={() => send({ c: 'removeGameTeam', code: game.code, teamId: team.id })}
-          >
-            ✕
-          </button>
-        </div>
-      ))}
-      {game.teamList.length === 0 && (
-        <span className="app-muted" style={{ fontSize: 'var(--lq-text-sm)' }}>
-          Бос қалдырсаңыз, топтарды қатысушылар өздері құрады.
-        </span>
-      )}
-    </div>
-  );
-}
-
-function EditGame(
-  { game, view, send, onClose }:
-  { game: ScheduledGame; view: AdminView; send: Send; onClose: () => void },
-): ReactNode {
-  const [title, setTitle] = useState(game.title);
-  const [venueId, setVenueId] = useState(game.venueId ?? '');
-  const [at, setAt] = useState(game.plannedAt ? toLocalInput(game.plannedAt) : '');
-
-  return (
-    <div className="app-modal" onClick={onClose}>
-      <div className="lq-card app-stack" style={{ minWidth: 420 }} onClick={(e) => e.stopPropagation()}>
-        <b style={{ fontFamily: 'var(--lq-font-display)', fontSize: 'var(--lq-text-lg)' }}>
-          Кеш · {game.code}
-        </b>
-        {/* Вечер открывают из календаря чаще всего затем, чтобы его запустить,
-            а не переименовать: три входа стоят выше полей. */}
-        <GameLinks code={game.code} />
-        <label className="lq-field">
-          <span className="lq-field__label">Атауы</span>
-          <input className="lq-input" value={title} onChange={(e) => setTitle(e.target.value)} />
-        </label>
-        <label className="lq-field">
-          <span className="lq-field__label">Алаң</span>
-          <select
-            className="lq-input"
-            value={venueId}
-            onChange={(e) => setVenueId(e.target.value)}
-          >
-            <option value="">— таңдалмаған —</option>
-            {view.venues.map((venue) => (
-              <option value={venue.id} key={venue.id}>{venue.name}</option>
-            ))}
-          </select>
-        </label>
-        <label className="lq-field">
-          <span className="lq-field__label">Күні мен уақыты</span>
-          <input
-            className="lq-input"
-            type="datetime-local"
-            value={at}
-            onChange={(e) => setAt(e.target.value)}
-          />
-        </label>
-        {game.plannedAt && (
-          <span className="app-muted" style={{ fontSize: 'var(--lq-text-sm)' }}>
-            Қазір: {dayMonthTime(game.plannedAt)}
-          </span>
-        )}
-
-        <Entry game={game} send={send} />
-        <div className="app-row">
-          <button
-            className="lq-btn"
-            onClick={() => {
-              send({
-                c: 'updateGame',
-                code: game.code,
-                title,
-                venueId: venueId || null,
-                plannedAt: at ? new Date(at).getTime() : null,
-              });
-              onClose();
-            }}
-          >
-            Сақтау
-          </button>
-          <button className="lq-btn lq-btn--ghost" onClick={onClose}>Болдырмау</button>
-          <span className="app-grow" />
-          <button
-            className="lq-btn lq-btn--ghost"
-            onClick={() => {
-              if (confirm(`${game.code} кешін жою керек пе?`)) {
-                send({ c: 'deleteGame', code: game.code });
-                onClose();
-              }
-            }}
-          >
-            Жою
-          </button>
-        </div>
-      </div>
-    </div>
   );
 }

@@ -6,10 +6,11 @@ import { joinUrl } from '../ui.tsx';
 import { GameLinks } from './GameLinks.tsx';
 import { SectionTitle, Stat, toLocalInput } from './shared.tsx';
 import type { AdminView, QuizInfo } from '../../shared/types.ts';
-import type { Send } from './shared.tsx';
+import type { Section, Send } from './shared.tsx';
 
 export function Library(
-  { view, send, onPlanned }: { view: AdminView; send: Send; onPlanned: () => void },
+  { view, send, go }:
+  { view: AdminView; send: Send; go: (section: Section, code?: string) => void },
 ): ReactNode {
   const [planning, setPlanning] = useState<QuizInfo | null>(null);
   return (
@@ -106,7 +107,8 @@ export function Library(
           quiz={planning}
           view={view}
           send={send}
-          onClose={() => { setPlanning(null); onPlanned(); }}
+          go={go}
+          onClose={() => setPlanning(null)}
         />
       )}
     </>
@@ -131,8 +133,11 @@ function Issues({ issues }: { issues: QuizInfo['issues'] }): ReactNode {
 }
 
 function PlanGame(
-  { quiz, view, send, onClose }:
-  { quiz: QuizInfo; view: AdminView; send: Send; onClose: () => void },
+  { quiz, view, send, go, onClose }:
+  {
+    quiz: QuizInfo; view: AdminView; send: Send;
+    go: (section: Section, code?: string) => void; onClose: () => void;
+  },
 ): ReactNode {
   const [title, setTitle] = useState(quiz.title);
   const [venueId, setVenueId] = useState(view.venues[0]?.id ?? '');
@@ -182,6 +187,11 @@ function PlanGame(
             </>
           )}
           <div className="app-row">
+            {createdCode && (
+              <button className="lq-btn" onClick={() => go('game', createdCode)}>
+                Кешті ашу
+              </button>
+            )}
             <button className="lq-btn lq-btn--ghost" onClick={onClose}>Жабу</button>
           </div>
         </div>
