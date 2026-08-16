@@ -92,10 +92,17 @@ say "зависимости (только прод)"
 say "права"
 # Группа livequiz — чтобы служба читала код; три каталога, куда приложение
 # пишет, отдаются группе на запись (setgid, чтобы новые файлы её наследовали).
-chgrp -R livequiz "$APP_DIR"
-chmod -R g+rX "$APP_DIR"
-chmod -R g+w  "$APP_DIR/var" "$APP_DIR/public/media" "$APP_DIR/src/content"
-chmod    g+s  "$APP_DIR/var" "$APP_DIR/public/media" "$APP_DIR/src/content"
+#
+# Рекурсию ограничиваем своими файлами. В var/, public/media/ и src/content/
+# пишет сама служба от пользователя livequiz, а менять группу и права чужого
+# файла может только его владелец или root — сплошной `chgrp -R` спотыкался
+# на снимке игр и валил деплой. Файлам службы это и не нужно: setgid на
+# каталогах отдаёт им нужную группу уже при создании.
+own() { find "$APP_DIR" -user "$(id -un)" -print0 | xargs -0 -r "$@"; }
+own chgrp livequiz
+own chmod g+rX
+chmod g+w "$APP_DIR/var" "$APP_DIR/public/media" "$APP_DIR/src/content"
+chmod g+s "$APP_DIR/var" "$APP_DIR/public/media" "$APP_DIR/src/content"
 
 # ── 4. Перезапуск и проверка ───────────────────────────────────────────────
 say "перезапуск службы"
@@ -124,9 +131,9 @@ say "восстанавливаю предыдущий релиз"
 find "$APP_DIR" -mindepth 1 -maxdepth 1 \
   ! -name var ! -name public ! -name node_modules -exec rm -rf {} +
 tar xzf "$BACKUP_DIR/previous.tar.gz" -C "$APP_DIR"
-chgrp -R livequiz "$APP_DIR"
-chmod -R g+rX "$APP_DIR"
-chmod -R g+w  "$APP_DIR/var" "$APP_DIR/public/media" "$APP_DIR/src/content"
+own chgrp livequiz
+own chmod g+rX
+chmod g+w "$APP_DIR/var" "$APP_DIR/public/media" "$APP_DIR/src/content"
 sudo systemctl restart livequiz
 sleep 3
 if curl -sf --max-time 5 "$HEALTH" >/dev/null 2>&1; then
