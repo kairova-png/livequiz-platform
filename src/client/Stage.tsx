@@ -106,24 +106,126 @@ function Centered({ title, note }: { title: string; note?: string }): ReactNode 
   );
 }
 
+/**
+ * Вступление вечера: пять экранов, которые ведущий листает с пульта.
+ *
+ * Зал сначала понимает, куда попал и как всё устроено, и только потом
+ * достаёт телефоны. Открой вход первым — и половина зала уткнётся в
+ * экраны, пока ведущий читает правила.
+ *
+ * Вход при этом работает с самого начала: тот, кто пришёл по коду с
+ * карточки на столе, не должен упереться в закрытую дверь только потому,
+ * что ведущий ещё не долистал.
+ */
 function Lobby({ view }: { view: StageView }): ReactNode {
+  switch (view.intro.step) {
+    case 0: return <IntroTitle view={view} />;
+    case 1: return <IntroRounds view={view} />;
+    case 2: return <IntroRules view={view} />;
+    case 3: return <IntroJoin view={view} />;
+    default: return <IntroTeams view={view} />;
+  }
+}
+
+/** Титул: чей это вечер и как он называется. */
+function IntroTitle({ view }: { view: StageView }): ReactNode {
   return (
-    <div style={{ display: 'grid', gap: 'var(--lq-space-6)', justifyItems: 'center', textAlign: 'center' }}>
-      <div className="app-stage-label">{view.subtitle} · {view.place}</div>
-      <div style={{ fontFamily: 'var(--lq-font-display)', fontWeight: 900, fontSize: '3.5rem', lineHeight: 1 }}>
+    <div style={{ display: 'grid', gap: 'var(--lq-space-8)', justifyItems: 'center', textAlign: 'center' }}>
+      <div style={{
+        fontFamily: 'var(--lq-font-display)', fontWeight: 900,
+        fontSize: 'clamp(3rem, 9vw, 8rem)', lineHeight: 1,
+      }}>
         {view.title}
       </div>
-      {/* Между кодом и QR нужен зазор шире обычного: у кода огромный кегль
-          и разрядка, и последняя цифра иначе почти касается рамки. */}
+      <div className="app-stage-label" style={{ fontSize: 'var(--lq-text-3xl)' }}>
+        {view.subtitle}
+      </div>
+      {view.intro.author && (
+        <div style={{ fontSize: 'var(--lq-text-2xl)', color: 'var(--lq-stage-ink-2)' }}>
+          {view.intro.author}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Из чего состоит вечер: туры по порядку и где перерывы. */
+function IntroRounds({ view }: { view: StageView }): ReactNode {
+  const breaks = view.intro.rounds.filter((r) => r.break).map((r) => r.no);
+  return (
+    <div style={{ display: 'grid', gap: 'var(--lq-space-6)', justifyItems: 'center' }}>
+      <div style={{
+        fontFamily: 'var(--lq-font-display)', fontWeight: 900,
+        fontSize: 'clamp(2rem, 4vw, 3.4rem)', textAlign: 'center',
+      }}>
+        Сайыс {view.intro.rounds.length} турдан тұрады
+      </div>
+      <div className="app-stack" style={{ gap: 'var(--lq-space-3)', width: 'min(1100px, 84vw)' }}>
+        {view.intro.rounds.map((round) => (
+          <div className="app-row app-intro-round" key={round.no}>
+            <span className="app-intro-no">{round.no}</span>
+            <span className="app-grow">{round.name}</span>
+            <span className="app-muted" style={{ fontSize: 'var(--lq-text-xl)' }}>
+              {round.questions} сұрақ
+            </span>
+          </div>
+        ))}
+      </div>
+      {breaks.length > 0 && (
+        <div className="app-stage-label">
+          {breaks.join(' және ')} турдан кейін үзіліс
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Правила — той игры, в которую здесь действительно играют. */
+function IntroRules({ view }: { view: StageView }): ReactNode {
+  return (
+    <div style={{ display: 'grid', gap: 'var(--lq-space-6)', justifyItems: 'center' }}>
+      <div style={{
+        fontFamily: 'var(--lq-font-display)', fontWeight: 900,
+        fontSize: 'clamp(2rem, 4vw, 3.4rem)',
+      }}>
+        ЖАЛПЫ ЕРЕЖЕЛЕР
+      </div>
+      <ul style={{
+        listStyle: 'none', padding: 0, margin: 0, display: 'grid',
+        gap: 'var(--lq-space-3)', width: 'min(1200px, 86vw)',
+      }}>
+        {view.intro.rules.map((rule) => (
+          <li key={rule} style={{
+            background: 'var(--lq-stage-bg-2)',
+            borderRadius: 'var(--lq-radius-lg)',
+            padding: 'var(--lq-space-4) var(--lq-space-6)',
+            fontSize: 'clamp(1.1rem, 1.9vw, 1.9rem)',
+            lineHeight: 'var(--lq-leading-snug)',
+          }}>
+            {rule}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/** Вход: только код и QR — экран, на который зал наводит камеры. */
+function IntroJoin({ view }: { view: StageView }): ReactNode {
+  return (
+    <div style={{ display: 'grid', gap: 'var(--lq-space-6)', justifyItems: 'center', textAlign: 'center' }}>
+      <div className="app-stage-label" style={{ fontSize: 'var(--lq-text-2xl)' }}>
+        Телефоннан кіріңіз
+      </div>
       <div className="app-row" style={{ gap: 'var(--lq-space-12)', alignItems: 'center' }}>
         <div style={{ display: 'grid', justifyItems: 'center' }}>
           <div className="app-stage-code">{view.code}</div>
           <div className="app-stage-label">ойын коды</div>
         </div>
-        <JoinQr code={view.code} size={220} />
+        <JoinQr code={view.code} size={420} />
       </div>
       <div className="app-stage-label">
-        телефоннан кіріңіз · {joinUrl(view.code).replace(/^https?:\/\//, '')}
+        {joinUrl(view.code).replace(/^https?:\/\//, '')}
       </div>
       <div className="app-row" style={{ justifyContent: 'center' }}>
         <span className="lq-live"><span className="lq-live__dot" />жиналу</span>
@@ -131,16 +233,39 @@ function Lobby({ view }: { view: StageView }): ReactNode {
           {view.teams.length} топ · {view.teams.reduce((n, t) => n + t.members.length, 0)} қатысушы
         </span>
       </div>
-      <div className="app-stage-teams">
-        {view.teams.map((team) => (
-          <span className="app-stage-team" key={team.id}>
-            <span style={{ color: badgeColor(team.badge), display: 'flex' }}>
-              <Emblem badge={team.badge} size={22} />
-            </span>
-            {team.name}
-          </span>
-        ))}
+    </div>
+  );
+}
+
+/** Кто собрался: список растёт вживую, пока зал заходит. */
+function IntroTeams({ view }: { view: StageView }): ReactNode {
+  return (
+    <div style={{ display: 'grid', gap: 'var(--lq-space-6)', justifyItems: 'center' }}>
+      <div style={{
+        fontFamily: 'var(--lq-font-display)', fontWeight: 900,
+        fontSize: 'clamp(2rem, 4vw, 3.4rem)',
+      }}>
+        КОМАНДАЛАР · {view.teams.length}
       </div>
+      {view.teams.length === 0 ? (
+        <div className="app-stage-label">
+          Әзірге ешкім кірген жоқ — код {view.code}
+        </div>
+      ) : (
+        <div className="app-stage-teams">
+          {view.teams.map((team) => (
+            <span className="app-stage-team" key={team.id} style={{ fontSize: 'var(--lq-text-2xl)' }}>
+              <span style={{ color: badgeColor(team.badge), display: 'flex' }}>
+                <Emblem badge={team.badge} size={30} />
+              </span>
+              {team.name}
+              <span className="app-muted" style={{ fontSize: 'var(--lq-text-lg)' }}>
+                {team.members.length}
+              </span>
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

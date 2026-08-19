@@ -80,6 +80,9 @@ export type AdminCommand =
   | { c: 'updateSettings'; patch: Record<string, string | number | boolean> };
 
 export type HostCommand =
+  /** Листать вступление на экране зала: титул → туры → правила → вход. */
+  | { c: 'introNext' }
+  | { c: 'introPrev' }
   | { c: 'openRound' }
   | { c: 'askQuestion' }
   | { c: 'closeQuestion' }

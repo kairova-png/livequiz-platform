@@ -214,6 +214,22 @@ body {
   box-shadow: inset 0 0 0 2px var(--lq-stage-bg-2);
 }
 
+/* Строка тура во вступлении: номер крупно, название читается из зала. */
+.app-intro-round {
+  background: var(--lq-stage-bg-2);
+  border-radius: var(--lq-radius-lg);
+  padding: var(--lq-space-3) var(--lq-space-6);
+  font-size: clamp(1.2rem, 2.2vw, 2.2rem);
+  font-weight: 700;
+}
+.app-intro-no {
+  font-family: var(--lq-font-display);
+  font-weight: 900;
+  font-size: clamp(1.6rem, 2.8vw, 2.8rem);
+  color: var(--lq-accent);
+  min-width: 1.6em;
+}
+
 /* Звуковая волна аудио-тура. Смысл один: в зале что-то играет прямо сейчас. */
 .app-wave {
   display: flex;

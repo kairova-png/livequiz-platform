@@ -89,6 +89,8 @@ export interface Round {
 
 export interface Scenario {
   id: string;
+  /** Кто собрал квиз — его называют на титульном экране вечера. */
+  author?: string;
   /**
    * Служебный квиз: проверка звука, картинок и видео перед вечером.
    * Он не должен подставляться сам — ведущий, открывший кабинет впервые,
@@ -218,6 +220,20 @@ export interface StageView {
   rules: string[];
   teams: Team[];
   round: { no: number; name: string; rules: string[]; count: number } | null;
+  /**
+   * Вступление вечера: экран зала листают с пульта, пока зал рассаживается.
+   * Порядок один и тот же — представиться, показать из чего вечер состоит,
+   * объяснить правила и только потом открыть вход.
+   */
+  intro: {
+    step: number;
+    total: number;
+    author: string;
+    /** Названия туров по порядку и после каких из них перерыв. */
+    rounds: { no: number; name: string; questions: number; break: boolean }[];
+    /** Правила этого вечера — как он идёт здесь, а не в бумажной версии. */
+    rules: string[];
+  };
   question: PublicQuestion | null;
   /** Секунды до конца приёма ответов; null — таймер не идёт. */
   secondsLeft: number | null;
@@ -453,6 +469,8 @@ export interface HostView {
   revealIndex: number;
   scenario: { title: string; rounds: { no: number; name: string; count: number }[] };
   round: Round | null;
+  /** Какой экран вступления сейчас на проекторе — его листает ведущий. */
+  intro: { step: number; total: number };
   question: Question | null;
   secondsLeft: number | null;
   totalSeconds: number;

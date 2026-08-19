@@ -49,6 +49,34 @@ function publicQuestion(game: Game, question: Question | null): PublicQuestion |
   return base;
 }
 
+/**
+ * Правила этого вечера.
+ *
+ * Из сценария они не берутся дословно намеренно: колоды писались под
+ * бумажный квиз, где ответы сдают модератору листами, а телефон запрещён
+ * под угрозой штрафа. Здесь телефон и есть инструмент игры, поэтому зал
+ * должен услышать правила той игры, в которую действительно играет.
+ *
+ * Тай-брейк берём из сценария — это правило вечера, а не платформы.
+ */
+function houseRules(game: Game): string[] {
+  const rules = [
+    'Жауапты капитан жібереді — топтан бір жауап.',
+    'Капитанды топ өзі дауыс беріп ауыстыра алады.',
+    'Сұрақ ашық тұрғанда телефон экранынан кетуге болмайды: 5 секундтан ұзақ '
+      + 'кетсеңіз, топ сол сұрақты жоғалтады.',
+    'Жауапты қабылдау жабылғанша өзгертуге болады.',
+  ];
+  if (game.scenario.rounds.some((r) => r.risk)) {
+    rules.push('«Тәуекел» турында +1 қойсаңыз: дұрыс жауап екі есе, қате жауап −1 ұпай.');
+  }
+  rules.push('Ең көп ұпай жинаған топ жеңеді.');
+  if (game.scenario.tieBreak === 'lastRound') {
+    rules.push('Ұпай тең болса — соңғы турда көп жинаған топ жоғары.');
+  }
+  return rules;
+}
+
 /** Таблица на текущий момент вечера. */
 export function standingsOf(game: Game): Standing[] {
   const played = game.phase === 'final' ? game.scenario.rounds.length : game.roundIndex + 1;
@@ -98,6 +126,18 @@ export function stageView(game: Game): StageView {
     round: round
       ? { no: round.no, name: round.name, rules: round.rules, count: round.questions.length }
       : null,
+    intro: {
+      step: game.introStep,
+      total: 5,
+      author: game.scenario.author ?? '',
+      rounds: game.scenario.rounds.map((r) => ({
+        no: r.no,
+        name: r.name,
+        questions: r.questions.length,
+        break: game.scenario.breakAfterRound.includes(r.no),
+      })),
+      rules: houseRules(game),
+    },
     question,
     secondsLeft: game.secondsLeft(),
     totalSeconds: game.totalSeconds(),
@@ -240,6 +280,7 @@ export function hostView(game: Game): HostView {
       })),
     },
     round,
+    intro: { step: game.introStep, total: 5 },
     question,
     secondsLeft: game.secondsLeft(),
     totalSeconds: game.totalSeconds(),

@@ -47,6 +47,15 @@ export interface Player {
  */
 const AWAY_LIMIT_MS = 5000;
 
+/**
+ * Экранов вступления пять: титул, состав вечера, правила, вход, команды.
+ *
+ * Порядок не случайный: зал сначала понимает, куда попал и как всё
+ * устроено, и только потом достаёт телефоны. Открой вход первым — и
+ * половина зала уткнётся в экраны, пока ведущий читает правила.
+ */
+const INTRO_STEPS = 5;
+
 const DEFAULT_RULES: GameRules = {
   maxTeams: 40,
   maxTeamSize: 6,
@@ -78,6 +87,8 @@ export class Game {
   plannedAt: number | null = null;
 
   phase: Phase = 'lobby';
+  /** Экран вступления, который сейчас на проекторе. Считается с нуля. */
+  introStep = 0;
   roundIndex = 0;
   questionIndex = 0;
   revealIndex = 0;
@@ -271,6 +282,14 @@ export class Game {
   command(command: HostCommand): void {
     const round = this.currentRound();
     switch (command.c) {
+      case 'introNext':
+        this.introStep = Math.min(this.introStep + 1, INTRO_STEPS - 1);
+        break;
+
+      case 'introPrev':
+        this.introStep = Math.max(0, this.introStep - 1);
+        break;
+
       case 'openRound':
         this.push();
         this.phase = 'roundIntro';

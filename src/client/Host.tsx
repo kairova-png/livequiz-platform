@@ -166,6 +166,24 @@ export function Host(): ReactNode {
  * им нужен адрес ноутбука в сети. Проверить это за сорок минут до гостей
  * дешевле, чем обнаружить в момент, когда зал уже достал телефоны.
  */
+/** Как называется каждый шаг вступления — чтобы ведущий знал, что на экране. */
+const INTRO_NAMES = [
+  'Титул',
+  'Турлар',
+  'Ережелер',
+  'Кіру (QR + код)',
+  'Командалар',
+];
+
+/** Что ведущему делать на этом шаге. Подсказка короткая: он читает её со сцены. */
+const INTRO_HINTS = [
+  'Кешті таныстырыңыз.',
+  'Турларды атап шығыңыз.',
+  'Ережелерді оқыңыз — әсіресе экраннан кетуге болмайтынын.',
+  'Зал кодты теруде. Кіру осы экранға дейін де жұмыс істейді.',
+  'Барлығы кіргенше күтіңіз, содан соң «1 турды ашу».',
+];
+
 function LocalOnlyWarning(): ReactNode {
   const local = ['localhost', '127.0.0.1', '::1'].includes(location.hostname);
   if (!local) return null;
@@ -190,6 +208,38 @@ function Main(
     return (
       <>
         <p className="app-host-h">Жиналу</p>
+
+        {/* Вступление листает ведущий: зал смотрит на экран, а очередной
+            шаг знает только он. Кнопки стоят первыми — в эти минуты пульт
+            нужен ровно для этого. */}
+        <div className="lq-card app-stack">
+          <div className="app-row">
+            <b className="app-grow">Зал экраны · {INTRO_NAMES[view.intro.step] ?? '—'}</b>
+            <span className="lq-badge lq-badge--neutral">
+              {view.intro.step + 1} / {view.intro.total}
+            </span>
+          </div>
+          <div className="app-row">
+            <button
+              className="lq-btn lq-btn--ghost"
+              disabled={view.intro.step === 0}
+              onClick={() => send({ c: 'introPrev' })}
+            >
+              ← Артқа
+            </button>
+            <button
+              className="lq-btn lq-btn--lg app-grow"
+              disabled={view.intro.step >= view.intro.total - 1}
+              onClick={() => send({ c: 'introNext' })}
+            >
+              Келесі экран →
+            </button>
+          </div>
+          <span className="app-muted" style={{ fontSize: 'var(--lq-text-sm)' }}>
+            {INTRO_HINTS[view.intro.step] ?? ''}
+          </span>
+        </div>
+
         <div className="lq-card app-stack">
           <b style={{ fontFamily: 'var(--lq-font-display)', fontSize: 'var(--lq-text-2xl)' }}>
             Код {view.code}
