@@ -19,7 +19,7 @@ import * as editor from './editor.ts';
 import { minutesOf, validate } from './editor.ts';
 import type { Game } from './game.ts';
 import { Registry } from './registry.ts';
-import { MIME, sendFile, upload } from './http.ts';
+import { MIME, sendFile, upload, uploads } from './http.ts';
 import { quizInfos, regularTeams, scheduledGames, venueInfos } from './cabinet.ts';
 import { hostView, playerView, report as reportOf, stageView } from './views.ts';
 import { addTeam, join as joinGame, setOnline, setRules } from './participants.ts';
@@ -148,7 +148,12 @@ const server = createServer((req: IncomingMessage, res: ServerResponse) => {
   if (path === '/api/upload' && req.method === 'POST') {
     return upload(req, res, url, PUBLIC, HOST_PIN);
   }
-  if (path.startsWith('/media/') && sendFile(res, PUBLIC, path)) return;
+  if (path === '/api/uploads' && req.method === 'GET') {
+    return uploads(res, url, PUBLIC, HOST_PIN, req.headers['x-host-pin'] as string | undefined);
+  }
+  // Имя файла в адресе закодировано (кириллица, пробелы) — на диске оно
+  // лежит как есть, поэтому перед поиском раскодируем обратно.
+  if (path.startsWith('/media/') && sendFile(res, PUBLIC, decodeSafe(path))) return;
   if (sendFile(res, DIST, path === '/' ? 'index.html' : path)) return;
   // Клиентские маршруты /host, /screen, /admin отдаёт то же приложение.
   if (sendFile(res, DIST, 'index.html')) return;
@@ -543,6 +548,15 @@ wss.on('connection', (socket: WebSocket, req: IncomingMessage) => {
     if (client.surface === 'player' && game) broadcast(game.code);
   });
 });
+
+/** decodeURIComponent, который не роняет сервер на кривом проценте. */
+function decodeSafe(value: string): string {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
 
 /* Тик секунды идёт всем отдельным лёгким сообщением. Полный срез уходит
  * только когда таймер добежал до нуля и приём закрылся сам. */

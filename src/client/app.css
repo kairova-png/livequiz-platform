@@ -543,6 +543,35 @@ button.lq-switch {
 .app-issue[data-level='warn'] { border-color: var(--lq-warning); }
 
 /* ============ Модальное окно кабинета ============ */
+/* Зона, куда кладут файл. Пунктир — обещание: сюда можно перетащить,
+ * а не только выбрать через окно выбора. */
+.app-dropzone {
+  display: grid;
+  gap: var(--lq-space-2);
+  justify-items: center;
+  text-align: center;
+  padding: var(--lq-space-8);
+  border-style: dashed;
+  border-width: 2px;
+  cursor: pointer;
+}
+.app-dropzone[data-over='true'] {
+  border-color: var(--lq-primary);
+  background: var(--lq-primary-soft);
+}
+/* Разбор колоды длинный — держим его в своей рамке, а не растягиваем
+ * страницу кабинета на сотню слайдов. */
+.app-slides {
+  max-height: 46vh;
+  overflow-y: auto;
+  gap: var(--lq-space-2);
+}
+.app-slide {
+  background: var(--lq-surface-2, #F5F5FF);
+  border-radius: var(--lq-radius-md);
+  padding: var(--lq-space-2) var(--lq-space-3);
+}
+
 /* Диалог вместо системного окна: узкая колонка по центру экрана. Шире
  * не нужно — в нём один вопрос и одна строка ввода. */
 .app-dialog {

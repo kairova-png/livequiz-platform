@@ -14,6 +14,7 @@ import { Offline } from './ui.tsx';
 import { Home } from './admin/Home.tsx';
 import { GameScreen } from './admin/GameScreen.tsx';
 import { Library } from './admin/Library.tsx';
+import { Files } from './admin/Files.tsx';
 import { Schedule } from './admin/Schedule.tsx';
 import { Venues } from './admin/Venues.tsx';
 import { Teams } from './admin/Teams.tsx';
@@ -28,6 +29,7 @@ import type { AdminView } from '../shared/types.ts';
 const NAV: { id: Section; label: string }[] = [
   { id: 'home', label: 'Басты бет' },
   { id: 'library', label: 'Кітапхана' },
+  { id: 'files', label: 'Файлдар' },
   { id: 'schedule', label: 'Күнтізбе' },
   { id: 'venues', label: 'Алаңдар' },
   { id: 'teams', label: 'Топтар' },
@@ -150,6 +152,7 @@ export function Admin(): ReactNode {
         {section === 'library' && (view.editing
           ? <Editor view={view} send={send} onClose={() => send({ c: 'openQuiz', id: null })} />
           : <Library view={view} send={send} go={go} />)}
+        {section === 'files' && <Files view={view} />}
         {section === 'schedule' && <Schedule view={view} go={go} />}
         {section === 'game' && (openGame
           ? <GameScreen game={openGame} view={view} send={send} go={go} />
