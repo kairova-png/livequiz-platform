@@ -13,6 +13,34 @@ import { useTitle } from './title.ts';
 import { Board, Emblem, JoinQr, Offline, Shape, TeamBadge, badgeColor, joinUrl, tileClass, tileColor } from './ui.tsx';
 import type { PublicQuestion, RevealView, StageView } from '../shared/types.ts';
 
+/**
+ * Разрешение на звук.
+ *
+ * Браузер не даёт запускать медиа со звуком, пока со страницей никто не
+ * взаимодействовал: иначе любая открытая вкладка начинала бы говорить.
+ * Экран зала как раз открывают и оставляют — поэтому первый же аудио-тур
+ * упирался в запрет, и ведущему приходилось жать «Ойнату» на каждом
+ * вопросе.
+ *
+ * Лечится одним нажатием в начале вечера: короткий беззвучный звук,
+ * запущенный по клику, снимает запрет для всей страницы до её закрытия.
+ */
+async function unlockSound(): Promise<void> {
+  // Тишина длиной в кадр: содержимое неважно, важен сам факт запуска
+  // по жесту человека.
+  const silence = 'data:audio/mp3;base64,'
+    + 'SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tUxAADB'
+    + 'AABpAAAACAAADSAAAAETEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV';
+  const probe = new Audio(silence);
+  probe.volume = 0;
+  try {
+    await probe.play();
+    probe.pause();
+  } catch {
+    // Не вышло — останется запасной путь: кнопка на самом вопросе.
+  }
+}
+
 export function Stage(): ReactNode {
   const fromUrl = new URLSearchParams(location.search).get('code') ?? '';
   const [code, setCode] = useState(fromUrl);
@@ -21,6 +49,15 @@ export function Stage(): ReactNode {
   const game = useGame<StageView>(hello, 'stage/state');
   const seconds = useSmoothSeconds(game.secondsLeft);
   useTitle('Зал экраны', game.view?.code, game.view?.title);
+  const [ready, setReady] = useState(false);
+
+  /* Пока разрешения нет, экран закрыт заставкой: нажатие на неё и есть тот
+   * самый жест. Заодно уводим экран в полный размер — на проекторе адресная
+   * строка не нужна, а второй раз подходить к ноутбуку не придётся. */
+  const openStage = (): void => {
+    void unlockSound().then(() => setReady(true));
+    if (!document.fullscreenElement) void document.documentElement.requestFullscreen().catch(() => {});
+  };
 
   if (!entered || game.denied) {
     return (
@@ -59,6 +96,19 @@ export function Stage(): ReactNode {
       <div className="lq-stage" data-layout={filling ? 'fill' : 'center'}>
         <Body view={game.view} seconds={seconds} />
       </div>
+      {!ready && (
+        <button className="app-stage-gate" onClick={openStage}>
+          <span style={{
+            fontFamily: 'var(--lq-font-display)', fontWeight: 900,
+            fontSize: 'clamp(2rem, 5vw, 4rem)',
+          }}>
+            Экранды бастау
+          </span>
+          <span className="app-stage-label">
+            Дыбыс пен видео өздігінен ойнауы үшін бір рет басыңыз
+          </span>
+        </button>
+      )}
     </div>
   );
 }

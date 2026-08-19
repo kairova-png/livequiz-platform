@@ -214,6 +214,24 @@ body {
   box-shadow: inset 0 0 0 2px var(--lq-stage-bg-2);
 }
 
+/* Заставка экрана зала до первого нажатия. Она же снимает запрет браузера
+ * на звук: без жеста человека медиа не запускается, и аудио-тур молчал бы.
+ * Закрывает экран целиком — промахнуться мимо неё нельзя. */
+.app-stage-gate {
+  position: fixed;
+  inset: 0;
+  z-index: var(--lq-z-modal);
+  display: grid;
+  gap: var(--lq-space-4);
+  place-content: center;
+  justify-items: center;
+  border: 0;
+  cursor: pointer;
+  color: var(--lq-stage-ink);
+  background: var(--lq-stage-bg);
+  font-family: var(--lq-font-ui);
+}
+
 /* Строка тура во вступлении: номер крупно, название читается из зала. */
 .app-intro-round {
   background: var(--lq-stage-bg-2);
