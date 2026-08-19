@@ -12,7 +12,10 @@
 
 import { useEffect, useState, type ReactNode } from 'react';
 import { SectionTitle, Empty } from './shared.tsx';
-import { listUploads, uploadFile, type SlideOutline, type StoredFile } from './upload.ts';
+import {
+  importDeck, listUploads, uploadFile,
+  type ImportResult, type SlideOutline, type StoredFile,
+} from './upload.ts';
 import type { AdminView } from '../../shared/types.ts';
 
 const ACCEPT = '.pptx,.pdf,.png,.jpg,.jpeg,.webp,.mp3,.mp4';
@@ -63,6 +66,8 @@ export function Files({ view }: { view: AdminView }): ReactNode {
   const [progress, setProgress] = useState<{ name: string; sent: number; total: number } | null>(null);
   const [queue, setQueue] = useState({ done: 0, total: 0 });
   const [error, setError] = useState('');
+  const [imported, setImported] = useState<ImportResult | null>(null);
+  const [importing, setImporting] = useState('');
 
   const refresh = (id: string): void => {
     if (!id) return;
@@ -151,6 +156,32 @@ export function Files({ view }: { view: AdminView }): ReactNode {
 
       {error && <div className="lq-toast lq-toast--danger">{error}</div>}
 
+      {imported && (
+        <div className="lq-card app-stack" style={{ marginTop: 'var(--lq-space-4)', borderColor: 'var(--lq-success)' }}>
+          <div className="app-row">
+            <b className="app-grow">Квиз жиналды · {imported.title}</b>
+            <span className="lq-badge lq-badge--success">
+              {imported.rounds} тур · {imported.questions} сұрақ
+            </span>
+            <button className="lq-btn lq-btn--quiet" onClick={() => setImported(null)}>Жабу</button>
+          </div>
+          <span className="app-muted" style={{ fontSize: 'var(--lq-text-sm)' }}>
+            {imported.mediaFiles} медиафайл көшірілді. Квиз кітапханада — тексеріп,
+            қажет жерін өңдеңіз.
+          </span>
+          {imported.warnings.length > 0 && (
+            <div className="app-stack" style={{ gap: 4 }}>
+              <b style={{ fontSize: 'var(--lq-text-sm)' }}>
+                Тексеруді қажет ететін орындар · {imported.warnings.length}
+              </b>
+              {imported.warnings.map((w) => (
+                <div className="app-muted" key={w} style={{ fontSize: 'var(--lq-text-sm)' }}>⚠️ {w}</div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       {slides && (
         <div className="lq-card app-stack" style={{ marginTop: 'var(--lq-space-4)' }}>
           <div className="app-row">
@@ -194,12 +225,31 @@ export function Files({ view }: { view: AdminView }): ReactNode {
       ) : (
         <div className="app-stack">
           {files.map((file) => (
-            <div className="lq-card app-row" key={file.path}>
+            <div className="lq-card app-row" key={file.path} style={{ flexWrap: 'wrap' }}>
               <span className="lq-badge lq-badge--neutral">{file.kind || '—'}</span>
               <a className="app-grow" href={file.path} target="_blank" rel="noreferrer">
                 {file.name}
               </a>
               <span className="app-muted">{human(file.size)}</span>
+              {/* Из колоды можно собрать квиз: туры, вопросы, ответы и медиа
+                  берутся прямо из неё, а спорные места помечаются. */}
+              {file.kind === 'pptx' && (
+                <button
+                  className="lq-btn lq-btn--quiet"
+                  disabled={Boolean(importing)}
+                  onClick={() => {
+                    setError('');
+                    setImporting(file.path);
+                    const title = file.name.replace(/^[a-z0-9]+-/i, '').replace(/\.pptx$/i, '');
+                    void importDeck(file.path, title)
+                      .then((result) => { setImported(result); setSlides(null); })
+                      .catch((e: Error) => setError(`${file.name}: ${e.message}`))
+                      .finally(() => setImporting(''));
+                  }}
+                >
+                  {importing === file.path ? 'Жиналуда…' : 'Квиз жинау'}
+                </button>
+              )}
             </div>
           ))}
         </div>

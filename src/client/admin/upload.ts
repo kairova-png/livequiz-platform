@@ -115,3 +115,28 @@ export async function listUploads(quizId: string): Promise<StoredFile[]> {
   if (!response.ok) throw new Error(body.error ?? 'Тізім алынбады');
   return body.files ?? [];
 }
+
+export interface ImportResult {
+  id: string;
+  title: string;
+  rounds: number;
+  questions: number;
+  mediaFiles: number;
+  /** Места, где разбор не был уверен: их нужно проверить в редакторе. */
+  warnings: string[];
+}
+
+/** Собирает квиз из уже загруженной колоды — файл заново не отправляется. */
+export async function importDeck(path: string, title: string): Promise<ImportResult> {
+  const url = `/api/import?path=${encodeURIComponent(path)}&title=${encodeURIComponent(title)}`;
+  const response = await fetch(url, { method: 'POST', headers: { 'x-host-pin': pin } });
+  const text = await response.text();
+  let body: Partial<ImportResult> & { error?: string };
+  try {
+    body = JSON.parse(text) as Partial<ImportResult> & { error?: string };
+  } catch {
+    throw new Error(`Сервер жауабы түсініксіз (${response.status})`);
+  }
+  if (!response.ok || !body.id) throw new Error(body.error ?? 'Импорт сәтсіз');
+  return body as ImportResult;
+}

@@ -9,7 +9,7 @@ import { createServer, type IncomingMessage, type ServerResponse } from 'node:ht
 import {
   existsSync, mkdirSync, readFileSync, renameSync, writeFileSync,
 } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { join, normalize, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { WebSocketServer, type WebSocket } from 'ws';
 
@@ -20,6 +20,7 @@ import { minutesOf, validate } from './editor.ts';
 import type { Game } from './game.ts';
 import { Registry } from './registry.ts';
 import { MIME, sendFile, upload, uploads } from './http.ts';
+import { importPresentation } from './import-pptx.ts';
 import { quizInfos, regularTeams, scheduledGames, venueInfos } from './cabinet.ts';
 import { hostView, playerView, report as reportOf, stageView } from './views.ts';
 import { addTeam, join as joinGame, setOnline, setRules } from './participants.ts';
@@ -147,6 +148,46 @@ const server = createServer((req: IncomingMessage, res: ServerResponse) => {
   }
   if (path === '/api/upload' && req.method === 'POST') {
     return upload(req, res, url, PUBLIC, HOST_PIN);
+  }
+  /* Сборка квиза из уже загруженной колоды. Файл не присылают заново:
+   * он лежит в медиа вечера, а по сети идти второй раз сотне мегабайт
+   * незачем. */
+  if (path === '/api/import' && req.method === 'POST') {
+    const reply = (status: number, body: unknown): void => {
+      res.writeHead(status, { 'content-type': MIME['.json'] });
+      res.end(JSON.stringify(body));
+    };
+    if (req.headers['x-host-pin'] !== HOST_PIN) return reply(403, { error: 'PIN дұрыс емес' });
+
+    const from = decodeSafe(url.searchParams.get('path') ?? '');
+    if (!from.startsWith('/media/') || !from.toLowerCase().endsWith('.pptx')) {
+      return reply(400, { error: 'Тек жүктелген .pptx файлын импорттауға болады' });
+    }
+    const file = join(PUBLIC, normalize(from).replace(/^(\.\.[/\\])+/, ''));
+    if (!existsSync(file)) return reply(404, { error: 'Файл табылмады' });
+
+    const stamp = Date.now().toString(36);
+    const id = `import-${stamp}`;
+    try {
+      const report = importPresentation(readFileSync(file), {
+        id,
+        title: (url.searchParams.get('title') || 'Импортталған квиз').slice(0, 120),
+        mediaDir: join(PUBLIC, 'media', id),
+        mediaUrl: `/media/${id}`,
+      });
+      const quiz = registry.addQuiz(report.scenario);
+      broadcast();
+      return reply(200, {
+        id: quiz.id,
+        title: quiz.title,
+        rounds: quiz.rounds.length,
+        questions: quiz.rounds.reduce((n, r) => n + r.questions.length, 0),
+        mediaFiles: report.mediaFiles,
+        warnings: report.warnings,
+      });
+    } catch (error) {
+      return reply(500, { error: `Импорт сәтсіз: ${(error as Error).message}` });
+    }
   }
   if (path === '/api/uploads' && req.method === 'GET') {
     return uploads(res, url, PUBLIC, HOST_PIN, req.headers['x-host-pin'] as string | undefined);

@@ -350,6 +350,9 @@ function MatchAnswer(
         {(question.options ?? []).map((option, i) => (
           <div className="app-option" key={option.key}>
             {option.image && <img src={option.image} alt="" />}
+            {!option.image && option.text && (
+              <span style={{ fontSize: 'var(--lq-text-sm)' }}>{option.text}</span>
+            )}
             <b style={{ color: tileColor(i) }}>{option.key}</b>
           </div>
         ))}

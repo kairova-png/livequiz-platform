@@ -15,6 +15,12 @@ interface Explained {
   note?: string;
   images?: string[];
   audio?: string;
+  /**
+   * Видео самого вопроса: в турах вроде «Ұстаздан сұрақ» вопрос задаёт
+   * приглашённый гость с экрана, и текста у такого вопроса нет вовсе.
+   * Не путать с `answerVideo` — тот идёт при вскрытии.
+   */
+  video?: string;
   /** Отрывок трека для зала, в секундах. Целиком играть незачем. */
   audioStart?: number;
   audioEnd?: number;
@@ -38,7 +44,12 @@ export interface MatchQuestion extends Explained {
   kind: 'match';
   text: string;
   items: string[];
-  options: { key: OptionKey; image: string }[];
+  /**
+   * Вариант — картинка или подпись. Флаги стран рисуют, а «Сира кітаптарын
+   * авторымен сәйкестендір» пишут словами: колоды бывают и такими, и
+   * запрещать текст значило бы терять вопрос при импорте.
+   */
+  options: { key: OptionKey; image?: string; text?: string }[];
   correct: OptionKey[];
   answerImages?: string[];
   answerVideo?: string;
@@ -233,6 +244,7 @@ export interface PublicQuestion {
   items?: string[];
   images?: string[];
   audio?: string;
+  video?: string;
   audioStart?: number;
   audioEnd?: number;
   risk: boolean;

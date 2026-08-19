@@ -222,6 +222,11 @@ function Asking({ view, seconds }: { view: StageView; seconds: number | null }):
               <div className="app-option" key={option.key}>
                 {option.image && <img src={option.image} alt="" />}
                 <b style={{ color: tileColor(i), fontSize: 'var(--lq-text-2xl)' }}>{option.key}</b>
+                {/* Вариант без картинки — подписью: соответствие бывает
+                    и словесным, и тогда показывать нечего, кроме буквы. */}
+                {!option.image && option.text && (
+                  <span style={{ fontSize: 'var(--lq-text-xl)' }}>{option.text}</span>
+                )}
               </div>
             ))}
           </div>
@@ -276,8 +281,17 @@ function Answered({ view }: { view: StageView }): ReactNode {
   );
 }
 
-/** Картинки вопроса и признак того, что в зале звучит отрывок. */
+/** Картинки вопроса, ролик гостя и признак того, что в зале звучит отрывок. */
 function QuestionMedia({ question }: { question: PublicQuestion }): ReactNode {
+  /* Вопрос, заданный с экрана: в таких турах гость задаёт его сам, и
+   * ролик — это и есть вопрос, а не иллюстрация к нему. */
+  if (question.video) {
+    return (
+      <div className="app-stage-media" style={{ flexDirection: 'column' }}>
+        <RevealVideo src={question.video} />
+      </div>
+    );
+  }
   if (question.audio) {
     return (
       <div className="app-stage-media" style={{ flexDirection: 'column' }}>

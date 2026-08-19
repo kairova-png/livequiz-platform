@@ -32,6 +32,7 @@ function publicQuestion(game: Game, question: Question | null): PublicQuestion |
     points: round?.points ?? 1,
     images: question.images,
     audio: question.audio,
+    video: question.video,
     audioStart: question.audioStart,
     audioEnd: question.audioEnd,
   };

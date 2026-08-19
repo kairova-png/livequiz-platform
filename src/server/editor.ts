@@ -281,9 +281,9 @@ export function validate(quiz: Scenario): QuizIssue[] {
             roundId: round.id, questionId: question.id,
           });
         }
-        if (question.options.some((o) => !o.image)) {
+        if (question.options.some((o) => !o.image && !o.text?.trim())) {
           issues.push({
-            level: 'block', message: `${at}: барлық нұсқаға сурет керек.`,
+            level: 'block', message: `${at}: әр нұсқада сурет не мәтін болуы керек.`,
             roundId: round.id, questionId: question.id,
           });
         }

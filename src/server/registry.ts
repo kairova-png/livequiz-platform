@@ -62,6 +62,21 @@ export class Registry {
     if (quiz) saveQuiz(quiz, this.quizFile(id));
   }
 
+  /**
+   * Кладёт готовый сценарий в библиотеку — так приходит квиз, собранный
+   * из презентации. Идентификатор при совпадении разводится суффиксом:
+   * колоду нередко перезаливают исправленной, и затирать прежний разбор
+   * молча нельзя — по нему могли уже запланировать вечер.
+   */
+  addQuiz(scenario: Scenario): Scenario {
+    let id = scenario.id;
+    for (let n = 2; this.quizzes.has(id); n += 1) id = `${scenario.id}-${n}`;
+    const stored = { ...scenario, id };
+    this.quizzes.set(id, stored);
+    this.persistQuiz(id);
+    return stored;
+  }
+
   createQuiz(title: string): Scenario {
     const id = quizId(title, new Set(this.quizzes.keys()));
     const quiz = emptyQuiz(id, title.trim().slice(0, 120) || id);
@@ -202,7 +217,8 @@ function countMedia(scenario: Scenario): number {
   for (const round of scenario.rounds) {
     for (const question of round.questions) {
       if (question.kind === 'match') {
-        for (const option of question.options) files.add(option.image);
+        // Вариант может быть подписью, а не картинкой — считаем только файлы.
+        for (const option of question.options) if (option.image) files.add(option.image);
       }
       if (question.kind === 'text') {
         for (const image of question.images ?? []) files.add(image);
