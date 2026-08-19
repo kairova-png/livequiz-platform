@@ -20,13 +20,14 @@ export function CodeGate(
     <div className="app-player">
       <div className="lq-player">
         <div className="lq-player__wait">
-          <h2>NARYN CUP</h2>
-          <p>Экрандағы ойын кодын енгізіңіз</p>
+          <h2>livequiz</h2>
+          <p>Зал экранындағы 6 саннан тұратын кодты теріңіз</p>
           <input
             className="lq-input"
             inputMode="numeric"
             autoFocus
             maxLength={6}
+            placeholder="000000"
             value={code}
             onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
             style={{
@@ -112,12 +113,16 @@ export function JoinForm(
               value={name}
               maxLength={40}
               autoFocus
+              placeholder="Мысалы: Айдар"
               onChange={(e) => setName(e.target.value)}
-              style={{ minHeight: 56, fontSize: 'var(--lq-text-lg)', fontWeight: 600 }}
+              style={{
+                minHeight: 56, fontSize: 'var(--lq-text-lg)', fontWeight: 600,
+                textAlign: 'center',
+              }}
             />
           </label>
           <p className="app-muted" style={{ margin: 0, fontSize: 'var(--lq-text-sm)' }}>
-            Атыңызды тобыңыз бен жүргізуші көреді. Экранда тек топтың атауы шығады.
+            Атыңызды тобыңыз бен жүргізуші көреді. Зал экранында тек топтың атауы шығады.
           </p>
           <div className="lq-player__answers">
             <button
@@ -144,10 +149,20 @@ export function JoinForm(
               value={newTeam}
               maxLength={40}
               autoFocus
+              placeholder="Мысалы: Мақат ауданы"
               onChange={(e) => setNewTeam(e.target.value)}
-              style={{ minHeight: 56, fontSize: 'var(--lq-text-lg)', fontWeight: 600 }}
+              style={{
+                minHeight: 56, fontSize: 'var(--lq-text-lg)', fontWeight: 600,
+                textAlign: 'center',
+              }}
             />
           </label>
+          {/* Стол садится по одному, и остальные должны найти именно эту
+              строку в списке: название придумывают вслух, а не про себя. */}
+          <p className="app-muted" style={{ margin: 0, fontSize: 'var(--lq-text-sm)' }}>
+            Бұл атауды үстеліңіздегілерге дауыстап айтыңыз — олар тізімнен
+            дәл осы топты таңдап кіреді.
+          </p>
 
           <div className="app-stack" style={{ gap: 'var(--lq-space-2)' }}>
             <span className="lq-field__label">Топтың белгісі</span>

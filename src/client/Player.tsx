@@ -24,6 +24,24 @@ export function Player(): ReactNode {
     : null;
   const game = useGame<PlayerView>(hello, 'player/state');
   const seconds = useSmoothSeconds(game.secondsLeft);
+
+  /* Честная игра: телефон сообщает, что экран скрылся и что вернулся.
+   *
+   * Считает время сервер — часы клиента и его совесть принадлежат тому,
+   * кого мы проверяем. Отсюда уходит только факт события.
+   *
+   * `visibilitychange` — единственный надёжный сигнал: он ловит и уход в
+   * другое приложение, и сворачивание браузера, и погасший экран. */
+  const joined = game.view?.joined ?? false;
+  useEffect(() => {
+    if (!joined) return undefined;
+    const tell = (): void => {
+      game.send({ t: 'player/visibility', hidden: document.hidden });
+    };
+    document.addEventListener('visibilitychange', tell);
+    return () => document.removeEventListener('visibilitychange', tell);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [joined]);
   // Своя команда в заголовке: телефон лежит на столе среди чужих таких же.
   useTitle(
     game.view?.teams.find((t) => t.id === game.view?.me?.teamId)?.name ?? 'Қатысушы',
@@ -143,19 +161,59 @@ function Stage(
               </span>
             </div>
             {/* Состав виден каждому: за столом должно быть понятно, все ли
-                вошли, до того как ведущий начнёт. */}
+                вошли, до того как ведущий начнёт. Здесь же выбирают
+                капитана — того, кто будет сдавать ответ за стол. */}
             <div className="app-stack" style={{ gap: 6 }}>
-              {(team?.members ?? []).map((member, i) => (
-                <div className="app-row" key={`${member}-${i}`}>
-                  <span className="lq-avatar">{member.slice(0, 1).toUpperCase()}</span>
-                  <span className="app-grow">{member}</span>
-                  {member === view.me?.name && (
-                    <span className="lq-badge lq-badge--neutral">бұл сіз</span>
-                  )}
+              {view.teammates.map((mate) => (
+                <div className="app-row" key={mate.memberId}>
+                  <span className="lq-avatar">{mate.name.slice(0, 1).toUpperCase()}</span>
+                  <span className="app-grow">
+                    {mate.name}
+                    {!mate.online && <span className="app-muted"> · желіде емес</span>}
+                  </span>
+                  {mate.isMe && <span className="lq-badge lq-badge--neutral">бұл сіз</span>}
+                  {mate.isCaptain
+                    ? <span className="lq-badge">капитан</span>
+                    : (
+                      <button
+                        className="lq-btn lq-btn--quiet"
+                        style={{ minHeight: 34 }}
+                        onClick={() => send({ t: 'player/voteCaptain', memberId: mate.memberId })}
+                      >
+                        капитан ету{mate.votes > 0 ? ` · ${mate.votes}` : ''}
+                      </button>
+                    )}
                 </div>
               ))}
             </div>
+            {view.teammates.length > 1 && (
+              <span className="app-muted" style={{ fontSize: 'var(--lq-text-sm)' }}>
+                Жауапты капитан жібереді. Ауыстыру үшін {view.votesNeeded} дауыс керек.
+              </span>
+            )}
           </div>
+
+          {/* Стол собирается по одному: тому, кто завёл команду, нужно
+              позвать своих — иначе они заведут второй такой же стол. */}
+          {view.teammates.length === 1 && (
+            <div className="lq-card app-stack">
+              <b>Үстеліңіздегілерді шақырыңыз</b>
+              <span className="app-muted" style={{ fontSize: 'var(--lq-text-sm)' }}>
+                Оларға айтыңыз: экрандағы кодпен кіріп, тізімнен
+                <b> «{team?.name}» </b> тобын таңдасын. Сонда бәріңіз бір үстелде боласыз.
+              </span>
+              <div className="app-row">
+                <span className="lq-badge lq-badge--neutral">ойын коды</span>
+                <b style={{
+                  fontFamily: 'var(--lq-font-display)',
+                  fontSize: 'var(--lq-text-2xl)',
+                  letterSpacing: '.1em',
+                }}>
+                  {view.code}
+                </b>
+              </div>
+            </div>
+          )}
           <p className="app-muted" style={{ margin: 0 }}>
             Жүргізушіні күтеміз. Ойын оның пультінен басталады — экран өзі жаңарады.
           </p>
@@ -213,7 +271,7 @@ function Answering(
   const current = view.teamAnswer;
   // Отправляет капитан; если капитана почему-то нет, право у всех — стол
   // не должен остаться без ответа из-за пустого поля в состоянии.
-  const mine = view.captain?.isMe ?? true;
+  const mine = (view.captain?.isMe ?? true) && !view.flagged;
   const [text, setText] = useState('');
   const [match, setMatch] = useState<(OptionKey | null)[]>([]);
   const [risk, setRisk] = useState(false);
@@ -248,6 +306,21 @@ function Answering(
       <p style={{ margin: 0, fontWeight: 700, fontSize: 'var(--lq-text-lg)' }}>
         {question.text}
       </p>
+
+      {/* Античит сработал: объясняем прямо, что случилось и что дальше.
+          Молчаливо отключённые кнопки читаются как поломка. */}
+      {view.flagged && (
+        <div className="lq-card app-stack" style={{
+          background: 'var(--lq-danger)', color: '#fff', margin: 0,
+        }}>
+          <b>Бұл сұрақ есептелмейді</b>
+          <span style={{ fontSize: 'var(--lq-text-sm)' }}>
+            {view.flagged.by} сұрақ қабылданып жатқанда экраннан
+            {' '}{view.flagged.seconds} секунд кетті. Келесі сұрақтан бастап
+            топ қайта ойнайды.
+          </span>
+        </div>
+      )}
 
       {error && <div className="lq-toast lq-toast--danger">{error}</div>}
 

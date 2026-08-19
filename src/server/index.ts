@@ -23,7 +23,7 @@ import { MIME, sendFile, upload, uploads } from './http.ts';
 import { importPresentation } from './import-pptx.ts';
 import { quizInfos, regularTeams, scheduledGames, venueInfos } from './cabinet.ts';
 import { hostView, playerView, report as reportOf, stageView } from './views.ts';
-import { addTeam, join as joinGame, setOnline, setRules } from './participants.ts';
+import { addTeam, join as joinGame, setOnline, setRules, voteCaptain } from './participants.ts';
 import {
   Guard, clientIp, pinMatches, sleep, type ConnectionGuard,
 } from './guard.ts';
@@ -543,6 +543,22 @@ wss.on('connection', (socket: WebSocket, req: IncomingMessage) => {
           send(client, { t: 'error', message: String((error as Error).message) });
         }
         broadcast();
+        break;
+      }
+
+      case 'player/voteCaptain': {
+        const game = gameOf(client);
+        if (!game || !client.sessionId) return;
+        voteCaptain(game, client.sessionId, message.memberId);
+        broadcast(game.code);
+        break;
+      }
+
+      case 'player/visibility': {
+        const game = gameOf(client);
+        if (!game || !client.sessionId) return;
+        game.visibility(client.sessionId, message.hidden);
+        broadcast(game.code);
         break;
       }
 

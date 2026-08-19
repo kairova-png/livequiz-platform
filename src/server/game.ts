@@ -17,14 +17,35 @@ import { addTeam, admit, movePlayer, reject, setCaptain, setRules, syncTeamMembe
 
 export interface Player {
   sessionId: string;
+  /**
+   * Публичный номер участника внутри вечера.
+   *
+   * Нужен для голосования за капитана: телефонам приходит список стола, и
+   * голосуют они за конкретного человека. Отдавать наружу `sessionId`
+   * нельзя — им же участник и представляется серверу, то есть, узнав
+   * чужой, можно ответить за соседа.
+   */
+  memberId: string;
   name: string;
   teamId: string | null;
   online: boolean;
+  /** Когда телефон ушёл с экрана. null — экран открыт. */
+  hiddenSince?: number | null;
   /** Заявка ждёт решения ведущего: вечер уже начался, вход закрыт. */
   pending?: boolean;
   /** В какую команду просится — до одобрения он в неё не входит. */
   wants?: string | null;
 }
+
+/**
+ * Сколько прощается уходу с экрана.
+ *
+ * Пять секунд — это уведомление, входящий звонок, случайное касание
+ * кнопки. За поиском ответа столько не сходишь, а погасший сам экран
+ * телефон сообщает тем же событием, что и уход в браузер, — поэтому
+ * порог нужен обязательно, иначе платил бы каждый второй стол.
+ */
+const AWAY_LIMIT_MS = 5000;
 
 const DEFAULT_RULES: GameRules = {
   maxTeams: 40,
@@ -68,6 +89,8 @@ export class Game {
   teams: Team[] = [];
   players = new Map<string, Player>();
   answers: Answer[] = [];
+  /** Команды, потерявшие вопрос: ушли с экрана во время приёма. */
+  flags: { teamId: string; questionId: string; by: string; seconds: number }[] = [];
   adjustments: Adjustment[] = [];
   private history: Snapshot[] = [];
 
@@ -81,6 +104,67 @@ export class Game {
     this.quizId = scenario.id;
     this.createdAt = Date.now();
     this.title = scenario.title;
+  }
+
+  /* --- Честная игра ---------------------------------------------------- */
+
+  /**
+   * Телефон ушёл с экрана или вернулся.
+   *
+   * Единственное, что браузер сообщает надёжно, — «страница больше не
+   * видна». Что человек открыл вместо неё, узнать нельзя, и заглянувший
+   * в уведомление ничем не отличается от полезшего в поиск. Поэтому
+   * порог: короткий уход прощается, долгий во время открытого приёма
+   * стоит команде вопроса.
+   *
+   * Считает сервер, а не телефон: часы клиента и его совесть под
+   * контролем того, кого мы проверяем.
+   */
+  visibility(sessionId: string, hidden: boolean): void {
+    const player = this.players.get(sessionId);
+    if (!player) return;
+
+    if (hidden) {
+      player.hiddenSince = Date.now();
+      return;
+    }
+
+    const since = player.hiddenSince ?? null;
+    player.hiddenSince = null;
+    if (since === null) return;
+    this.noteAway(player, Date.now() - since);
+  }
+
+  /** Закрывает вопрос для тех, кто так и не вернулся к его концу. */
+  sweepHidden(): void {
+    const now = Date.now();
+    for (const player of this.players.values()) {
+      if (player.hiddenSince) this.noteAway(player, now - player.hiddenSince);
+    }
+  }
+
+  private noteAway(player: Player, away: number): void {
+    if (this.phase !== 'asking' || !player.teamId) return;
+    if (away < AWAY_LIMIT_MS) return;
+    const question = this.currentQuestion();
+    if (!question) return;
+    if (this.isFlagged(player.teamId, question.id)) return;
+
+    this.flags.push({
+      teamId: player.teamId,
+      questionId: question.id,
+      by: player.name,
+      seconds: Math.round(away / 1000),
+    });
+    /* Ответ, уже сданный этой командой, снимается: иначе достаточно было
+     * бы ответить наугад, уйти за ответом и вернуться с исправлением. */
+    this.answers = this.answers.filter(
+      (a) => !(a.teamId === player.teamId && a.questionId === question.id),
+    );
+  }
+
+  isFlagged(teamId: string, questionId: string): boolean {
+    return this.flags.some((f) => f.teamId === teamId && f.questionId === questionId);
   }
 
   /* --- Ответ команды -------------------------------------------------- */
@@ -106,6 +190,10 @@ export class Game {
     }
     const question = this.currentQuestion();
     if (!question || question.id !== questionId) return 'Басқа сұрақ';
+    // Команда потеряла этот вопрос: кто-то за столом уходил с экрана.
+    if (this.isFlagged(player.teamId, questionId)) {
+      return 'Бұл сұраққа жауап беру мүмкін емес: біреу экраннан кетті';
+    }
     if (this.deadline !== null && Date.now() > this.deadline) return 'Уақыт бітті';
 
     const round = this.currentRound();
@@ -173,6 +261,7 @@ export class Game {
   tickExpired(): boolean {
     if (this.phase !== 'asking' || this.deadline === null || this.paused) return false;
     if (Date.now() < this.deadline) return false;
+    this.sweepHidden();
     this.push();
     this.phase = 'closed';
     this.stopTimer();
@@ -195,6 +284,9 @@ export class Game {
         break;
 
       case 'closeQuestion':
+        // Ушедший и не вернувшийся к гонгу — тот же случай, что вернувшийся
+        // поздно: сигнал о возвращении может уже не прийти.
+        this.sweepHidden();
         this.push();
         this.phase = 'closed';
         this.stopTimer();

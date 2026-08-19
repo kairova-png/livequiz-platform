@@ -21,6 +21,10 @@ export type ClientMessage =
   }
   | { t: 'player/answer'; questionId: string; value: OptionKey | OptionKey[] | string; risk: boolean }
   | { t: 'player/leave' }
+  /** Голос за нового капитана: публичный номер участника, не sessionId. */
+  | { t: 'player/voteCaptain'; memberId: string }
+  /** Экран телефона скрыт или снова виден — считает время сервер. */
+  | { t: 'player/visibility'; hidden: boolean }
   | { t: 'stage/hello'; code: string }
   | { t: 'host/hello'; pin: string; code?: string }
   | { t: 'host/command'; command: HostCommand }

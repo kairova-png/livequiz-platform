@@ -40,6 +40,12 @@ export function joinBlock(
   return null;
 }
 
+/** Публичный номер участника: короткий, свой в пределах вечера. */
+function memberId(game: Game): string {
+  const used = new Set([...game.players.values()].map((p) => p.memberId));
+  for (let i = 1; ; i += 1) if (!used.has(`m${i}`)) return `m${i}`;
+}
+
 /** Наименьший незанятый номер значка. */
 function freeBadge(game: Game): number {
   const used = new Set(game.teams.map((team) => team.badge));
@@ -90,6 +96,47 @@ function ensureCaptain(game: Game, team: Team): void {
   team.captainName = next?.name ?? '';
 }
 
+/**
+ * Голосование за капитана.
+ *
+ * Ответ за стол сдаёт один человек, и решать, кто именно, должен стол, а
+ * не ведущий: у капитана садится телефон, он уходит курить, он просто
+ * медленнее всех печатает. Дёргать из-за этого ведущего посреди тура —
+ * лишний повод остановить вечер.
+ *
+ * Нужно большинство: перевес в один голос при двух проголосовавших из
+ * шести не должен отбирать пульт у работающего капитана.
+ *
+ * Голос переносится: передумал — нажал другого, прежний голос снят.
+ */
+export function voteCaptain(game: Game, sessionId: string, memberId: string): void {
+  const voter = game.players.get(sessionId);
+  if (!voter?.teamId || voter.pending) return;
+  const team = game.teams.find((t) => t.id === voter.teamId);
+  if (!team) return;
+
+  const members = [...game.players.values()]
+    .filter((p) => p.teamId === team.id && !p.pending);
+  const target = members.find((p) => p.memberId === memberId);
+  if (!target) return;
+
+  team.votes = { ...team.votes, [voter.memberId]: memberId };
+
+  // Считаем только голоса тех, кто ещё за этим столом.
+  const alive = new Set(members.map((p) => p.memberId));
+  const counted = Object.entries(team.votes).filter(([from, to]) => alive.has(from) && alive.has(to));
+  team.votes = Object.fromEntries(counted);
+
+  const forTarget = counted.filter(([, to]) => to === memberId).length;
+  if (forTarget * 2 > members.length) {
+    team.captain = target.sessionId;
+    team.captainName = target.name;
+    // Выборы закончились — счётчик обнуляется, иначе прежние голоса
+    // переизбирали бы того же человека при каждом входе новичка.
+    team.votes = {};
+  }
+}
+
 /** Ведущий назначает капитана сам: за столом виднее, у кого телефон живой. */
 export function setCaptain(game: Game, teamId: string, sessionId: string): void {
   const team = game.teams.find((t) => t.id === teamId);
@@ -97,6 +144,7 @@ export function setCaptain(game: Game, teamId: string, sessionId: string): void 
   if (!team || !player || player.teamId !== teamId || player.pending) return;
   team.captain = sessionId;
   team.captainName = player.name;
+  team.votes = {};
 }
 
 /** Команда, заведённая ведущим заранее. */
@@ -120,7 +168,7 @@ export function join(
    * ведущего. Заявка ждёт на пульте, участник видит, что она отправлена. */
   if (started(game) && !game.rules.allowLateJoin) {
     game.players.set(sessionId, {
-      sessionId, name: clean, teamId: null, online: true,
+      sessionId, memberId: memberId(game), name: clean, teamId: null, online: true,
       pending: true, wants: teamId ?? newTeam,
     });
     syncTeamMembers(game);
@@ -131,7 +179,7 @@ export function join(
     ? game.teams.find((t) => t.id === teamId)
     : makeTeam(game, newTeam ?? '', sessionId, badge);
   game.players.set(sessionId, {
-    sessionId, name: clean, teamId: team?.id ?? null, online: true,
+    sessionId, memberId: memberId(game), name: clean, teamId: team?.id ?? null, online: true,
   });
   syncTeamMembers(game);
   return null;

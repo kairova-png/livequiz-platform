@@ -156,6 +156,35 @@ export function playerView(game: Game, sessionId: string): PlayerView {
       if (!team) return null;
       return { name: team.captainName, isMe: team.captain === sessionId };
     })(),
+    teammates: (() => {
+      const team = game.teams.find((t) => t.id === player?.teamId);
+      if (!team) return [];
+      const votes = team.votes ?? {};
+      return [...game.players.values()]
+        .filter((p) => p.teamId === team.id && !p.pending)
+        .map((p) => ({
+          memberId: p.memberId,
+          name: p.name,
+          online: p.online,
+          isCaptain: team.captain === p.sessionId,
+          isMe: p.sessionId === sessionId,
+          votes: Object.values(votes).filter((to) => to === p.memberId).length,
+        }));
+    })(),
+    votesNeeded: (() => {
+      const team = game.teams.find((t) => t.id === player?.teamId);
+      if (!team) return 0;
+      const size = [...game.players.values()]
+        .filter((p) => p.teamId === team.id && !p.pending).length;
+      return Math.floor(size / 2) + 1;
+    })(),
+    flagged: (() => {
+      if (!player?.teamId || !question) return null;
+      const flag = game.flags.find(
+        (f) => f.teamId === player.teamId && f.questionId === question.id,
+      );
+      return flag ? { by: flag.by, seconds: flag.seconds } : null;
+    })(),
     myStanding: table.find((s) => s.teamId === player?.teamId) ?? null,
     standings: table,
     lastRoundResult,
@@ -195,6 +224,16 @@ export function hostView(game: Game): HostView {
     waiting: waiting(game),
     roster: roster(game),
     answers: question ? answersFor(game, question.id) : [],
+    flagged: question
+      ? game.flags
+        .filter((f) => f.questionId === question.id)
+        .map((f) => ({
+          teamId: f.teamId,
+          teamName: game.teams.find((t) => t.id === f.teamId)?.name ?? '—',
+          by: f.by,
+          seconds: f.seconds,
+        }))
+      : [],
     pending,
     standings: standingsOf(game),
     paused: game.paused,

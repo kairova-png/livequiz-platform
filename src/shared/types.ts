@@ -130,6 +130,8 @@ export interface Team {
   captain: string;
   /** Имя капитана — телефонам и пульту нужно показать, кого ждать. */
   captainName: string;
+  /** Кто за кого голосует при смене капитана: публичный номер → номер. */
+  votes?: Record<string, string>;
 }
 
 /**
@@ -286,6 +288,22 @@ export interface PlayerView {
   teamAnswer: { value: OptionKey | OptionKey[] | string; risk: boolean; by: string } | null;
   /** Кто за столом отправляет ответ и я ли это. null — команда не выбрана. */
   captain: { name: string; isMe: boolean } | null;
+  /**
+   * Стол целиком: за кого голосовать и кто уже капитан. Публичные номера,
+   * а не sessionId — им участник представляется серверу.
+   */
+  teammates: {
+    memberId: string;
+    name: string;
+    online: boolean;
+    isCaptain: boolean;
+    isMe: boolean;
+    votes: number;
+  }[];
+  /** Сколько голосов нужно, чтобы сменить капитана. */
+  votesNeeded: number;
+  /** Команда потеряла текущий вопрос: кто-то уходил с экрана. */
+  flagged: { by: string; seconds: number } | null;
   myStanding: Standing | null;
   standings: Standing[];
   /** Итог по последнему вскрытому туру: что команда взяла. */
@@ -446,6 +464,8 @@ export interface HostView {
   roster: { sessionId: string; name: string; teamId: string | null; online: boolean }[];
   /** Ответы на текущий вопрос — для судейства. */
   answers: Answer[];
+  /** Столы, потерявшие текущий вопрос: кто-то уходил с экрана. */
+  flagged: { teamId: string; teamName: string; by: string; seconds: number }[];
   /** Ответы тура, ждущие решения ведущего. */
   pending: { question: Question; answers: Answer[] }[];
   standings: Standing[];

@@ -375,6 +375,23 @@ function Answers(
 ): ReactNode {
   return (
     <>
+      {/* Отметки честной игры — прежде ответов: если стол выбыл из вопроса,
+          ведущий должен знать это до того, как начнёт судить. */}
+      {view.flagged.length > 0 && (
+        <div className="lq-card app-stack" style={{
+          marginTop: 'var(--lq-space-5)',
+          background: 'var(--lq-danger)',
+          color: '#fff',
+        }}>
+          <b>Сұрақтан шыққан топтар · {view.flagged.length}</b>
+          {view.flagged.map((flag) => (
+            <div className="app-row" key={flag.teamId} style={{ fontSize: 'var(--lq-text-sm)' }}>
+              <span className="app-grow">{flag.teamName}</span>
+              <span>{flag.by} · экраннан {flag.seconds} сек кетті</span>
+            </div>
+          ))}
+        </div>
+      )}
       <p className="app-host-h" style={{ marginTop: 'var(--lq-space-5)' }}>
         Жауаптар · {answers.length} / {view.teams.length}
       </p>
