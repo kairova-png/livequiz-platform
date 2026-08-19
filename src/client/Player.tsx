@@ -9,6 +9,7 @@
 
 import { useEffect, useState, type ReactNode } from 'react';
 import { sessionId, useGame, useSmoothSeconds } from './net.ts';
+import { useTitle } from './title.ts';
 import { Board, Offline, Shape, TeamBadge, Timer, tileClass, tileColor } from './ui.tsx';
 import { CodeGate, JoinForm } from './player/Join.tsx';
 import type { OptionKey, PlayerView, PublicQuestion } from '../shared/types.ts';
@@ -23,6 +24,11 @@ export function Player(): ReactNode {
     : null;
   const game = useGame<PlayerView>(hello, 'player/state');
   const seconds = useSmoothSeconds(game.secondsLeft);
+  // Своя команда в заголовке: телефон лежит на столе среди чужих таких же.
+  useTitle(
+    game.view?.teams.find((t) => t.id === game.view?.me?.teamId)?.name ?? 'Қатысушы',
+    game.view?.code,
+  );
 
   if (!entered || game.denied) {
     return (

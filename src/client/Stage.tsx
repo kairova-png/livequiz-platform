@@ -9,6 +9,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useGame, useSmoothSeconds } from './net.ts';
+import { useTitle } from './title.ts';
 import { Board, Emblem, JoinQr, Offline, Shape, TeamBadge, badgeColor, joinUrl, tileClass, tileColor } from './ui.tsx';
 import type { PublicQuestion, RevealView, StageView } from '../shared/types.ts';
 
@@ -19,6 +20,7 @@ export function Stage(): ReactNode {
   const hello = entered && code.length === 6 ? { t: 'stage/hello' as const, code } : null;
   const game = useGame<StageView>(hello, 'stage/state');
   const seconds = useSmoothSeconds(game.secondsLeft);
+  useTitle('Зал экраны', game.view?.code, game.view?.title);
 
   if (!entered || game.denied) {
     return (

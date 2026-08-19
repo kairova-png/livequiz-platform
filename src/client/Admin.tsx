@@ -10,6 +10,7 @@
 
 import { useState, type ReactNode } from 'react';
 import { useGame } from './net.ts';
+import { useTitle } from './title.ts';
 import { Offline } from './ui.tsx';
 import { Home } from './admin/Home.tsx';
 import { GameScreen } from './admin/GameScreen.tsx';
@@ -45,6 +46,11 @@ export function Admin(): ReactNode {
 
   const hello = entered && pin ? { t: 'admin/hello' as const, pin } : null;
   const admin = useGame<AdminView>(hello, 'admin/state');
+  useTitle(
+    'Кабинет',
+    NAV.find((item) => item.id === section)?.label,
+    section === 'game' ? gameCode : null,
+  );
   const send: Send = (command) => admin.send({ t: 'admin/command', command });
 
   const go = (next: Section, code?: string): void => {

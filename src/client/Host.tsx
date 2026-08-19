@@ -8,6 +8,7 @@
 
 import { useState, type ReactNode } from 'react';
 import { useGame, useSmoothSeconds } from './net.ts';
+import { useTitle } from './title.ts';
 import { Board, Offline, TeamBadge, Timer, joinUrl } from './ui.tsx';
 import type { HostCommand } from '../shared/protocol.ts';
 import type { Answer, HostView, Question } from '../shared/types.ts';
@@ -24,6 +25,12 @@ export function Host(): ReactNode {
   const hello = entered && pin ? { t: 'host/hello' as const, pin, code } : null;
   const game = useGame<HostView>(hello, 'host/state');
   const seconds = useSmoothSeconds(game.secondsLeft);
+  useTitle(
+    'Пульт',
+    game.view?.code,
+    game.view?.round && `${game.view.round.no} тур`,
+    game.view?.question && `${game.view.question.no} сұрақ`,
+  );
   const send: Send = (command) => game.send({ t: 'host/command', command });
 
   if (!entered || game.denied) {
