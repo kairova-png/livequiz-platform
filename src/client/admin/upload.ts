@@ -33,39 +33,65 @@ export interface Uploaded {
  * Ответ прокси, а не приложения.
  *
  * Обратный прокси обрывает слишком большой запрос сам и отвечает своей
- * HTML-страницей. Слепой `response.json()` спотыкался на ней и показывал
+ * HTML-страницей. Слепой разбор JSON спотыкался на ней и показывал
  * ведущему «Unexpected token '<'» — сообщение, из которого невозможно
  * понять, что делать. Разбираем по статусу и говорим по-человечески.
  */
-async function parse(response: Response): Promise<Partial<Uploaded> & { error?: string }> {
-  const text = await response.text();
+function parse(status: number, text: string): Partial<Uploaded> & { error?: string } {
   try {
     return JSON.parse(text) as Partial<Uploaded> & { error?: string };
   } catch {
-    if (response.status === 413) {
-      return { error: 'Файл тым үлкен — серверге сыймайды' };
-    }
-    return { error: `Сервер жауабы түсініксіз (${response.status})` };
+    if (status === 413) return { error: 'Файл тым үлкен — серверге сыймайды' };
+    return { error: `Сервер жауабы түсініксіз (${status})` };
   }
 }
 
-export async function uploadFile(quizId: string, file: File): Promise<Uploaded> {
+/**
+ * Отправка файла с показом хода.
+ *
+ * Здесь XMLHttpRequest, а не fetch: колода весит сотню мегабайт и по
+ * мобильному интернету идёт минутами, а fetch не сообщает, сколько уже
+ * ушло. Молчащий экран в этот момент неотличим от зависшего, и ведущий
+ * начинает жать кнопку повторно — то есть грузить ту же колоду второй раз
+ * поверх первой.
+ */
+export function uploadFile(
+  quizId: string,
+  file: File,
+  onProgress?: (sent: number, total: number) => void,
+): Promise<Uploaded> {
   const url = `/api/upload?quiz=${encodeURIComponent(quizId)}`
     + `&name=${encodeURIComponent(file.name)}`;
-  // PIN — заголовком: в адресе он попал бы в логи прокси и в историю браузера.
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'x-host-pin': pin },
-    body: file,
+
+  return new Promise<Uploaded>((resolve, reject) => {
+    const request = new XMLHttpRequest();
+    request.open('POST', url);
+    // PIN — заголовком: в адресе он попал бы в логи прокси и в историю браузера.
+    request.setRequestHeader('x-host-pin', pin);
+
+    request.upload.addEventListener('progress', (event) => {
+      // Пока размер неизвестен, показывать нечего — иначе полоса дёргается.
+      if (event.lengthComputable) onProgress?.(event.loaded, event.total);
+    });
+
+    request.addEventListener('load', () => {
+      const body = parse(request.status, request.responseText);
+      if (request.status < 200 || request.status >= 300 || !body.path) {
+        reject(new Error(body.error ?? 'Жүктелмеді'));
+        return;
+      }
+      resolve({
+        path: body.path,
+        name: body.name ?? file.name,
+        size: body.size ?? file.size,
+        slides: body.slides ?? null,
+      });
+    });
+    request.addEventListener('error', () => reject(new Error('Байланыс үзілді')));
+    request.addEventListener('abort', () => reject(new Error('Жүктеу тоқтатылды')));
+
+    request.send(file);
   });
-  const body = await parse(response);
-  if (!response.ok || !body.path) throw new Error(body.error ?? 'Жүктелмеді');
-  return {
-    path: body.path,
-    name: body.name ?? file.name,
-    size: body.size ?? file.size,
-    slides: body.slides ?? null,
-  };
 }
 
 /** Обратная совместимость: редактору вопроса нужен только путь. */

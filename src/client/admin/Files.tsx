@@ -23,12 +23,45 @@ function human(size: number): string {
   return `${size} Б`;
 }
 
+/**
+ * Ход загрузки.
+ *
+ * Колода в сто мегабайт идёт минутами, и без полосы экран неотличим от
+ * зависшего: ведущий жмёт ещё раз и грузит ту же колоду второй раз.
+ * Проценты дублируются мегабайтами — по ним видно, что счётчик живой,
+ * даже когда процент подолгу стоит на месте.
+ */
+function Progress(
+  { sent, total, queue }:
+  { sent: number; total: number; queue: { done: number; total: number } },
+): ReactNode {
+  const percent = total > 0 ? Math.min(100, Math.round((sent / total) * 100)) : 0;
+  return (
+    <div className="app-stack" style={{ width: '100%', maxWidth: 560, gap: 'var(--lq-space-2)' }}>
+      <div className="lq-timer-bar">
+        <div className="lq-timer-bar__fill" style={{ width: `${percent}%` }} />
+      </div>
+      <div className="app-row" style={{ fontSize: 'var(--lq-text-sm)' }}>
+        <b>{percent}%</b>
+        <span className="app-muted app-grow">{human(sent)} / {human(total)}</span>
+        {queue.total > 1 && (
+          <span className="app-muted">{queue.done + 1} / {queue.total} файл</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function Files({ view }: { view: AdminView }): ReactNode {
   const quizzes = view.quizzes;
   const [quizId, setQuizId] = useState(quizzes[0]?.id ?? '');
   const [files, setFiles] = useState<StoredFile[]>([]);
   const [slides, setSlides] = useState<{ name: string; outline: SlideOutline[] } | null>(null);
-  const [busy, setBusy] = useState('');
+  /* Что грузится прямо сейчас: имя, сколько ушло и сколько всего.
+   * Держим отдельно от списка загруженного — файл появится там только
+   * когда сервер его примет. */
+  const [progress, setProgress] = useState<{ name: string; sent: number; total: number } | null>(null);
+  const [queue, setQueue] = useState({ done: 0, total: 0 });
   const [error, setError] = useState('');
 
   const refresh = (id: string): void => {
@@ -40,18 +73,25 @@ export function Files({ view }: { view: AdminView }): ReactNode {
 
   const send = async (list: FileList | null): Promise<void> => {
     if (!list || !quizId) return;
+    const files = Array.from(list);
     setError('');
-    for (const file of Array.from(list)) {
-      setBusy(file.name);
+    setQueue({ done: 0, total: files.length });
+    for (const [index, file] of files.entries()) {
+      setProgress({ name: file.name, sent: 0, total: file.size });
       try {
-        const done = await uploadFile(quizId, file);
+        const done = await uploadFile(quizId, file, (sent, total) => {
+          setProgress({ name: file.name, sent, total });
+        });
         if (done.slides) setSlides({ name: done.name, outline: done.slides });
       } catch (e) {
         setError(`${file.name}: ${(e as Error).message}`);
       }
+      setQueue({ done: index + 1, total: files.length });
+      // Список обновляем после каждого файла: при пачке из десяти колод
+      // ждать до конца, чтобы увидеть первую, незачем.
+      refresh(quizId);
     }
-    setBusy('');
-    refresh(quizId);
+    setProgress(null);
   };
 
   if (quizzes.length === 0) {
@@ -94,11 +134,19 @@ export function Files({ view }: { view: AdminView }): ReactNode {
           onChange={(e) => { void send(e.target.files); e.target.value = ''; }}
         />
         <b style={{ fontFamily: 'var(--lq-font-display)', fontSize: 'var(--lq-text-xl)' }}>
-          {busy ? `Жүктелуде: ${busy}` : 'Файлды осында сүйреңіз'}
+          {progress ? progress.name : 'Файлды осында сүйреңіз'}
         </b>
-        <span className="app-muted">
-          Презентация (.pptx), PDF, сурет, дыбыс, видео · 200 МБ дейін
-        </span>
+        {progress ? (
+          <Progress
+            sent={progress.sent}
+            total={progress.total}
+            queue={queue}
+          />
+        ) : (
+          <span className="app-muted">
+            Презентация (.pptx), PDF, сурет, дыбыс, видео · 200 МБ дейін
+          </span>
+        )}
       </label>
 
       {error && <div className="lq-toast lq-toast--danger">{error}</div>}
