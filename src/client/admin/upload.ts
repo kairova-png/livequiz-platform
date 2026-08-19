@@ -29,6 +29,26 @@ export interface Uploaded {
   slides: SlideOutline[] | null;
 }
 
+/**
+ * Ответ прокси, а не приложения.
+ *
+ * Обратный прокси обрывает слишком большой запрос сам и отвечает своей
+ * HTML-страницей. Слепой `response.json()` спотыкался на ней и показывал
+ * ведущему «Unexpected token '<'» — сообщение, из которого невозможно
+ * понять, что делать. Разбираем по статусу и говорим по-человечески.
+ */
+async function parse(response: Response): Promise<Partial<Uploaded> & { error?: string }> {
+  const text = await response.text();
+  try {
+    return JSON.parse(text) as Partial<Uploaded> & { error?: string };
+  } catch {
+    if (response.status === 413) {
+      return { error: 'Файл тым үлкен — серверге сыймайды' };
+    }
+    return { error: `Сервер жауабы түсініксіз (${response.status})` };
+  }
+}
+
 export async function uploadFile(quizId: string, file: File): Promise<Uploaded> {
   const url = `/api/upload?quiz=${encodeURIComponent(quizId)}`
     + `&name=${encodeURIComponent(file.name)}`;
@@ -38,7 +58,7 @@ export async function uploadFile(quizId: string, file: File): Promise<Uploaded> 
     headers: { 'x-host-pin': pin },
     body: file,
   });
-  const body = await response.json() as Partial<Uploaded> & { error?: string };
+  const body = await parse(response);
   if (!response.ok || !body.path) throw new Error(body.error ?? 'Жүктелмеді');
   return {
     path: body.path,

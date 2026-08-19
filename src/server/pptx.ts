@@ -23,7 +23,9 @@ export interface Paragraph {
 export interface SlideMedia {
   /** Имя внутри архива: ppt/media/image7.png. */
   name: string;
-  data: Buffer;
+  size: number;
+  /** Содержимое. Пусто, если колоду читали только ради оглавления. */
+  data?: Buffer;
 }
 
 export interface Slide {
@@ -42,9 +44,22 @@ export interface Slide {
 const EOCD = 0x06054b50;
 const CENTRAL = 0x02014b50;
 
-/** Файлы архива: имя → содержимое. Читаем целиком — колода уже в памяти. */
-export function unzip(buffer: Buffer): Map<string, Buffer> {
-  const files = new Map<string, Buffer>();
+export interface Entry {
+  size: number;
+  /** Распаковывается только по требованию — см. `keep` в unzip. */
+  data?: Buffer;
+}
+
+/**
+ * Файлы архива: имя → запись.
+ *
+ * `keep` решает, что разворачивать. Колода на сто с лишним мегабайт — это
+ * почти целиком видео и фотографии; чтобы показать оглавление, они не
+ * нужны, а распаковка всего подряд удвоила бы расход памяти на сервере,
+ * который в это время может вести вечер.
+ */
+export function unzip(buffer: Buffer, keep: (name: string) => boolean = () => true): Map<string, Entry> {
+  const files = new Map<string, Entry>();
   // Хвост архива: сигнатуру ищем с конца, потому что после неё может
   // висеть комментарий переменной длины.
   let eocd = -1;
@@ -74,7 +89,10 @@ export function unzip(buffer: Buffer): Map<string, Buffer> {
     const raw = buffer.subarray(from, from + compressed);
 
     if (!name.endsWith('/')) {
-      files.set(name, method === 0 ? Buffer.from(raw) : inflateRawSync(raw));
+      const size = buffer.readUInt32LE(at + 24);
+      files.set(name, keep(name)
+        ? { size, data: method === 0 ? Buffer.from(raw) : inflateRawSync(raw) }
+        : { size });
     }
     at += 46 + nameLen + extraLen + commentLen;
   }
@@ -160,10 +178,17 @@ const VIDEO = /\.(mp4|mov|avi|mkv|wmv)$/i;
  * имён файлов: `slide10.xml` может показываться вторым, а удалённый слайд
  * оставляет дырку в нумерации.
  */
-export function readPresentation(buffer: Buffer): Slide[] {
-  const files = unzip(buffer);
-  const presentation = files.get('ppt/presentation.xml')?.toString('utf8') ?? '';
-  const presentationRels = relsOf(files.get('ppt/_rels/presentation.xml.rels')?.toString('utf8') ?? '', 'ppt');
+export function readPresentation(buffer: Buffer, options: { media?: boolean } = {}): Slide[] {
+  // Разметка нужна всегда, содержимое медиа — только когда его собираются
+  // раскладывать по вопросам.
+  const keep = options.media
+    ? (): boolean => true
+    : (name: string): boolean => name.endsWith('.xml') || name.endsWith('.rels');
+  const files = unzip(buffer, keep);
+  const text = (name: string): string => files.get(name)?.data?.toString('utf8') ?? '';
+
+  const presentation = text('ppt/presentation.xml');
+  const presentationRels = relsOf(text('ppt/_rels/presentation.xml.rels'), 'ppt');
 
   const order = [...presentation.matchAll(/<p:sldId[^>]*r:id="([^"]+)"/g)]
     .map(([, id]) => presentationRels.get(id))
@@ -175,26 +200,23 @@ export function readPresentation(buffer: Buffer): Slide[] {
     .sort((a, b) => Number(a.match(/(\d+)/)![1]) - Number(b.match(/(\d+)/)![1]));
 
   return paths.map((path, index) => {
-    const xml = files.get(path)?.toString('utf8') ?? '';
+    const xml = text(path);
     const relsPath = path.replace(/([^/]+)$/, '_rels/$1.rels');
-    const rels = relsOf(
-      files.get(relsPath)?.toString('utf8') ?? '',
-      path.slice(0, path.lastIndexOf('/')),
-    );
+    const rels = relsOf(text(relsPath), path.slice(0, path.lastIndexOf('/')));
 
     const media: SlideMedia[] = [];
     for (const [, id] of xml.matchAll(/r:(?:embed|link)="([^"]+)"/g)) {
       const target = rels.get(id);
-      const data = target ? files.get(target) : undefined;
-      if (target && data && !media.some((m) => m.name === target)) {
-        media.push({ name: target, data });
+      const entry = target ? files.get(target) : undefined;
+      if (target && entry && !media.some((m) => m.name === target)) {
+        media.push({ name: target, size: entry.size, data: entry.data });
       }
     }
 
     // Заметки докладчика лежат отдельным слайдом, связанным через rels.
     const notesPath = [...rels.values()].find((target) => target.includes('notesSlide'));
     const notes = notesPath
-      ? paragraphsOf(files.get(notesPath)?.toString('utf8') ?? '').map((p) => p.text).join('\n')
+      ? paragraphsOf(text(notesPath)).map((p) => p.text).join('\n')
       : '';
 
     return {
