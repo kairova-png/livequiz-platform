@@ -115,7 +115,31 @@ export function playerView(game: Game, sessionId: string): PlayerView {
   const player = game.players.get(sessionId);
   const round = game.currentRound();
   const question = game.phase === 'asking' ? game.currentQuestion() : null;
-  const table = standingsOf(game);
+
+  /* Телефону очки идут только по ВСКРЫТЫМ турам.
+   *
+   * Правильность ответа сервер знает сразу, и сумма менялась в тот же миг,
+   * когда команда нажимала верный вариант. Значит перебором — нажал А,
+   * посмотрел, нажал Ә — правильный ответ вычислялся за четыре касания, и
+   * никакой интерфейс этого не спасал бы: срез уходит на телефон целиком.
+   *
+   * Поэтому до конца тура таблица для телефона застыла на прошлом туре.
+   * Ведущий и экран зала видят живой счёт — им он и нужен. */
+  const revealed = ['roundScores', 'break', 'final'].includes(game.phase);
+  const openRounds = revealed ? game.roundIndex + 1 : game.roundIndex;
+  // Считаем не «по скольким турам сортировать», а по каким ответам вообще
+  // складывать: предел раундов в standings влияет только на тай-брейк, а
+  // сумма собиралась по всем ответам сразу — включая только что нажатый.
+  const counted = new Set(
+    game.scenario.rounds.slice(0, openRounds).flatMap((r) => r.questions.map((q) => q.id)),
+  );
+  const table = standings(
+    game.scenario,
+    game.teams,
+    game.answers.filter((a) => counted.has(a.questionId)),
+    game.adjustments.filter((a) => a.roundIndex < openRounds),
+    openRounds,
+  );
   const mine = player?.teamId
     ? game.answers.find((a) => a.teamId === player.teamId && a.questionId === question?.id)
     : undefined;

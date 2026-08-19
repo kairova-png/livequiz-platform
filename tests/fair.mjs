@@ -135,6 +135,21 @@ await wait(400);
 check('отвечать больше нельзя', table[1].errors.length > 0, true);
 check('ведущий видит нарушение', host.view.flagged[0]?.by, 'Сая');
 
+/* --- Счёт не подсказывает ответ ----------------------------------------- */
+// Правильность сервер знает сразу, и пока сумма на телефоне менялась в тот
+// же миг, правильный вариант вычислялся перебором за четыре касания —
+// независимо от того, показан ли счёт в интерфейсе: срез уходит целиком.
+
+{
+  const totals = [];
+  for (const option of question.options) {
+    answer(option.key);
+    await wait(250);
+    totals.push(table[1].view.myStanding?.total ?? 0);
+  }
+  check('перебор вариантов не двигает счёт', [...new Set(totals)], [0]);
+}
+
 // Со следующего вопроса стол играет дальше — наказание не переносится.
 host.send({ t: 'host/command', command: { c: 'nextQuestion' } });
 await host.until((v) => v.questionIndex === 1, 'следующий вопрос');

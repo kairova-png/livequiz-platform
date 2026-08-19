@@ -104,8 +104,13 @@ function Stage(
         <TeamBadge badge={team.badge} size={40} />
       )}
       <b className="app-grow">{team?.name}</b>
-      {view.myStanding && (
-        <span className="lq-badge lq-badge--neutral">{view.myStanding.total} ұпай</span>
+      {/* Счёт в шапке не висит: пока идёт тур, он всё равно застыл на
+          прошлом — иначе по нему перебором вычислялся бы правильный ответ.
+          Итоги показываются между турами, там для них есть свой экран. */}
+      {view.captain && (
+        <span className="lq-badge lq-badge--neutral">
+          {view.captain.isMe ? 'капитан' : `капитан · ${view.captain.name}`}
+        </span>
       )}
     </div>
   );
