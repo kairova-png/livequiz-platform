@@ -58,17 +58,12 @@ const UPLOAD_LIMIT = 200 * 1024 * 1024;
  * ведущий доносит картинку за двадцать минут до гостей.
  */
 export function upload(
-  req: IncomingMessage, res: ServerResponse, url: URL, publicDir: string, pin: string,
+  req: IncomingMessage, res: ServerResponse, url: URL, publicDir: string,
 ): void {
   const reply = (status: number, body: unknown): void => {
     res.writeHead(status, { 'content-type': MIME['.json'] });
     res.end(JSON.stringify(body));
   };
-  /* PIN идёт заголовком, а не в адресе: query-строка оседает в логах
-   * обратного прокси и в истории браузера, а этот PIN открывает и пульт,
-   * и кабинет. */
-  if (req.headers['x-host-pin'] !== pin) return reply(403, { error: 'PIN дұрыс емес' });
-
   const quiz = (url.searchParams.get('quiz') ?? '').replace(/[^a-z0-9-]/gi, '');
   const name = safeName(url.searchParams.get('name') ?? 'file');
   const ext = extname(name).toLowerCase();
@@ -165,15 +160,11 @@ function outline(path: string): SlideOutline[] | null {
 }
 
 /** Что уже загружено в этот квиз — список для кабинета. */
-export function uploads(
-  res: ServerResponse, url: URL, publicDir: string, pin: string, given: string | undefined,
-): void {
+export function uploads(res: ServerResponse, url: URL, publicDir: string): void {
   const reply = (status: number, body: unknown): void => {
     res.writeHead(status, { 'content-type': MIME['.json'] });
     res.end(JSON.stringify(body));
   };
-  if (given !== pin) return reply(403, { error: 'PIN дұрыс емес' });
-
   const quiz = (url.searchParams.get('quiz') ?? '').replace(/[^a-z0-9-]/gi, '');
   if (!quiz) return reply(400, { error: 'Квиз көрсетілмеген' });
 

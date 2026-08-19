@@ -29,6 +29,10 @@ check('пустой PIN совпал бы с пустым', pinMatches('', ''), 
 // Перед приложением стоят nginx и Caddy: в сокете всегда 127.0.0.1, а
 // настоящий адрес приходит заголовком. Доверять заголовку можно ТОЛЬКО
 // когда сосед по сокету — сам прокси, иначе клиент подставит любой адрес.
+//
+// Прокси именно ДВА, и это решает спор заголовков: nginx ставит X-Real-IP
+// от себя, то есть адрес Caddy, и все посетители снаружи сливаются в один
+// адрес. X-Forwarded-For ведёт список от исходного клиента — он и главнее.
 
 const req = (peer, headers = {}) => ({ socket: { remoteAddress: peer }, headers });
 
@@ -36,8 +40,8 @@ check('за локальным прокси берём X-Real-IP',
   clientIp(req('127.0.0.1', { 'x-real-ip': '203.0.113.7' })), '203.0.113.7');
 check('за локальным прокси годится и X-Forwarded-For',
   clientIp(req('127.0.0.1', { 'x-forwarded-for': '203.0.113.9, 10.0.0.1' })), '203.0.113.9');
-check('X-Real-IP важнее X-Forwarded-For',
-  clientIp(req('127.0.0.1', { 'x-real-ip': '203.0.113.7', 'x-forwarded-for': '1.2.3.4' })),
+check('X-Forwarded-For важнее X-Real-IP: второй прокси подставляет себя',
+  clientIp(req('127.0.0.1', { 'x-real-ip': '192.168.0.147', 'x-forwarded-for': '203.0.113.7' })),
   '203.0.113.7');
 check('ПОДМЕНА: заголовок от неместного соседа игнорируется',
   clientIp(req('198.51.100.5', { 'x-real-ip': '127.0.0.1' })), '198.51.100.5');
@@ -146,16 +150,25 @@ check('пустой заголовок не затирает адрес',
   check('соединение закрывают после N неудач',
     closes, [false, false, false, true]);
 
-  // Задержка не спасала бы, если пробовать сотней соединений сразу, —
-  // поэтому неудачи считаются на адрес, а не только на сокет.
+  /* Платит тот, кто ошибся, а не тот, кто пришёл следом.
+   *
+   * Зал сидит за одним Wi-Fi, а снаружи всех объединяет ещё и прокси.
+   * Считай мы по адресу — чужие три опечатки стоили бы ведущему десятков
+   * секунд на его первом же промахе, и пульт выглядел бы сломанным. */
   const other = guard.openConnection('203.0.113.4');
-  const grown = guard.notePinFailure(other).delayMs;
-  check('цена ошибки выросла для всего адреса, а не только для сокета',
-    grown > LIMITS.PIN_FAIL_DELAY_MS, true);
+  const fresh = guard.notePinFailure(other).delayMs;
+  check('чужие неудачи не удорожают первую свою',
+    fresh, LIMITS.PIN_FAIL_DELAY_MS);
 
-  for (let i = 0; i < 20; i += 1) guard.notePinFailure(other);
+  // Зато на СВОЁМ соединении цена растёт — перебор упирается в неё.
+  const mine = guard.openConnection('203.0.113.9');
+  const own = [];
+  for (let i = 0; i < 4; i += 1) own.push(guard.notePinFailure(mine).delayMs);
+  check('на своём соединении цена ошибки растёт', own[3] > own[0], true);
+
+  for (let i = 0; i < 30; i += 1) guard.notePinFailure(guard.openConnection('203.0.113.4'));
   check('задержка упирается в потолок',
-    guard.pinDelayFor('203.0.113.4'), LIMITS.PIN_FAIL_DELAY_MAX_MS);
+    guard.pinDelayFor('203.0.113.4') <= LIMITS.PIN_FAIL_DELAY_MAX_MS, true);
 
   // ГЛАВНОЕ: ведущий сидит за тем же Wi-Fi, что и шутник из зала. Верный
   // PIN обязан пройти мгновенно даже после чужой серии неудач — иначе
@@ -183,6 +196,24 @@ check('пустой заголовок не затирает адрес',
   check('адрес учтён', guard.stats().addresses, 1);
   guard.closeConnection(conn);
   check('после закрытия адрес забыт', guard.stats().addresses, 0);
+}
+
+/* --- PIN у обычных запросов --------------------------------------------- */
+// Загрузка, список файлов и импорт открываются тем же PIN, что и пульт.
+// Пока здесь стояло простое сравнение, перебирать по HTTP было быстрее,
+// чем по вебсокету: без задержки и без постоянного времени.
+
+{
+  const guard = new Guard();
+  const started = Date.now();
+  const ok = await guard.checkHttpPin('203.0.113.20', '12345678', '12345678');
+  check('верный PIN проходит мгновенно', ok && Date.now() - started < 200, true);
+
+  const before = Date.now();
+  const bad = await guard.checkHttpPin('203.0.113.20', '00000000', '12345678');
+  const spent = Date.now() - before;
+  check('неверный PIN отклонён', bad, false);
+  check('и стоит той же секунды, что на пульте', spent >= 900, true);
 }
 
 console.log(failures ? `\n${failures} тексеру құлады` : '\nБарлық тексеру өтті');

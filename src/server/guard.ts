@@ -86,6 +86,15 @@ const PIN_FAILS_BEFORE_ESCALATION = 2;
  *  Переподключение стоит нападающему рукопожатия, а ведущему — ничего. */
 const PIN_FAILS_PER_CONNECTION = 5;
 
+/**
+ * С какого числа неудач за адресом считаем, что это машина.
+ *
+ * Живой вечер столько не набирает: ведущий ошибается один-два раза,
+ * участникам PIN не нужен вовсе. Сотни промахов подряд — это перебор,
+ * и вот ему цена ошибки удваивается.
+ */
+const PIN_FAIL_SWARM = 30;
+
 /** Через сколько бездействия счётчик неудач адреса забывается. */
 const PIN_FAIL_MEMORY_MS = 3_600_000;
 
@@ -102,14 +111,22 @@ export function clientIp(req: IncomingMessage): string {
   const fromProxy = peer === '127.0.0.1' || peer === '::1' || peer === '::ffff:127.0.0.1';
   if (!fromProxy) return peer;
 
-  const real = req.headers['x-real-ip'];
-  if (typeof real === 'string' && real.trim()) return real.trim();
-
-  // X-Forwarded-For — список, где первым идёт исходный клиент.
+  /* Прокси у нас два: Caddy на другой машине терминирует TLS и передаёт
+   * дальше nginx, а тот ставит X-Real-IP от себя — то есть адрес Caddy.
+   * Поэтому X-Real-IP здесь означает «сосед по цепочке», а не клиент, и
+   * все посетители снаружи сливались в один адрес: чужая опечатка в PIN
+   * начинала стоить задержки ведущему.
+   *
+   * X-Forwarded-For ведёт список от исходного клиента, и первым в нём
+   * стоит именно он. */
   const forwarded = req.headers['x-forwarded-for'];
   const chain = Array.isArray(forwarded) ? forwarded[0] : forwarded;
   const first = chain?.split(',')[0]?.trim();
-  return first || peer;
+  if (first) return first;
+
+  const real = req.headers['x-real-ip'];
+  if (typeof real === 'string' && real.trim()) return real.trim();
+  return peer;
 }
 
 /** Сравнение PIN за постоянное время: обычное !== выдаёт длину совпавшего
@@ -240,8 +257,20 @@ export class Guard {
     s.lastFailAt = now;
     conn.pinFails += 1;
 
-    const over = Math.max(0, s.pinFails - PIN_FAILS_BEFORE_ESCALATION);
-    const delayMs = Math.min(PIN_FAIL_DELAY_MS * 2 ** over, PIN_FAIL_DELAY_MAX_MS);
+    /* Платит тот, кто ошибся, а не тот, кто пришёл следом.
+     *
+     * Раньше задержка росла по счётчику АДРЕСА, и это било мимо цели:
+     * зал сидит за одним Wi-Fi, а снаружи всех к тому же объединяет
+     * прокси. Достаточно было чужих трёх опечаток — и ведущий, впервые
+     * открывший пульт, ждал у своего первого же промаха десятки секунд,
+     * решая, что пульт сломался.
+     *
+     * Считаем по своему соединению. Адрес остаётся страховкой от машинного
+     * перебора: он идёт с сотен соединений сразу, и такой счётчик у
+     * настоящего вечера не набирается. */
+    const over = Math.max(0, conn.pinFails - PIN_FAILS_BEFORE_ESCALATION);
+    const swarm = s.pinFails >= PIN_FAIL_SWARM ? 2 : 1;
+    const delayMs = Math.min(PIN_FAIL_DELAY_MS * 2 ** over * swarm, PIN_FAIL_DELAY_MAX_MS);
 
     return { delayMs, closeConnection: conn.pinFails >= PIN_FAILS_PER_CONNECTION };
   }
@@ -253,6 +282,35 @@ export class Guard {
     s.pinFails = 0;
     s.lastFailAt = 0;
     conn.pinFails = 0;
+  }
+
+  /**
+   * Проверка PIN у обычного запроса — загрузки файла, списка, импорта.
+   *
+   * Раньше здесь стояло простое `!==`: без задержки и без постоянного
+   * времени. То есть перебирать PIN по HTTP было проще и быстрее, чем по
+   * вебсокету, где защита уже стояла, — а открывает он ровно то же самое.
+   *
+   * Ответ ждёт ту же секунду, что и на пульте; верный PIN, как и там,
+   * принимается мгновенно.
+   */
+  async checkHttpPin(ip: string, given: unknown, expected: string): Promise<boolean> {
+    if (pinMatches(given, expected)) {
+      const ok = this.state(ip);
+      ok.pinFails = 0;
+      ok.lastFailAt = 0;
+      return true;
+    }
+
+    const s = this.state(ip);
+    const now = Date.now();
+    if (s.lastFailAt && now - s.lastFailAt > PIN_FAIL_MEMORY_MS) s.pinFails = 0;
+    s.pinFails += 1;
+    s.lastFailAt = now;
+
+    const over = Math.max(0, s.pinFails - PIN_FAILS_BEFORE_ESCALATION);
+    await sleep(Math.min(PIN_FAIL_DELAY_MS * 2 ** over, PIN_FAIL_DELAY_MAX_MS));
+    return false;
   }
 
   /** Текущая цена ошибки для адреса — для диагностики и тестов. */

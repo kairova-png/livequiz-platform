@@ -146,52 +146,28 @@ const server = createServer((req: IncomingMessage, res: ServerResponse) => {
     }));
     return;
   }
-  if (path === '/api/upload' && req.method === 'POST') {
-    return upload(req, res, url, PUBLIC, HOST_PIN);
-  }
-  /* Сборка квиза из уже загруженной колоды. Файл не присылают заново:
-   * он лежит в медиа вечера, а по сети идти второй раз сотне мегабайт
-   * незачем. */
-  if (path === '/api/import' && req.method === 'POST') {
-    const reply = (status: number, body: unknown): void => {
-      res.writeHead(status, { 'content-type': MIME['.json'] });
-      res.end(JSON.stringify(body));
+  /* PIN идёт заголовком, а не в адресе: query-строка оседает в логах
+   * обратного прокси и в истории браузера, а он открывает и пульт,
+   * и кабинет. Проверка одна на все три эндпоинта — с той же ценой
+   * ошибки, что на пульте. */
+  if (path === '/api/upload' || path === '/api/uploads' || path === '/api/import') {
+    const denied = (): void => {
+      res.writeHead(403, { 'content-type': MIME['.json'] });
+      res.end(JSON.stringify({ error: 'PIN дұрыс емес' }));
     };
-    if (req.headers['x-host-pin'] !== HOST_PIN) return reply(403, { error: 'PIN дұрыс емес' });
-
-    const from = decodeSafe(url.searchParams.get('path') ?? '');
-    if (!from.startsWith('/media/') || !from.toLowerCase().endsWith('.pptx')) {
-      return reply(400, { error: 'Тек жүктелген .pptx файлын импорттауға болады' });
-    }
-    const file = join(PUBLIC, normalize(from).replace(/^(\.\.[/\\])+/, ''));
-    if (!existsSync(file)) return reply(404, { error: 'Файл табылмады' });
-
-    const stamp = Date.now().toString(36);
-    const id = `import-${stamp}`;
-    try {
-      const report = importPresentation(readFileSync(file), {
-        id,
-        title: (url.searchParams.get('title') || 'Импортталған квиз').slice(0, 120),
-        mediaDir: join(PUBLIC, 'media', id),
-        mediaUrl: `/media/${id}`,
+    void guard.checkHttpPin(clientIp(req), req.headers['x-host-pin'], HOST_PIN)
+      .then((ok) => {
+        if (!ok) return denied();
+        if (path === '/api/upload' && req.method === 'POST') return upload(req, res, url, PUBLIC);
+        if (path === '/api/uploads' && req.method === 'GET') return uploads(res, url, PUBLIC);
+        if (path === '/api/import' && req.method === 'POST') return importDeck(res, url);
+        res.writeHead(405, { 'content-type': MIME['.json'] });
+        res.end(JSON.stringify({ error: 'Әдіс қолданылмайды' }));
+        return undefined;
       });
-      const quiz = registry.addQuiz(report.scenario);
-      broadcast();
-      return reply(200, {
-        id: quiz.id,
-        title: quiz.title,
-        rounds: quiz.rounds.length,
-        questions: quiz.rounds.reduce((n, r) => n + r.questions.length, 0),
-        mediaFiles: report.mediaFiles,
-        warnings: report.warnings,
-      });
-    } catch (error) {
-      return reply(500, { error: `Импорт сәтсіз: ${(error as Error).message}` });
-    }
+    return;
   }
-  if (path === '/api/uploads' && req.method === 'GET') {
-    return uploads(res, url, PUBLIC, HOST_PIN, req.headers['x-host-pin'] as string | undefined);
-  }
+
   // Имя файла в адресе закодировано (кириллица, пробелы) — на диске оно
   // лежит как есть, поэтому перед поиском раскодируем обратно.
   if (path.startsWith('/media/') && sendFile(res, PUBLIC, decodeSafe(path))) return;
@@ -589,6 +565,48 @@ wss.on('connection', (socket: WebSocket, req: IncomingMessage) => {
     if (client.surface === 'player' && game) broadcast(game.code);
   });
 });
+
+/**
+ * Сборка квиза из уже загруженной колоды.
+ *
+ * Файл не присылают заново: он лежит в медиа вечера, а гонять по сети
+ * второй раз сотню мегабайт незачем.
+ */
+function importDeck(res: ServerResponse, url: URL): void {
+  const reply = (status: number, body: unknown): void => {
+    res.writeHead(status, { 'content-type': MIME['.json'] });
+    res.end(JSON.stringify(body));
+  };
+
+  const from = decodeSafe(url.searchParams.get('path') ?? '');
+  if (!from.startsWith('/media/') || !from.toLowerCase().endsWith('.pptx')) {
+    return reply(400, { error: 'Тек жүктелген .pptx файлын импорттауға болады' });
+  }
+  const file = join(PUBLIC, normalize(from).replace(/^(\.\.[/\\])+/, ''));
+  if (!existsSync(file)) return reply(404, { error: 'Файл табылмады' });
+
+  const id = `import-${Date.now().toString(36)}`;
+  try {
+    const report = importPresentation(readFileSync(file), {
+      id,
+      title: (url.searchParams.get('title') || 'Импортталған квиз').slice(0, 120),
+      mediaDir: join(PUBLIC, 'media', id),
+      mediaUrl: `/media/${id}`,
+    });
+    const quiz = registry.addQuiz(report.scenario);
+    broadcast();
+    return reply(200, {
+      id: quiz.id,
+      title: quiz.title,
+      rounds: quiz.rounds.length,
+      questions: quiz.rounds.reduce((n, r) => n + r.questions.length, 0),
+      mediaFiles: report.mediaFiles,
+      warnings: report.warnings,
+    });
+  } catch (error) {
+    return reply(500, { error: `Импорт сәтсіз: ${(error as Error).message}` });
+  }
+}
 
 /** decodeURIComponent, который не роняет сервер на кривом проценте. */
 function decodeSafe(value: string): string {
